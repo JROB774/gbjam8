@@ -1,2 +1,8 @@
 .gbmb/gbmb.ini
 .gbtd/gbtd.ini
+
+*.lst
+*.map
+*.sym
+*.o
+*.gb
