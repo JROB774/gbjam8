@@ -1,4 +1,6 @@
 @echo off
 
-set Source=..\source\main.c
-set Output=GBJAM.GB
+set Output=..\binary\GBJAM.GB
+
+set Source=main.c
+set Object=main.o
