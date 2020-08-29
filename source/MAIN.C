@@ -10,6 +10,7 @@
 #include "TILESETS.C"
 #include "TILEMAPS.C"
 
+#include "ACTORS.C"
 #include "PLAYER.C"
 
 void main ()
@@ -21,16 +22,17 @@ void main ()
 
     set_bkg_tiles(0,0, TILEMAP_ROOM_WIDTH,TILEMAP_ROOM_HEIGHT,TILEMAP_ROOM);
 
-    player_init();
-
     DISPLAY_ON;
 
     SHOW_BKG;
     SHOW_SPRITES;
 
+    actor_create_player(48, 48);
+    actor_create_gaper(80, 32);
+
     while (TRUE)
     {
-        player_update();
+        actor_update_all();
         wait_vbl_done();
     }
 }
