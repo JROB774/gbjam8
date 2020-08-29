@@ -3,6 +3,8 @@
 .gbmb/gbmb.ini
 .gbtd/gbtd.ini
 
+dev/*.c
+
 *.sublime-workspace
 
 *.lst
