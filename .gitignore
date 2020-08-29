@@ -12,3 +12,4 @@ dev/*.c
 *.sym
 *.o
 *.gb
+*.pdn
