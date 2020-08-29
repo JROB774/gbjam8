@@ -23,7 +23,7 @@ INTERNAL void player_init ()
     // @Temporary
 
     for (i=0; i<player.sprite_num; ++i) {
-        set_sprite_tile(player.sprite_slot+i, i);
+        set_sprite_tile(player.sprite_slot+i, i+1);
     }
 
     player.x = 48 + (TILE_WIDTH     );
