@@ -27,8 +27,9 @@ void main ()
     SHOW_BKG;
     SHOW_SPRITES;
 
-    actor_create_player(48, 48);
-    actor_create_gaper(80, 32);
+    actor_create(0, ACTORTYPE_PLAYER, ACTORSTATE_IDLE, 48, 48);
+    actor_create(4, ACTORTYPE_GAPER,  ACTORSTATE_IDLE, 80, 40);
+    actor_create(8, ACTORTYPE_GAPER,  ACTORSTATE_IDLE, 64, 72);
 
     while (TRUE)
     {

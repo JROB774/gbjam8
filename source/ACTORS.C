@@ -1,12 +1,14 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
 /* Unique identifiers for all the different actor types in the game.          */
-#define ACTORTYPE_UNKNOWN       0x00
-#define ACTORTYPE_PLAYER        0x01
-#define ACTORTYPE_GAPER         0x02
+#define ACTORTYPE_UNKNOWN  0x00
+#define ACTORTYPE_PLAYER   0x01
+#define ACTORTYPE_GAPER    0x02
 
-/* All of the different states for the different types of actors.             */
-#define ACTORSTATE_IDLE 0x00
+/* All of the different states for the different types of actors. Actors will */
+/* not necessarily implement all of the states listed so not all states will  */
+/* work with all actors. For example some states are PLAYER actor specific.   */
+#define ACTORSTATE_IDLE    0x00
 
 /* A collection of sprites in OAM that create a larger meta-sprite.           */
 typedef struct _METASPRITE_
@@ -28,7 +30,7 @@ typedef struct _ACTORSTATE_
 /* An actor is any entity within the world (player,enemy,item,etc.).          */
 typedef struct _ACTOR_
 {
-    METASPRITE sprite;   /* Meta-sprite data for the actor instance.          */
+    METASPRITE sprite;   /* Meta-sprite information for the actor instance.   */
     U8   type;           /* Identifier for the type of actor.                 */
     U8   state;          /* Identifier for the current actor state.           */
     U8   x, y;           /* Current (X,Y) position in the world.              */
@@ -36,6 +38,21 @@ typedef struct _ACTOR_
     BOOL active;         /* Whether the actor is currently active or not.     */
 
 } ACTOR;
+
+/* This table contains meta-sprite widths for all of the actor types.         */
+GLOBAL const U8 METASPRITE_WIDTH_TABLE[] =
+{
+0x00, /* ACTORTYPE_UNKNOWN                                                    */
+0x02, /* ACTORTYPE_PLAYER                                                     */
+0x02, /* ACTORTYPE_GAPER                                                      */
+};
+/* This table contains meta-sprite heights for all of the actor types.        */
+GLOBAL const U8 METASPRITE_HEIGHT_TABLE[] =
+{
+0x00, /* ACTORTYPE_UNKNOWN                                                    */
+0x02, /* ACTORTYPE_PLAYER                                                     */
+0x02, /* ACTORTYPE_GAPER                                                      */
+};
 
 /* Offsets into the ACTORSTATE_TABLE for each of the unique ACTORTYPES. These */
 /* offsets act as the start of sub-list within the ACTORSTATE_TABLE for each  */
@@ -99,6 +116,21 @@ INTERNAL void actor_set_pos (ACTOR* actor, U8 x, U8 y)
     }
 }
 
+INTERNAL void actor_create (U8 index, U8 type, U8 state, U8 x, U8 y)
+{
+    ACTOR* actor = &actor_list[index];
+
+    actor->type        = type;
+    actor->sprite.slot = index;
+    actor->sprite.w    = METASPRITE_WIDTH_TABLE[type];
+    actor->sprite.h    = METASPRITE_HEIGHT_TABLE[type];
+    actor->state_timer = 0;
+    actor->active      = TRUE;
+
+    actor_set_state(actor, state);
+    actor_set_pos(actor, x, y);
+}
+
 INTERNAL void actor_update (ACTOR* actor)
 {
     /* Update the actor's state when necessary. */
@@ -118,36 +150,6 @@ INTERNAL void actor_update_all ()
             actor_update(actor);
         }
     }
-}
-
-INTERNAL void actor_create_player (U8 x, U8 y)
-{
-    ACTOR* actor = &actor_list[0]; /* @Temporary: Need to find a free slot instead.. */
-
-    actor->type        = ACTORTYPE_PLAYER;
-    actor->sprite.slot = 0x00;
-    actor->sprite.w    = 0x02;
-    actor->sprite.h    = 0x02;
-    actor->state_timer = 0;
-    actor->active      = TRUE;
-
-    actor_set_state(actor, ACTORSTATE_IDLE);
-    actor_set_pos(actor, x, y);
-}
-
-INTERNAL void actor_create_gaper (U8 x, U8 y)
-{
-    ACTOR* actor = &actor_list[1]; /* @Temporary: Need to find a free slot instead.. */
-
-    actor->type        = ACTORTYPE_GAPER;
-    actor->sprite.slot = 0x04;
-    actor->sprite.w    = 0x02;
-    actor->sprite.h    = 0x02;
-    actor->state_timer = 0;
-    actor->active      = TRUE;
-
-    actor_set_state(actor, ACTORSTATE_IDLE);
-    actor_set_pos(actor, x, y);
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/
