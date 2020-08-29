@@ -4,6 +4,7 @@
 .gbtd/gbtd.ini
 
 dev/*.c
+dev/*.h
 
 *.sublime-workspace
 
