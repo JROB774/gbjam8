@@ -10,6 +10,8 @@
 #include "TILESETS.C"
 #include "TILEMAPS.C"
 
+#include "PLAYER.C"
+
 void main ()
 {
     set_sprite_data(TILESET_SPRITES_OFFSET,TILESET_SPRITES_LENGTH,TILESET_SPRITES);
@@ -19,11 +21,16 @@ void main ()
 
     set_bkg_tiles(0,0, TILEMAP_ROOM_WIDTH,TILEMAP_ROOM_HEIGHT,TILEMAP_ROOM);
 
+    player_init();
+
     DISPLAY_ON;
+
     SHOW_BKG;
+    SHOW_SPRITES;
 
     while (TRUE)
     {
+        player_update();
         wait_vbl_done();
     }
 }
