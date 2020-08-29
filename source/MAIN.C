@@ -11,7 +11,6 @@
 #include "TILEMAPS.C"
 
 #include "ACTORS.C"
-#include "PLAYER.C"
 
 void main ()
 {
