@@ -6,6 +6,8 @@
 #define TILE_WIDTH    0x08 /*  8 */
 #define TILE_HEIGHT   0x08 /*  8 */
 
+#define BOOL          BOOLEAN
+
 #define  U8           UINT8
 #define U16           UINT16
 #define U32           UINT32
