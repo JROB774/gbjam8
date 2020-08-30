@@ -1,9 +1,9 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
 #include <gb/gb.h>
-#include <stdio.h>
 
 #include "UTILITY.C"
+#include "MATH.C"
 #include "COLLIDE.C"
 #include "FADE.C"
 #include "INPUT.C"
