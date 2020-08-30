@@ -15,7 +15,7 @@ while (0)
 #define JOYPAD_RELEASED(buttons) (( (joypad_prev_state & (buttons) )) && (!(joypad_curr_state & (buttons) )))
 #define JOYPAD_DOWN(    buttons) (  (joypad()          & (buttons) ))
 #define JOYPAD_UP(      buttons) ( !(joypad()          & (buttons) ))
-#define JOYPAD_WAIT(    buttons) (  waitpad              (buttons)  )
+#define JOYPAD_WAIT(    buttons) (   joypad_wait         (buttons)  )
 
 /* Macros for checking if a button was pressed.       */
 #define JOYPAD_PRESSED_START   JOYPAD_PRESSED(J_START )
@@ -62,5 +62,17 @@ while (0)
 #define JOYPAD_WAIT_PAD_R      JOYPAD_WAIT    (J_RIGHT )
 #define JOYPAD_WAIT_PAD_D      JOYPAD_WAIT    (J_DOWN  )
 #define JOYPAD_WAIT_PAD_L      JOYPAD_WAIT    (J_LEFT  )
+
+/* Internal implementation of the JOYPAD_WAIT macro. */
+INTERNAL void joypad_wait (U8 buttons)
+{
+    while (TRUE) {
+        UPDATE_JOYPAD_STATE;
+        if (JOYPAD_PRESSED(buttons)) {
+            break;
+        }
+        wait_vbl_done();
+    }
+}
 
 /*////////////////////////////////////////////////////////////////////////////*/
