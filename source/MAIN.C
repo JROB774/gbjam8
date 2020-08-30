@@ -17,6 +17,8 @@
 
 void main ()
 {
+    BGP_REG = 0xFF; /* Set the current palette to black so we can fade in. */
+
     set_sprite_data(TILESET_SPRITES_OFFSET,TILESET_SPRITES_LENGTH,TILESET_SPRITES);
 
     set_bkg_data(TILESET_FONT_OFFSET,TILESET_FONT_LENGTH,TILESET_FONT);
@@ -33,9 +35,16 @@ void main ()
     actor_create(4, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 80, 40);
     actor_create(8, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 64, 72);
 
+    fade_from_black(3);
+
     while (TRUE)
     {
         UPDATE_JOYPAD_STATE;
+
+        DISPLAY_ON;
+
+        SHOW_BKG;
+        SHOW_SPRITES;
 
         actor_update_all();
         wait_vbl_done();
