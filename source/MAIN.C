@@ -35,6 +35,8 @@ void main ()
 
     while (TRUE)
     {
+        UPDATE_JOYPAD_STATE;
+
         actor_update_all();
         wait_vbl_done();
     }
