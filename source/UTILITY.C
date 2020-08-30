@@ -21,6 +21,11 @@
 #define INTERNAL            static
 #define GLOBAL              static
 
+#define DIR_U               0x01   /* Direction flag to represet up.          */
+#define DIR_R               0x02   /* Direction flag to represet right.       */
+#define DIR_D               0x04   /* Direction flag to represet down.        */
+#define DIR_L               0x08   /* Direction flag to represet left.        */
+
 GLOBAL U8                   i,j,k; /* General-purpose counter variables.      */
 
 /*////////////////////////////////////////////////////////////////////////////*/
