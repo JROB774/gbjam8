@@ -16,25 +16,17 @@
 #include "PLAYER.C"
 #include "DISPLAY.C"
 
-#define SET_DISPLAY_FLAGS \
-do                        \
-{                         \
-SHOW_SPRITES;             \
-SHOW_BKG;                 \
-DISPLAY_ON;               \
-}                         \
-while (0)
+
 
 void main ()
 {
     BGP_REG = 0xFF; /* Set the current palette to black so we can fade in. */
 
-    set_sprite_data(TILESET_SPRITES_OFFSET,TILESET_SPRITES_LENGTH,TILESET_SPRITES);
-
-    set_bkg_data(TILESET_EMPTY_OFFSET,    TILESET_EMPTY_LENGTH,    TILESET_EMPTY   );
-    set_bkg_data(TILESET_NUMBERS_OFFSET,  TILESET_NUMBERS_LENGTH,  TILESET_NUMBERS );
-    set_bkg_data(TILESET_ALPHABET_OFFSET, TILESET_ALPHABET_LENGTH, TILESET_ALPHABET);
-    set_bkg_data(TILESET_ROOM_OFFSET,     TILESET_ROOM_LENGTH,     TILESET_ROOM    );
+    SET_SPR_DATA(TILESET_SPRITES );
+    SET_BKG_DATA(TILESET_EMPTY   );
+    SET_BKG_DATA(TILESET_NUMBERS );
+    SET_BKG_DATA(TILESET_ALPHABET);
+    SET_BKG_DATA(TILESET_ROOM    );
 
     set_bkg_tiles(0,0, TILEMAP_ROOM_WIDTH,TILEMAP_ROOM_HEIGHT,TILEMAP_ROOM);
 

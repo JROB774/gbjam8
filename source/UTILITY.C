@@ -30,7 +30,19 @@ GLOBAL U8                   i,j,k; /* General-purpose counter variables.      */
 
 /*////////////////////////////////////////////////////////////////////////////*/
 
+#define SET_SPR_DATA(name) set_sprite_data(name##_OFFSET, name##_LENGTH, name)
+#define SET_BKG_DATA(name) set_bkg_data   (name##_OFFSET, name##_LENGTH, name)
+
 #define   SET_FLAGS(x, flags) ((x) |=  (flags))
 #define UNSET_FLAGS(x, flags) ((x) &= ~(flags))
+
+#define SET_DISPLAY_FLAGS \
+do                        \
+{                         \
+SHOW_SPRITES;             \
+SHOW_BKG;                 \
+DISPLAY_ON;               \
+}                         \
+while (0)
 
 /*////////////////////////////////////////////////////////////////////////////*/
