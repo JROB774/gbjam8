@@ -15,6 +15,7 @@ while (0)
 #define JOYPAD_RELEASED(buttons) (( (joypad_prev_state & (buttons) )) && (!(joypad_curr_state & (buttons) )))
 #define JOYPAD_DOWN(    buttons) (  (joypad()          & (buttons) ))
 #define JOYPAD_UP(      buttons) ( !(joypad()          & (buttons) ))
+#define JOYPAD_WAIT(    buttons) (  waitpad              (buttons)  )
 
 /* Macros for checking if a button was pressed.       */
 #define JOYPAD_PRESSED_START   JOYPAD_PRESSED(J_START )
@@ -52,5 +53,14 @@ while (0)
 #define JOYPAD_UP_PAD_R        JOYPAD_UP      (J_RIGHT )
 #define JOYPAD_UP_PAD_D        JOYPAD_UP      (J_DOWN  )
 #define JOYPAD_UP_PAD_L        JOYPAD_UP      (J_LEFT  )
+/* Macros for waiting until a button is pressed   .   */
+#define JOYPAD_WAIT_START      JOYPAD_WAIT    (J_START )
+#define JOYPAD_WAIT_SELECT     JOYPAD_WAIT    (J_SELECT)
+#define JOYPAD_WAIT_A          JOYPAD_WAIT    (J_A     )
+#define JOYPAD_WAIT_B          JOYPAD_WAIT    (J_B     )
+#define JOYPAD_WAIT_PAD_U      JOYPAD_WAIT    (J_UP    )
+#define JOYPAD_WAIT_PAD_R      JOYPAD_WAIT    (J_RIGHT )
+#define JOYPAD_WAIT_PAD_D      JOYPAD_WAIT    (J_DOWN  )
+#define JOYPAD_WAIT_PAD_L      JOYPAD_WAIT    (J_LEFT  )
 
 /*////////////////////////////////////////////////////////////////////////////*/
