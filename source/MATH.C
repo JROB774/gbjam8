@@ -26,8 +26,8 @@ typedef union _UFIXED_
 /* Builds a fixed-point value out of two integral values. A value passed in   */
 /* to represent the fractional must be in 10s in order for this call to work: */
 /*                                                                            */
-/*   MAKE_FIDED_POINT(a,  3,14); // 3.14                                      */
-/*   MAKE_FIDED_POINT(a,  5,50); // 5.50                                      */
+/*   MAKE_FIDED_POINT(a, 3,14); // 3.14                                       */
+/*   MAKE_FIDED_POINT(a, 5,50); // 5.50                                       */
 /*                                                                            */
 /* Passing in a single digit value for the fractional WILL NOT work ever.     */
 #define MAKE_FIXED_POINT(a,i,f) a.full = ((i << FIXED_POINT_SHIFT_AMOUNT) | ((f * (1 << FIXED_POINT_SHIFT_AMOUNT)) / 100))
