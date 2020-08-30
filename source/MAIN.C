@@ -29,7 +29,7 @@ void main ()
 
     SET_MAP_DATA(TILEMAP_ROOM);
 
-    display_update();
+    display_draw_status();
 
     SET_DISPLAY_FLAGS;
 

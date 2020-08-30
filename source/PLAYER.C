@@ -10,6 +10,9 @@ typedef struct _PLAYER_
 
 GLOBAL PLAYER player;
 
+/* Predeclare this function from DISPLAY.C as we need to use it here. */
+INTERNAL void display_draw_map ();
+
 INTERNAL void player_update (ACTOR* actor)
 {
     U8 old_dir = player.dir;
@@ -27,6 +30,11 @@ INTERNAL void player_update (ACTOR* actor)
         else if (player.dir & DIR_L) { actor_set_state(actor, ASTATE_PLAYER_MOVE_L_0); }
         else if (player.dir & DIR_R) { actor_set_state(actor, ASTATE_PLAYER_MOVE_R_0); }
         else                         { actor_set_state(actor, ASTATE_PLAYER_IDLE    ); }
+    }
+
+    /* Display the map screen and pause the game until SELECT is pressed6. */
+    if (JOYPAD_PRESSED_SELECT) {
+        display_draw_map();
     }
 }
 
