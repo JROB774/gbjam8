@@ -3,7 +3,7 @@
 #include <gb/gb.h>
 #include <stdio.h>
 
-#include "DEFINE.C"
+#include "UTILITY.C"
 #include "COLLIDE.C"
 #include "FADE.C"
 #include "INPUT.C"
