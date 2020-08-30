@@ -40,7 +40,6 @@ typedef struct _ACTOR_
 /* All of the different states for the different types of actors.             */
 
 #define ASTATE_UNKNOWN_IDLE     0x00
-
 #define ASTATE_PLAYER_IDLE      0x00
 #define ASTATE_PLAYER_MOVE_U_0  0x01
 #define ASTATE_PLAYER_MOVE_U_1  0x02
@@ -50,9 +49,21 @@ typedef struct _ACTOR_
 #define ASTATE_PLAYER_MOVE_D_1  0x06
 #define ASTATE_PLAYER_MOVE_L_0  0x07
 #define ASTATE_PLAYER_MOVE_L_1  0x08
-
 #define ASTATE_GAPER_MOVE_0     0x00
 #define ASTATE_GAPER_MOVE_1     0x01
+#define ASTATE_GUSHER_MOVE_0    0x01
+#define ASTATE_GUSHER_MOVE_1    0x02
+#define ASTATE_HORF_IDLE        0x00
+#define ASTATE_HORF_FIRE        0x01
+#define ASTATE_CLOTTY_MOVE_0    0x00
+#define ASTATE_CLOTTY_MOVE_1    0x01
+#define ASTATE_CLOTTY_FIRE      0x02
+#define ASTATE_MULLIGAN_MOVE_0  0x00
+#define ASTATE_MULLIGAN_MOVE_1  0x01
+#define ASTATE_ATTACKFLY_MOVE_0 0x00
+#define ASTATE_ATTACKFLY_MOVE_1 0x01
+#define ASTATE_HOPPER_MOVE_0    0x00
+#define ASTATE_HOPPER_MOVE_1    0x01
 
 /* Predeclare all the custom actor actions for the ASTATE_TABLE.              */
 
