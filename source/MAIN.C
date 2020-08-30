@@ -12,6 +12,8 @@
 #include "TILEMAPS.C"
 
 #include "ACTORS.C"
+#include "MONSTERS.C"
+#include "PLAYER.C"
 
 void main ()
 {
@@ -27,9 +29,9 @@ void main ()
     SHOW_BKG;
     SHOW_SPRITES;
 
-    actor_create(0, ACTORTYPE_PLAYER, ACTORSTATE_IDLE, 48, 48);
-    actor_create(4, ACTORTYPE_GAPER,  ACTORSTATE_IDLE, 80, 40);
-    actor_create(8, ACTORTYPE_GAPER,  ACTORSTATE_IDLE, 64, 72);
+    actor_create(0, ATYPE_PLAYER, ASTATE_PLAYER_IDLE,  48, 48);
+    actor_create(4, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 80, 40);
+    actor_create(8, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 64, 72);
 
     while (TRUE)
     {

@@ -1,95 +1,129 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-/* Unique identifiers for all the different actor types in the game.          */
-#define ACTORTYPE_UNKNOWN  0x00
-#define ACTORTYPE_PLAYER   0x01
-#define ACTORTYPE_GAPER    0x02
+/* An actor is any entity within the world (player, monster, item, etc.).     */
 
-/* All of the different states for the different types of actors. Actors will */
-/* not necessarily implement all of the states listed so not all states will  */
-/* work with all actors. For example some states are PLAYER actor specific.   */
-#define ACTORSTATE_IDLE    0x00
+typedef const struct _ABASE_  ABASE;
+typedef const struct _ASTATE_ ASTATE;
 
-/* A collection of sprites in OAM that create a larger meta-sprite.           */
-typedef struct _METASPRITE_
-{
-    U8 slot;             /* Starting slot in OAM for the meta-sprite.         */
-    U8 w, h;             /* Size dimensions (W,H) for the meta-sprite.        */
-
-} METASPRITE;
-
-/* An actor is any entity within the world (player,enemy,item,etc.).          */
 typedef struct _ACTOR_
 {
-    METASPRITE sprite;   /* Meta-sprite information for the actor instance.   */
-    U8   type;           /* Identifier for the type of actor.                 */
-    U8   state;          /* Identifier for the current actor state.           */
-    U8   x, y;           /* Current (X,Y) position in the world.              */
-    U8   state_timer;    /* Timer used to track when state should be changed. */
-    BOOL active;         /* Whether the actor is currently active or not.     */
-
+    ASTATE* state;       /* Pointer into ASTATE_TABLE containing state info.  */
+    ABASE*  base;        /* Pointer into ABASE_TABLE containing general info. */
+    U8      type_id;     /* Identifier for the type of actor.                 */
+    U8      state_id;    /* Identifier for the current actor state.           */
+    U8      slot;        /* Starting slot in OAM for the meta-sprite data.    */
+    U8      x, y;        /* Current (X,Y) position in the world.              */
+    U8      state_timer; /* Timer used to track when state should be changed. */
+    BOOL    active;      /* Whether the actor is currently active or not. If  */
+                         /* an actor is not active then it can be replaced.   */
 } ACTOR;
 
-/* Callback function pointer for extra actor logic on update.                 */
-typedef void(*ACTORACTION)(ACTOR* actor);
+/* Unique identifiers for all the different actor types in the game.          */
 
-/* Information regarding the current state of a particular actor.             */
-typedef struct _ACTORSTATE_
-{
-    ACTORACTION action;  /* Extra logic to invoke on the actor's update.      */
-    U8 vram_offset;      /* Offset into VRAM for this state's frame data.     */
-    U8 ticks;            /* Number of ticks before changing to next_state.    */
-    U8 next_state;       /* Next state to transition to after this one.       */
+#define ATYPE_UNKNOWN           0x00
+#define ATYPE_PLAYER            0x01
+#define ATYPE_GAPER             0x02
+#define ATYPE_GUSHER            0x03 /* @UNIMPLEMENTED */
+#define ATYPE_HORF              0x04 /* @UNIMPLEMENTED */
+#define ATYPE_CLOTTY            0x05 /* @UNIMPLEMENTED */
+#define ATYPE_MULLIGAN          0x06 /* @UNIMPLEMENTED */
+#define ATYPE_ATTACKFLY         0x07 /* @UNIMPLEMENTED */
+#define ATYPE_HOPPER            0x08 /* @UNIMPLEMENTED */
+#define ATYPE_TEAR              0x09 /* @UNIMPLEMENTED */
+#define ATYPE_BLOODTEAR         0x0A /* @UNIMPLEMENTED */
+#define ATYPE_COIN              0x0B /* @UNIMPLEMENTED */
+#define ATYPE_BOMB              0x0C /* @UNIMPLEMENTED */
+#define ATYPE_KEY               0x0D /* @UNIMPLEMENTED */
+#define ATYPE_HEART             0x0E /* @UNIMPLEMENTED */
+#define ATYPE_MONSTRO           0x0F /* @UNIMPLEMENTED */
 
-} ACTORSTATE;
+/* All of the different states for the different types of actors.             */
 
-/* This table contains meta-sprite widths for all of the actor types.         */
-GLOBAL const U8 METASPRITE_WIDTH_TABLE[] =
-{
-0x00, /* ACTORTYPE_UNKNOWN                                                    */
-0x02, /* ACTORTYPE_PLAYER                                                     */
-0x02, /* ACTORTYPE_GAPER                                                      */
-};
-/* This table contains meta-sprite heights for all of the actor types.        */
-GLOBAL const U8 METASPRITE_HEIGHT_TABLE[] =
-{
-0x00, /* ACTORTYPE_UNKNOWN                                                    */
-0x02, /* ACTORTYPE_PLAYER                                                     */
-0x02, /* ACTORTYPE_GAPER                                                      */
-};
+#define ASTATE_UNKNOWN_IDLE     0x00
 
-/* Predeclare all the custom actor actions for thr ACTORSTATE_TABLE.          */
+#define ASTATE_PLAYER_IDLE      0x00
+#define ASTATE_PLAYER_MOVE_U_0  0x01
+#define ASTATE_PLAYER_MOVE_U_1  0x02
+#define ASTATE_PLAYER_MOVE_R_0  0x03
+#define ASTATE_PLAYER_MOVE_R_1  0x04
+#define ASTATE_PLAYER_MOVE_D_0  0x05
+#define ASTATE_PLAYER_MOVE_D_1  0x06
+#define ASTATE_PLAYER_MOVE_L_0  0x07
+#define ASTATE_PLAYER_MOVE_L_1  0x08
+
+#define ASTATE_GAPER_MOVE_0     0x00
+#define ASTATE_GAPER_MOVE_1     0x01
+
+/* Predeclare all the custom actor actions for the ASTATE_TABLE.              */
+
 INTERNAL void player_update (ACTOR* actor);
 INTERNAL void  gaper_update (ACTOR* actor);
 
-/* Offsets into the ACTORSTATE_TABLE for each of the unique ACTORTYPES. These */
-/* offsets act as the start of sub-list within the ACTORSTATE_TABLE for each  */
-/* of a particular type of actors unique states. These offsets are looked up  */
-/* using the ACTORTYPE making for an easy method of retrieving the offset.    */
-GLOBAL const U8 ACTORSTATE_OFFSET_TABLE[] =
+/* The following table contains generic information for each actor type. This */
+/* information is the same across all instances of the particular actor type. */
+
+typedef const struct _ABASE_
 {
-0x00, /* ACTORTYPE_UNKNOWN                                                    */
-0x01, /* ACTORTYPE_PLAYER                                                     */
-0x02, /* ACTORTYPE_GAPER                                                      */
+    U8 offset;  /* Base offset into the ASTATE_TABLE for the actor type.      */
+    U8 spr_w;   /* Meta-sprite width in tiles for the actor.                  */
+    U8 spr_h;   /* Meta-sprite height in tiles for the actor.                 */
+
+} ABASE;
+
+GLOBAL const ABASE ABASE_TABLE[] =
+{
+/* offset  spr_w  spr_h                                                       */
+{  0x00,   0x00,  0x00  }, /* ATYPE_UNKNOWN                                   */
+{  0x01,   0x02,  0x02  }, /* ATYPE_PLAYER                                    */
+{  0x0A,   0x02,  0x02  }  /* ATYPE_GAPER                                     */
 };
 
-/* This table contains every single different actor state in the game as one  */
-/* large lookup table. The method for looking up a particular actors current  */
-/* state information in this table can be done using the following method:    */
+/* The following table contains all the unique actor states. These states are */
+/* what decide what animation/frame to currently play, what extended actor    */
+/* logic should be carried out, etc. Looking up a particular state is done by */
+/* taking an actors base offset into the table and then adding the value for  */
+/* the state you would like to retrieve from the table, like so:              */
 /*                                                                            */
-/*   offset = ACTORSTATE_OFFSET_TABLE[actor.type] + actor.state;              */
+/*   U8 offset = my_actor->base->offset + my_actor->state_id;                 */
 /*                                                                            */
-GLOBAL const ACTORSTATE ACTORSTATE_TABLE[] =
+/* This code gives the offset into ASTATE_TABLE for the actors current state. */
+
+#define FLIP_NONE (0x00   )
+#define FLIP_HORZ (S_FLIPX)
+#define FLIP_VERT (S_FLIPY)
+
+typedef void(*AACTION)(ACTOR* actor);
+
+typedef const struct _ASTATE_
 {
-/* ACTORTYPE_UNKNOWN                                                          */
-/* action          vram_offset  ticks  next_state                             */
-{  NULL,           0x00,        0,     ACTORSTATE_IDLE }, /* ACTORSTATE_IDLE  */
-/* ACTORTYPE_PLAYER                                                           */
-/* action          vram_offset  ticks  next_state                             */
-{  player_update,  0x01,        0,     ACTORSTATE_IDLE }, /* ACTORSTATE_IDLE  */
-/* ACTORTYPE_GAPER                                                            */
-/* action          vram_offset  ticks  next_state                             */
-{  gaper_update,   0x05,        0,     ACTORSTATE_IDLE }, /* ACTORSTATE_IDLE  */
+    AACTION action;  /* Extra logic to invoke on the actor's update.          */
+    U8 vram_offset;  /* Offset into VRAM for this state's frame data.         */
+    U8 ticks;        /* Number of ticks before changing to next_state.        */
+    U8 flip;         /* Whether to flip sprites in the X/Y direction.         */
+    U8 next_state;   /* Next state to transition to after this one.           */
+
+} ASTATE;
+
+GLOBAL const ASTATE ASTATE_TABLE[] =
+{
+/* ATYPE_UNKNOWN                                                              */
+/* action          vram_offset  ticks  flip        next_state                 */
+{  NULL,           0x00,        0,     FLIP_NONE,  ASTATE_UNKNOWN_IDLE     },
+/* ATYPE_PLAYER                                                               */
+/* action          vram_offset  ticks  flip        next_state                 */
+{  player_update,  0x01,        0,     FLIP_NONE,  ASTATE_PLAYER_IDLE      },
+{  player_update,  0x15,        20,    FLIP_NONE,  ASTATE_PLAYER_MOVE_U_1  },
+{  player_update,  0x15,        20,    FLIP_HORZ,  ASTATE_PLAYER_MOVE_U_0  },
+{  player_update,  0x0D,        20,    FLIP_NONE,  ASTATE_PLAYER_MOVE_R_1  },
+{  player_update,  0x11,        20,    FLIP_NONE,  ASTATE_PLAYER_MOVE_R_0  },
+{  player_update,  0x05,        20,    FLIP_NONE,  ASTATE_PLAYER_MOVE_D_1  },
+{  player_update,  0x09,        20,    FLIP_NONE,  ASTATE_PLAYER_MOVE_D_0  },
+{  player_update,  0x0D,        20,    FLIP_HORZ,  ASTATE_PLAYER_MOVE_L_1  },
+{  player_update,  0x11,        20,    FLIP_HORZ,  ASTATE_PLAYER_MOVE_L_0  },
+/* ATYPE_GAPER                                                                */
+/* action          vram_offset  ticks  flip        next_state                 */
+{  gaper_update,   0x19,        20,    FLIP_NONE,  ASTATE_GAPER_MOVE_1     },
+{  gaper_update,   0x19,        20,    FLIP_HORZ,  ASTATE_GAPER_MOVE_0     },
 };
 
 /*////////////////////////////////////////////////////////////////////////////*/
@@ -98,59 +132,79 @@ GLOBAL const ACTORSTATE ACTORSTATE_TABLE[] =
 
 GLOBAL ACTOR actor_list[MAX_NUMBER_OF_ACTORS];
 
-INTERNAL void actor_set_state (ACTOR* actor, U8 state)
+INTERNAL void actor_set_state (ACTOR* actor, U8 state_id)
 {
     /* Set the new state and update the actor's sprites accordingly. */
-    U8 state_index = ACTORSTATE_OFFSET_TABLE[actor->type] + state;
+    actor->state = &ASTATE_TABLE[actor->base->offset + state_id];
     actor->state_timer = 0;
-    actor->state = state;
-    for (j=0; j<(actor->sprite.w*actor->sprite.h); ++j) {
-        set_sprite_tile(actor->sprite.slot+j, ACTORSTATE_TABLE[state_index].vram_offset+j);
+    actor->state_id = state_id;
+    for (j=0; j<(actor->base->spr_w*actor->base->spr_h); ++j) {
+        set_sprite_tile(actor->slot+j, actor->state->vram_offset+j);
+        set_sprite_prop(actor->slot+j, actor->state->flip);
     }
 }
 
 INTERNAL void actor_set_pos (ACTOR* actor, U8 x, U8 y)
 {
+    U8 ix,iy;
+
     actor->x = x;
     actor->y = y;
 
     x += (TILE_WIDTH     );
     y += (TILE_HEIGHT * 2);
 
-    for (j=0; j<actor->sprite.h; ++j) {
-        for (k=0; k<actor->sprite.w; ++k) {
-            move_sprite(actor->sprite.slot+(j*actor->sprite.w+k), x+(k*TILE_WIDTH), y+(j*TILE_HEIGHT));
-        }
+    switch (actor->state->flip) {
+        case (FLIP_NONE): {
+            for (j=0,iy=0; j<actor->base->spr_h; ++iy,++j) {
+                for (k=0,ix=0; k<actor->base->spr_w; ++ix,++k) {
+                    move_sprite(actor->slot+(j*actor->base->spr_w+k), x+(ix*TILE_WIDTH), y+(iy*TILE_HEIGHT));
+                }
+            }
+        } break;
+        case (FLIP_HORZ): {
+            for (j=0,iy=0; j<actor->base->spr_h; ++iy,++j) {
+                for (k=0,ix=actor->base->spr_w-1; k<actor->base->spr_w; --ix,++k) {
+                    move_sprite(actor->slot+(j*actor->base->spr_w+k), x+(ix*TILE_WIDTH), y+(iy*TILE_HEIGHT));
+                }
+            }
+        } break;
+        case (FLIP_VERT): {
+            for (j=0,iy=actor->base->spr_h-1; j<actor->base->spr_h; --iy,++j) {
+                for (k=0,ix=0; k<actor->base->spr_w; ++ix,++k) {
+                    move_sprite(actor->slot+(j*actor->base->spr_w+k), x+(ix*TILE_WIDTH), y+(iy*TILE_HEIGHT));
+                }
+            }
+        } break;
     }
 }
 
-INTERNAL void actor_create (U8 index, U8 type, U8 state, U8 x, U8 y)
+INTERNAL void actor_create (U8 index, U8 type_id, U8 state_id, U8 x, U8 y)
 {
     ACTOR* actor = &actor_list[index];
 
-    actor->type        = type;
-    actor->sprite.slot = index;
-    actor->sprite.w    = METASPRITE_WIDTH_TABLE[type];
-    actor->sprite.h    = METASPRITE_HEIGHT_TABLE[type];
+    actor->base        = &ABASE_TABLE[type_id];
+    actor->type_id     = type_id;
+    actor->slot        = index;
     actor->state_timer = 0;
     actor->active      = TRUE;
 
-    actor_set_state(actor, state);
+    actor_set_state(actor, state_id);
     actor_set_pos(actor, x, y);
 }
 
 INTERNAL void actor_update (ACTOR* actor)
 {
-    U8 state_index = ACTORSTATE_OFFSET_TABLE[actor->type] + actor->state;
+    U8 state_index = actor->base->offset + actor->state_id;
 
     /* Perform specific logic for the actor. */
-    if (ACTORSTATE_TABLE[state_index].action) {
-        ACTORSTATE_TABLE[state_index].action(actor);
+    if (actor->state->action) {
+        actor->state->action(actor);
     }
     /* Update the actor's state when necessary. */
     actor->state_timer++;
-    if (actor->state_timer >= ACTORSTATE_TABLE[state_index].ticks) {
-        actor_set_state(actor, ACTORSTATE_TABLE[state_index].next_state);
+    if (actor->state_timer >= actor->state->ticks) {
+        actor_set_state(actor, actor->state->next_state);
     }
     /* Update the actor's final position. */
     actor_set_pos(actor, actor->x, actor->y);
@@ -165,21 +219,6 @@ INTERNAL void actor_update_all ()
             actor_update(actor);
         }
     }
-}
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-INTERNAL void player_update (ACTOR* actor)
-{
-    if (JOYPAD_DOWN_PAD_U) { actor->y -= 1; }
-    if (JOYPAD_DOWN_PAD_R) { actor->x += 1; }
-    if (JOYPAD_DOWN_PAD_D) { actor->y += 1; }
-    if (JOYPAD_DOWN_PAD_L) { actor->x -= 1; }
-}
-
-INTERNAL void gaper_update (ACTOR* actor)
-{
-    /* @Incomplete: ... */
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/
