@@ -1,7 +1,7 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-#define TILEMAP_ROOM_WIDTH  20
-#define TILEMAP_ROOM_HEIGHT 18
+#define TILEMAP_ROOM_WIDTH  0x14 /* (20) */
+#define TILEMAP_ROOM_HEIGHT 0x12 /* (18) */
 
 GLOBAL const U8 TILEMAP_ROOM[] =
 {

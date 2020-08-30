@@ -2,6 +2,11 @@
 
 #define DISPLAY_HEIGHT 0x0F /* (16) Height of the display in pixels. */
 
+GLOBAL const U8 TILE_HEART_FULL[] = { 0x25 }; /* (37) */
+GLOBAL const U8 TILE_HEART_NONE[] = { 0x26 }; /* (38) */
+
+#if 0 /************************************************************************/
+
 INTERNAL void display_hide_window_interrupt ()
 {
     HIDE_WIN;
@@ -28,6 +33,15 @@ INTERNAL void display_disable ()
     disable_interrupts();
     remove_LCD(display_hide_window_interrupt);
     enable_interrupts();
+}
+
+#endif /***********************************************************************/
+
+INTERNAL void display_update ()
+{
+    set_bkg_tiles(1,0, 1,1, TILE_HEART_FULL);
+    set_bkg_tiles(2,0, 1,1, TILE_HEART_FULL);
+    set_bkg_tiles(3,0, 1,1, TILE_HEART_FULL);
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/
