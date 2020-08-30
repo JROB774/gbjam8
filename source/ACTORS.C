@@ -112,14 +112,14 @@ GLOBAL const ASTATE ASTATE_TABLE[] =
 /* ATYPE_PLAYER                                                               */
 /* action          vram_offset  ticks  flip        next_state                 */
 {  player_update,  0x01,        0,     FLIP_NONE,  ASTATE_PLAYER_IDLE      },
-{  player_update,  0x15,        20,    FLIP_NONE,  ASTATE_PLAYER_MOVE_U_1  },
-{  player_update,  0x15,        20,    FLIP_HORZ,  ASTATE_PLAYER_MOVE_U_0  },
-{  player_update,  0x0D,        20,    FLIP_NONE,  ASTATE_PLAYER_MOVE_R_1  },
-{  player_update,  0x11,        20,    FLIP_NONE,  ASTATE_PLAYER_MOVE_R_0  },
-{  player_update,  0x05,        20,    FLIP_NONE,  ASTATE_PLAYER_MOVE_D_1  },
-{  player_update,  0x09,        20,    FLIP_NONE,  ASTATE_PLAYER_MOVE_D_0  },
-{  player_update,  0x0D,        20,    FLIP_HORZ,  ASTATE_PLAYER_MOVE_L_1  },
-{  player_update,  0x11,        20,    FLIP_HORZ,  ASTATE_PLAYER_MOVE_L_0  },
+{  player_update,  0x15,        15,    FLIP_NONE,  ASTATE_PLAYER_MOVE_U_1  },
+{  player_update,  0x15,        15,    FLIP_HORZ,  ASTATE_PLAYER_MOVE_U_0  },
+{  player_update,  0x0D,        15,    FLIP_NONE,  ASTATE_PLAYER_MOVE_R_1  },
+{  player_update,  0x11,        15,    FLIP_NONE,  ASTATE_PLAYER_MOVE_R_0  },
+{  player_update,  0x05,        15,    FLIP_NONE,  ASTATE_PLAYER_MOVE_D_1  },
+{  player_update,  0x09,        15,    FLIP_NONE,  ASTATE_PLAYER_MOVE_D_0  },
+{  player_update,  0x0D,        15,    FLIP_HORZ,  ASTATE_PLAYER_MOVE_L_1  },
+{  player_update,  0x11,        15,    FLIP_HORZ,  ASTATE_PLAYER_MOVE_L_0  },
 /* ATYPE_GAPER                                                                */
 /* action          vram_offset  ticks  flip        next_state                 */
 {  gaper_update,   0x19,        20,    FLIP_NONE,  ASTATE_GAPER_MOVE_1     },
