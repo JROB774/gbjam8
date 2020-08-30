@@ -2,8 +2,8 @@
 
 #define DISPLAY_HEIGHT 0x0F /* (16) Height of the display in pixels. */
 
-GLOBAL const U8 TILE_HEART_FULL[] = { 0x25 }; /* (37) */
-GLOBAL const U8 TILE_HEART_NONE[] = { 0x26 }; /* (38) */
+GLOBAL const U8 TILE_HEART_FULL[] = { 0x0B }; /* (11) */
+GLOBAL const U8 TILE_HEART_NONE[] = { 0x0C }; /* (12) */
 
 #if 0 /************************************************************************/
 

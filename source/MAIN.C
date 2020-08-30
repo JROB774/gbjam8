@@ -16,8 +16,6 @@
 #include "PLAYER.C"
 #include "DISPLAY.C"
 
-
-
 void main ()
 {
     BGP_REG = 0xFF; /* Set the current palette to black so we can fade in. */
@@ -26,9 +24,10 @@ void main ()
     SET_BKG_DATA(TILESET_EMPTY   );
     SET_BKG_DATA(TILESET_NUMBERS );
     SET_BKG_DATA(TILESET_ALPHABET);
+    SET_BKG_DATA(TILESET_DISPLAY );
     SET_BKG_DATA(TILESET_ROOM    );
 
-    set_bkg_tiles(0,0, TILEMAP_ROOM_WIDTH,TILEMAP_ROOM_HEIGHT,TILEMAP_ROOM);
+    SET_MAP_DATA(TILEMAP_ROOM);
 
     display_update();
 

@@ -30,8 +30,9 @@ GLOBAL U8                   i,j,k; /* General-purpose counter variables.      */
 
 /*////////////////////////////////////////////////////////////////////////////*/
 
-#define SET_SPR_DATA(name) set_sprite_data(name##_OFFSET, name##_LENGTH, name)
-#define SET_BKG_DATA(name) set_bkg_data   (name##_OFFSET, name##_LENGTH, name)
+#define SET_SPR_DATA(name) set_sprite_data(name##_OFFSET, name##_LENGTH,        name)
+#define SET_BKG_DATA(name) set_bkg_data   (name##_OFFSET, name##_LENGTH,        name)
+#define SET_MAP_DATA(name) set_bkg_tiles  (name##_X,name##_Y,name##_W,name##_H, name)
 
 #define   SET_FLAGS(x, flags) ((x) |=  (flags))
 #define UNSET_FLAGS(x, flags) ((x) &= ~(flags))
