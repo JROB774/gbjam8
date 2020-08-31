@@ -1,5 +1,8 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
+/* Predeclare this function from DISPLAY.C as we need to use it here. */
+INTERNAL void display_draw_map ();
+
 #define PLAYER_SPEED 1
 
 typedef struct _PLAYER_
@@ -9,9 +12,6 @@ typedef struct _PLAYER_
 } PLAYER;
 
 GLOBAL PLAYER player;
-
-/* Predeclare this function from DISPLAY.C as we need to use it here. */
-INTERNAL void display_draw_map ();
 
 INTERNAL void player_update (ACTOR* actor)
 {
@@ -32,7 +32,7 @@ INTERNAL void player_update (ACTOR* actor)
         else                         { actor_set_state(actor, ASTATE_PLAYER_IDLE    ); }
     }
 
-    /* Display the map screen and pause the game until SELECT is pressed6. */
+    /* Display the map screen and pause the game until SELECT is pressed. */
     if (JOYPAD_PRESSED_SELECT) {
         display_draw_map();
     }
