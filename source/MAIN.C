@@ -1,10 +1,11 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-#include <gb/gb.h>
-
 #define DEBUG_MODE 1
 
+#include <gb/gb.h>
+
 #include "UTILITY.C"
+#include "DEBUG.C"
 #include "MATH.C"
 #include "COLLIDE.C"
 #include "FADE.C"

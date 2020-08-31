@@ -9,6 +9,9 @@
 #define TILE_WIDTH          0x08   /* (  8) Width of a tile in pixels.        */
 #define TILE_HEIGHT         0x08   /* (  8) Height of a tile in pixels.       */
 
+#define SPRITE_X_OFFSET     0x08   /* (  8) Sprite X offset in pixels.        */
+#define SPRITE_Y_OFFSET     0x10   /* ( 16) Sprite Y offset in pixels.        */
+
 #define BOOL                BOOLEAN
 
 #define  U8                 UINT8

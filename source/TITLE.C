@@ -10,7 +10,7 @@ INTERNAL void TITLE ()
     SET_BKG_DATA(TILESET_TITLE   );
     SET_MAP_DATA(TILEMAP_TITLE   );
 
-    #ifndef DEBUG_MODE
+    #if !DEBUG_MODE
     fade_from_black(TITLE_FADE_SPEED);
     JOYPAD_WAIT_START;
     fade_to_black(TITLE_FADE_SPEED);

@@ -110,7 +110,6 @@ typedef const struct _ASTATE_
     AACTION action;  /* Extra logic to invoke on the actor's update.          */
     U8 vram_offset;  /* Offset into VRAM for this state's frame data.         */
     U8 ticks;        /* Number of ticks before changing to next_state.        */
-    U8 flip;         /* Whether to flip sprites in the X/Y direction.         */
     U8 next_state;   /* Next state to transition to after this one.           */
 
 } ASTATE;
@@ -118,23 +117,23 @@ typedef const struct _ASTATE_
 GLOBAL const ASTATE ASTATE_TABLE[] =
 {
 /* ATYPE_UNKNOWN                                                              */
-/* action          vram_offset  ticks  flip        next_state                 */
-{  NULL,           0x00,        0,     FLIP_NONE,  ASTATE_UNKNOWN_IDLE     },
+/* action          vram_offset  ticks  next_state                             */
+{  NULL,           0x00,        0,     ASTATE_UNKNOWN_IDLE     },
 /* ATYPE_PLAYER                                                               */
-/* action          vram_offset  ticks  flip        next_state                 */
-{  player_update,  0x01,        0,     FLIP_NONE,  ASTATE_PLAYER_IDLE      },
-{  player_update,  0x15,        15,    FLIP_NONE,  ASTATE_PLAYER_MOVE_U_1  },
-{  player_update,  0x15,        15,    FLIP_HORZ,  ASTATE_PLAYER_MOVE_U_0  },
-{  player_update,  0x0D,        15,    FLIP_NONE,  ASTATE_PLAYER_MOVE_R_1  },
-{  player_update,  0x11,        15,    FLIP_NONE,  ASTATE_PLAYER_MOVE_R_0  },
-{  player_update,  0x05,        15,    FLIP_NONE,  ASTATE_PLAYER_MOVE_D_1  },
-{  player_update,  0x09,        15,    FLIP_NONE,  ASTATE_PLAYER_MOVE_D_0  },
-{  player_update,  0x0D,        15,    FLIP_HORZ,  ASTATE_PLAYER_MOVE_L_1  },
-{  player_update,  0x11,        15,    FLIP_HORZ,  ASTATE_PLAYER_MOVE_L_0  },
+/* action          vram_offset  ticks  next_state                             */
+{  player_update,  0x01,        0,     ASTATE_PLAYER_IDLE      },
+{  player_update,  0x15,        15,    ASTATE_PLAYER_MOVE_U_1  },
+{  player_update,  0x15,        15,    ASTATE_PLAYER_MOVE_U_0  },
+{  player_update,  0x0D,        15,    ASTATE_PLAYER_MOVE_R_1  },
+{  player_update,  0x11,        15,    ASTATE_PLAYER_MOVE_R_0  },
+{  player_update,  0x05,        15,    ASTATE_PLAYER_MOVE_D_1  },
+{  player_update,  0x09,        15,    ASTATE_PLAYER_MOVE_D_0  },
+{  player_update,  0x0D,        15,    ASTATE_PLAYER_MOVE_L_1  },
+{  player_update,  0x11,        15,    ASTATE_PLAYER_MOVE_L_0  },
 /* ATYPE_GAPER                                                                */
-/* action          vram_offset  ticks  flip        next_state                 */
-{  gaper_update,   0x19,        20,    FLIP_NONE,  ASTATE_GAPER_MOVE_1     },
-{  gaper_update,   0x19,        20,    FLIP_HORZ,  ASTATE_GAPER_MOVE_0     },
+/* action          vram_offset  ticks  next_state                             */
+{  gaper_update,   0x19,        40,    ASTATE_GAPER_MOVE_1     },
+{  gaper_update,   0x19,        20,    ASTATE_GAPER_MOVE_0     },
 };
 
 /*////////////////////////////////////////////////////////////////////////////*/
@@ -147,47 +146,12 @@ INTERNAL void actor_set_state (ACTOR* actor, U8 state_id)
 {
     U8 i;
     /* Set the new state and update the actor's sprites accordingly. */
+    if (actor->state_id == state_id) { return; }
     actor->state = &ASTATE_TABLE[actor->base->offset + state_id];
     actor->state_timer = 0;
     actor->state_id = state_id;
     for (i=0; i<(actor->base->spr_w*actor->base->spr_h); ++i) {
         set_sprite_tile(actor->slot+i, actor->state->vram_offset+i);
-        set_sprite_prop(actor->slot+i, actor->state->flip);
-    }
-}
-
-INTERNAL void actor_set_pos (ACTOR* actor, U8 x, U8 y)
-{
-    U8 i,j, ix,iy;
-
-    actor->x = x;
-    actor->y = y;
-
-    x += (TILE_WIDTH     );
-    y += (TILE_HEIGHT * 2);
-
-    switch (actor->state->flip) {
-        case (FLIP_NONE): {
-            for (i=0,iy=0; i<actor->base->spr_h; ++iy,++i) {
-                for (j=0,ix=0; j<actor->base->spr_w; ++ix,++j) {
-                    move_sprite(actor->slot+(i*actor->base->spr_w+j), x+(ix*TILE_WIDTH), y+(iy*TILE_HEIGHT));
-                }
-            }
-        } break;
-        case (FLIP_HORZ): {
-            for (i=0,iy=0; i<actor->base->spr_h; ++iy,++i) {
-                for (j=0,ix=actor->base->spr_w-1; j<actor->base->spr_w; --ix,++j) {
-                    move_sprite(actor->slot+(i*actor->base->spr_w+j), x+(ix*TILE_WIDTH), y+(iy*TILE_HEIGHT));
-                }
-            }
-        } break;
-        case (FLIP_VERT): {
-            for (i=0,iy=actor->base->spr_h-1; i<actor->base->spr_h; --iy,++i) {
-                for (j=0,ix=0; j<actor->base->spr_w; ++ix,++j) {
-                    move_sprite(actor->slot+(i*actor->base->spr_w+j), x+(ix*TILE_WIDTH), y+(iy*TILE_HEIGHT));
-                }
-            }
-        } break;
     }
 }
 
@@ -197,39 +161,42 @@ INTERNAL void actor_create (U8 index, U8 type_id, U8 state_id, U8 x, U8 y)
 
     actor->base        = &ABASE_TABLE[type_id];
     actor->type_id     = type_id;
+    actor->state_id    = 0xFF; /* Invalid ID so actor_set_state will set. */
     actor->slot        = index;
+    actor->x           = x;
+    actor->y           = y;
     actor->state_timer = 0;
     actor->active      = TRUE;
 
     actor_set_state(actor, state_id);
-    actor_set_pos(actor, x, y);
-}
-
-INTERNAL void actor_update (ACTOR* actor)
-{
-    U8 state_index = actor->base->offset + actor->state_id;
-
-    /* Perform specific logic for the actor. */
-    if (actor->state->action) {
-        actor->state->action(actor);
-    }
-    /* Update the actor's state when necessary. */
-    actor->state_timer++;
-    if (actor->state_timer >= actor->state->ticks) {
-        actor_set_state(actor, actor->state->next_state);
-    }
-    /* Update the actor's final position. */
-    actor_set_pos(actor, actor->x, actor->y);
 }
 
 INTERNAL void actor_update_all ()
 {
+    ACTOR* actor;
+    U8 i,ix,iy;
+
     /* Go through the list and update all of the active actors. */
-    U8 i;
     for (i=0; i<MAX_NUMBER_OF_ACTORS; ++i) {
-        ACTOR* actor = &actor_list[i];
+        actor = &actor_list[i];
         if (actor->active) {
-            actor_update(actor);
+            /* Update the actor's state when necessary. */
+            actor->state_timer++;
+            if (actor->state_timer >= actor->state->ticks) {
+                actor_set_state(actor, actor->state->next_state);
+            }
+            /* Perform specific logic for the actor. */
+            if (actor->state->action) {
+                actor->state->action(actor);
+            }
+            /* Update the actor's final position. */
+            ix = SPRITE_X_OFFSET;
+            iy = SPRITE_Y_OFFSET;
+            for (iy=0; iy<actor->base->spr_h; ++iy) {
+                for (ix=0; ix<actor->base->spr_w; ++ix) {
+                    move_sprite(actor->slot+(iy*actor->base->spr_w+ix), actor->x+SPRITE_X_OFFSET+(ix<<3), actor->y+SPRITE_Y_OFFSET+(iy<<3));
+                }
+            }
         }
     }
 }

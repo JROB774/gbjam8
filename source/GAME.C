@@ -25,9 +25,11 @@ INTERNAL void GAME ()
 
     while (TRUE)
     {
+        DEBUG_PROFILE_BEGIN(GAME::LOOP);
         UPDATE_JOYPAD_STATE;
         actor_update_all();
         wait_vbl_done();
+        DEBUG_PROFILE_END(GAME::LOOP);
     }
 }
 
