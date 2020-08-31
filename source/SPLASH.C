@@ -12,9 +12,9 @@
 SET_BKG_DATA(TILESET_SPLASH##num);                                         \
 SET_MAP_DATA(TILEMAP_SPLASH##num);                                         \
 fade_from_black(SPLASH_FADE_SPEED);                                        \
-if (JOYPAD_WAITTIME(J_ANY, SPLASH_WAIT_PERIOD)) { END_SPLASH_EARLY_WAIT; } \
+if (JOYPAD_WAITTIMEOUT_ANY(SPLASH_WAIT_PERIOD)) { END_SPLASH_EARLY_WAIT; } \
 fade_to_black(SPLASH_FADE_SPEED);                                          \
-if (JOYPAD_WAITTIME(J_ANY, SPLASH_DARK_PERIOD)) { END_SPLASH_EARLY_DARK; }
+if (JOYPAD_WAITTIMEOUT_ANY(SPLASH_DARK_PERIOD)) { END_SPLASH_EARLY_DARK; }
 
 INTERNAL void SPLASH ()
 {
