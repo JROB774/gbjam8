@@ -158,7 +158,7 @@ INTERNAL void actor_set_state (ACTOR* actor, U8 state_id)
 
 INTERNAL void actor_set_pos (ACTOR* actor, U8 x, U8 y)
 {
-    U8 ix,iy, i,j;
+    U8 i,j, ix,iy;
 
     actor->x = x;
     actor->y = y;

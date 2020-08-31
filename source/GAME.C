@@ -12,9 +12,12 @@ INTERNAL void GAME ()
     display_draw_status();
 
     /* @Temporary: Just make some debug actors for now. */
-    actor_create(0, ATYPE_PLAYER, ASTATE_PLAYER_IDLE,  48, 48);
-    actor_create(4, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 80, 40);
-    actor_create(8, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 64, 72);
+    actor_create( 0, ATYPE_PLAYER, ASTATE_PLAYER_IDLE,  48,  48);
+    actor_create( 4, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 32,  72);
+    actor_create( 8, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 48,  72);
+    actor_create(12, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 64,  72);
+    actor_create(16, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 80,  72);
+    actor_create(20, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 96,  72);
 
     fade_from_black(GAME_FADE_SPEED);
 

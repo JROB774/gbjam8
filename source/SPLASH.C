@@ -22,8 +22,10 @@ INTERNAL void SPLASH ()
     HIDE_WIN;
     SHOW_BKG;
 
+    #ifndef DEBUG_MODE
     DO_SPLASH(1);
     DO_SPLASH(2);
+    #endif
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/

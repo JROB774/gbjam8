@@ -2,23 +2,22 @@
 
 #include <gb/gb.h>
 
+#define DEBUG_MODE 1
+
 #include "UTILITY.C"
 #include "MATH.C"
 #include "COLLIDE.C"
 #include "FADE.C"
 #include "INPUT.C"
-
 #include "TILESETS.C"
 #include "TILEMAPS.C"
-
 #include "ACTORS.C"
 #include "MONSTERS.C"
 #include "PLAYER.C"
 #include "DISPLAY.C"
-
-#include "SPLASH.C"
-#include "TITLE.C"
 #include "GAME.C"
+#include "TITLE.C"
+#include "SPLASH.C"
 
 void main ()
 {
