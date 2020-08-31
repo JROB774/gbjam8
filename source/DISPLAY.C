@@ -50,6 +50,7 @@ INTERNAL void display_draw_map ()
     SET_MAP_DATA(TILEMAP_MAP);
     JOYPAD_WAIT_SELECT;
     SET_MAP_DATA(TILEMAP_ROOM);
+    SHOW_SPRITES;
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/
