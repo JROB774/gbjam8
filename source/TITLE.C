@@ -2,7 +2,7 @@
 
 #define TITLE_FADE_SPEED  0x03 /* (3) */
 
-INTERNAL void title ()
+INTERNAL void TITLE ()
 {
     SET_BKG_DATA(TILESET_EMPTY   );
     SET_BKG_DATA(TILESET_NUMBERS );

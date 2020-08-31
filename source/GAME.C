@@ -2,7 +2,7 @@
 
 #define GAME_FADE_SPEED  0x03 /* (3) */
 
-INTERNAL void game ()
+INTERNAL void GAME ()
 {
     SET_SPR_DATA(TILESET_SPRITES);
     SET_BKG_DATA(TILESET_DISPLAY);

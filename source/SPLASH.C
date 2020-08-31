@@ -16,8 +16,12 @@ if (JOYPAD_WAITTIME(J_ANY, SPLASH_WAIT_PERIOD)) { END_SPLASH_EARLY_WAIT; } \
 fade_to_black(SPLASH_FADE_SPEED);                                          \
 if (JOYPAD_WAITTIME(J_ANY, SPLASH_DARK_PERIOD)) { END_SPLASH_EARLY_DARK; }
 
-INTERNAL void splash ()
+INTERNAL void SPLASH ()
 {
+    HIDE_SPRITES;
+    HIDE_WIN;
+    SHOW_BKG;
+
     DO_SPLASH(1);
     DO_SPLASH(2);
 }

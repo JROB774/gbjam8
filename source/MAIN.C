@@ -23,16 +23,10 @@
 void main ()
 {
     BGP_REG = 0xFF; /* Set the current palette to black so we can fade in. */
-
-    HIDE_SPRITES;
-    HIDE_WIN;
-    SHOW_BKG;
-
-    DISPLAY_ON;
-
-    splash();
-    title();
-    game();
+    DISPLAY_ON;     /* Enable the Game Boy's display.                      */
+    SPLASH();       /* Play through all the splash screens / credits.      */
+    TITLE();        /* Display the title screen and wait for START.        */
+    GAME();         /* Initialize and then run the main game loop.         */
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/
