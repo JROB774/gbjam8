@@ -4,7 +4,6 @@
 
 INTERNAL void fade_to_white (U8 wait_period)
 {
-    HIDE_SPRITES; /* We hide sprites as they do not seem to fade. */
     U8 i;
     for (i=0; i<FADE_STEP_AMOUNT; ++i) {
         switch (i) {
@@ -21,7 +20,6 @@ INTERNAL void fade_to_white (U8 wait_period)
 
 INTERNAL void fade_from_white (U8 wait_period)
 {
-    HIDE_SPRITES; /* We hide sprites as they do not seem to fade. */
     U8 i;
     for (i=0; i<FADE_STEP_AMOUNT; ++i) {
         switch (i) {
@@ -38,7 +36,6 @@ INTERNAL void fade_from_white (U8 wait_period)
 
 INTERNAL void fade_to_black (U8 wait_period)
 {
-    HIDE_SPRITES; /* We hide sprites as they do not seem to fade. */
     U8 i;
     for (i=0; i<FADE_STEP_AMOUNT; ++i) {
         switch (i) {
@@ -55,7 +52,6 @@ INTERNAL void fade_to_black (U8 wait_period)
 
 INTERNAL void fade_from_black (U8 wait_period)
 {
-    HIDE_SPRITES; /* We hide sprites as they do not seem to fade. */
     U8 i;
     for (i=0; i<FADE_STEP_AMOUNT; ++i) {
         switch (i) {
