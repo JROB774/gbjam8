@@ -70,16 +70,6 @@ while (0)
 #define JOYPAD_WAIT_PAD_D      JOYPAD_WAIT    (J_DOWN  )
 #define JOYPAD_WAIT_PAD_L      JOYPAD_WAIT    (J_LEFT  )
 #define JOYPAD_WAIT_ANY        JOYPAD_WAIT    (J_ANY   )
-/* Macros for waiting for a button press /w timeout.  */
-#define JOYPAD_WAITTIME_START  JOYPAD_WAITTIME(J_START )
-#define JOYPAD_WAITTIME_SELECT JOYPAD_WAITTIME(J_SELECT)
-#define JOYPAD_WAITTIME_A      JOYPAD_WAITTIME(J_A     )
-#define JOYPAD_WAITTIME_B      JOYPAD_WAITTIME(J_B     )
-#define JOYPAD_WAITTIME_PAD_U  JOYPAD_WAITTIME(J_UP    )
-#define JOYPAD_WAITTIME_PAD_R  JOYPAD_WAITTIME(J_RIGHT )
-#define JOYPAD_WAITTIME_PAD_D  JOYPAD_WAITTIME(J_DOWN  )
-#define JOYPAD_WAITTIME_PAD_L  JOYPAD_WAITTIME(J_LEFT  )
-#define JOYPAD_WAITTIME_ANY    JOYPAD_WAITTIME(J_ANY   )
 
 /* Internal implementation of the JOYPAD_WAIT macro. */
 INTERNAL void joypad_wait (U8 buttons)
@@ -94,15 +84,16 @@ INTERNAL void joypad_wait (U8 buttons)
 }
 
 /* Internal implementation of the JOYPAD_WAITTIME macro. */
-INTERNAL void joypad_waittime (U8 buttons, U8 timeout)
+INTERNAL BOOL joypad_waittime (U8 buttons, U8 timeout)
 {
     for (i=0; i<timeout; ++i) {
         UPDATE_JOYPAD_STATE;
         if (JOYPAD_PRESSED(buttons)) {
-            break;
+            return TRUE;
         }
         wait_vbl_done();
     }
+    return FALSE;
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/

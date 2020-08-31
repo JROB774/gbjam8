@@ -15,10 +15,11 @@
 #include "MONSTERS.C"
 #include "PLAYER.C"
 #include "DISPLAY.C"
+#include "SPLASH.C"
 
 void main ()
 {
-    BGP_REG = 0xFF; /* Set the current palette to black so we can fade in. */
+    splash();
 
     SET_SPR_DATA(TILESET_SPRITES );
     SET_BKG_DATA(TILESET_EMPTY   );
@@ -31,11 +32,11 @@ void main ()
 
     display_draw_status();
 
-    SET_DISPLAY_FLAGS;
-
     actor_create(0, ATYPE_PLAYER, ASTATE_PLAYER_IDLE,  48, 48);
     actor_create(4, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 80, 40);
     actor_create(8, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 64, 72);
+
+    SET_DISPLAY_FLAGS;
 
     fade_from_black(3);
 
