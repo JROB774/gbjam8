@@ -8,15 +8,15 @@
 
 typedef union _SFIXED_
 {
-    struct { S8 lo, hi; } part;
-    S16                   full;
+    struct { U8 lo; S8 hi; } part;
+    S16                      full;
 
 } SFIXED;
 
 typedef union _UFIXED_
 {
-    struct { U8 lo, hi; } part;
-    U16                   full;
+    struct { U8 lo; U8 hi; } part;
+    U16                      full;
 
 } UFIXED;
 
