@@ -1,7 +1,9 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-GLOBAL U8 joypad_prev_state; /* Previous frame's joypad button state. */
-GLOBAL U8 joypad_curr_state; /* Current frame's joypad button state.  */
+#define J_ANY 0xFF           /* Define to represent any joypad button. */
+
+GLOBAL U8 joypad_prev_state; /* Previous frame's joypad button state.  */
+GLOBAL U8 joypad_curr_state; /* Current frame's joypad button state.   */
 
 #define UPDATE_JOYPAD_STATE            \
 do                                     \
@@ -27,6 +29,7 @@ while (0)
 #define JOYPAD_PRESSED_PAD_R   JOYPAD_PRESSED (J_RIGHT )
 #define JOYPAD_PRESSED_PAD_D   JOYPAD_PRESSED (J_DOWN  )
 #define JOYPAD_PRESSED_PAD_L   JOYPAD_PRESSED (J_LEFT  )
+#define JOYPAD_PRESSED_ANY     JOYPAD_PRESSED (J_ANY   )
 /* Macros for checking if a button was released.      */
 #define JOYPAD_RELEASED_START  JOYPAD_RELEASED(J_START )
 #define JOYPAD_RELEASED_SELECT JOYPAD_RELEASED(J_SELECT)
@@ -36,6 +39,7 @@ while (0)
 #define JOYPAD_RELEASED_PAD_R  JOYPAD_RELEASED(J_RIGHT )
 #define JOYPAD_RELEASED_PAD_D  JOYPAD_RELEASED(J_DOWN  )
 #define JOYPAD_RELEASED_PAD_L  JOYPAD_RELEASED(J_LEFT  )
+#define JOYPAD_RELEASED_ANY    JOYPAD_RELEASED(J_ANY   )
 /* Macros for checking if a button is currently down. */
 #define JOYPAD_DOWN_START      JOYPAD_DOWN    (J_START )
 #define JOYPAD_DOWN_SELECT     JOYPAD_DOWN    (J_SELECT)
@@ -45,6 +49,7 @@ while (0)
 #define JOYPAD_DOWN_PAD_R      JOYPAD_DOWN    (J_RIGHT )
 #define JOYPAD_DOWN_PAD_D      JOYPAD_DOWN    (J_DOWN  )
 #define JOYPAD_DOWN_PAD_L      JOYPAD_DOWN    (J_LEFT  )
+#define JOYPAD_DOWN_ANY        JOYPAD_DOWN    (J_ANY   )
 /* Macros for checking if a button is currently up.   */
 #define JOYPAD_UP_START        JOYPAD_UP      (J_START )
 #define JOYPAD_UP_SELECT       JOYPAD_UP      (J_SELECT)
@@ -54,7 +59,8 @@ while (0)
 #define JOYPAD_UP_PAD_R        JOYPAD_UP      (J_RIGHT )
 #define JOYPAD_UP_PAD_D        JOYPAD_UP      (J_DOWN  )
 #define JOYPAD_UP_PAD_L        JOYPAD_UP      (J_LEFT  )
-/* Macros for waiting until a button is pressed   .   */
+#define JOYPAD_UP_ANY          JOYPAD_UP      (J_ANY   )
+/* Macros for waiting until a button is pressed.      */
 #define JOYPAD_WAIT_START      JOYPAD_WAIT    (J_START )
 #define JOYPAD_WAIT_SELECT     JOYPAD_WAIT    (J_SELECT)
 #define JOYPAD_WAIT_A          JOYPAD_WAIT    (J_A     )
@@ -63,8 +69,19 @@ while (0)
 #define JOYPAD_WAIT_PAD_R      JOYPAD_WAIT    (J_RIGHT )
 #define JOYPAD_WAIT_PAD_D      JOYPAD_WAIT    (J_DOWN  )
 #define JOYPAD_WAIT_PAD_L      JOYPAD_WAIT    (J_LEFT  )
+#define JOYPAD_WAIT_ANY        JOYPAD_WAIT    (J_ANY   )
+/* Macros for waiting for a button press /w timeout.  */
+#define JOYPAD_WAITTIME_START  JOYPAD_WAITTIME(J_START )
+#define JOYPAD_WAITTIME_SELECT JOYPAD_WAITTIME(J_SELECT)
+#define JOYPAD_WAITTIME_A      JOYPAD_WAITTIME(J_A     )
+#define JOYPAD_WAITTIME_B      JOYPAD_WAITTIME(J_B     )
+#define JOYPAD_WAITTIME_PAD_U  JOYPAD_WAITTIME(J_UP    )
+#define JOYPAD_WAITTIME_PAD_R  JOYPAD_WAITTIME(J_RIGHT )
+#define JOYPAD_WAITTIME_PAD_D  JOYPAD_WAITTIME(J_DOWN  )
+#define JOYPAD_WAITTIME_PAD_L  JOYPAD_WAITTIME(J_LEFT  )
+#define JOYPAD_WAITTIME_ANY    JOYPAD_WAITTIME(J_ANY   )
 
-/* Internal implementation of the JOYPAD_WAIT macro.     */
+/* Internal implementation of the JOYPAD_WAIT macro. */
 INTERNAL void joypad_wait (U8 buttons)
 {
     while (TRUE) {
