@@ -11,20 +11,28 @@
 #include "TILESETS.C"
 #include "TILEMAPS.C"
 
+#include "SPLASH.C"
+#include "TITLE.C"
+
 #include "ACTORS.C"
 #include "MONSTERS.C"
 #include "PLAYER.C"
 #include "DISPLAY.C"
-#include "SPLASH.C"
 
 void main ()
 {
+    BGP_REG = 0xFF; /* Set the current palette to black so we can fade in. */
+
+    HIDE_SPRITES;
+    HIDE_WIN;
+    SHOW_BKG;
+
+    DISPLAY_ON;
+
     splash();
+    title();
 
     SET_SPR_DATA(TILESET_SPRITES );
-    SET_BKG_DATA(TILESET_EMPTY   );
-    SET_BKG_DATA(TILESET_NUMBERS );
-    SET_BKG_DATA(TILESET_ALPHABET);
     SET_BKG_DATA(TILESET_DISPLAY );
     SET_BKG_DATA(TILESET_ROOM    );
 
@@ -36,15 +44,13 @@ void main ()
     actor_create(4, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 80, 40);
     actor_create(8, ATYPE_GAPER,  ASTATE_GAPER_MOVE_0, 64, 72);
 
-    SET_DISPLAY_FLAGS;
-
     fade_from_black(3);
+
+    SHOW_SPRITES;
 
     while (TRUE)
     {
         UPDATE_JOYPAD_STATE;
-        SET_DISPLAY_FLAGS;
-
         actor_update_all();
         wait_vbl_done();
     }

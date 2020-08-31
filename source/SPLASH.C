@@ -18,14 +18,6 @@ if (JOYPAD_WAITTIME(J_ANY, SPLASH_DARK_PERIOD)) { END_SPLASH_EARLY_DARK; }
 
 INTERNAL void splash ()
 {
-    BGP_REG = 0xFF; /* Set the current palette to black so we can fade in. */
-
-    HIDE_SPRITES;
-    HIDE_WIN;
-    SHOW_BKG;
-
-    DISPLAY_ON;
-
     DO_SPLASH(1);
     DO_SPLASH(2);
 }
