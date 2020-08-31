@@ -101,6 +101,7 @@ INTERNAL void joypad_wait (U8 buttons)
 /* Internal implementation of the JOYPAD_WAITTIME macro. */
 INTERNAL BOOL joypad_waittimeout (U8 buttons, U8 timeout)
 {
+    U8 i;
     for (i=0; i<timeout; ++i) {
         UPDATE_JOYPAD_STATE;
         if (JOYPAD_PRESSED(buttons)) {

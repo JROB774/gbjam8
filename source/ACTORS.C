@@ -145,19 +145,20 @@ GLOBAL ACTOR actor_list[MAX_NUMBER_OF_ACTORS];
 
 INTERNAL void actor_set_state (ACTOR* actor, U8 state_id)
 {
+    U8 i;
     /* Set the new state and update the actor's sprites accordingly. */
     actor->state = &ASTATE_TABLE[actor->base->offset + state_id];
     actor->state_timer = 0;
     actor->state_id = state_id;
-    for (j=0; j<(actor->base->spr_w*actor->base->spr_h); ++j) {
-        set_sprite_tile(actor->slot+j, actor->state->vram_offset+j);
-        set_sprite_prop(actor->slot+j, actor->state->flip);
+    for (i=0; i<(actor->base->spr_w*actor->base->spr_h); ++i) {
+        set_sprite_tile(actor->slot+i, actor->state->vram_offset+i);
+        set_sprite_prop(actor->slot+i, actor->state->flip);
     }
 }
 
 INTERNAL void actor_set_pos (ACTOR* actor, U8 x, U8 y)
 {
-    U8 ix,iy;
+    U8 ix,iy, i,j;
 
     actor->x = x;
     actor->y = y;
@@ -167,23 +168,23 @@ INTERNAL void actor_set_pos (ACTOR* actor, U8 x, U8 y)
 
     switch (actor->state->flip) {
         case (FLIP_NONE): {
-            for (j=0,iy=0; j<actor->base->spr_h; ++iy,++j) {
-                for (k=0,ix=0; k<actor->base->spr_w; ++ix,++k) {
-                    move_sprite(actor->slot+(j*actor->base->spr_w+k), x+(ix*TILE_WIDTH), y+(iy*TILE_HEIGHT));
+            for (i=0,iy=0; i<actor->base->spr_h; ++iy,++i) {
+                for (j=0,ix=0; j<actor->base->spr_w; ++ix,++j) {
+                    move_sprite(actor->slot+(i*actor->base->spr_w+j), x+(ix*TILE_WIDTH), y+(iy*TILE_HEIGHT));
                 }
             }
         } break;
         case (FLIP_HORZ): {
-            for (j=0,iy=0; j<actor->base->spr_h; ++iy,++j) {
-                for (k=0,ix=actor->base->spr_w-1; k<actor->base->spr_w; --ix,++k) {
-                    move_sprite(actor->slot+(j*actor->base->spr_w+k), x+(ix*TILE_WIDTH), y+(iy*TILE_HEIGHT));
+            for (i=0,iy=0; i<actor->base->spr_h; ++iy,++i) {
+                for (j=0,ix=actor->base->spr_w-1; j<actor->base->spr_w; --ix,++j) {
+                    move_sprite(actor->slot+(i*actor->base->spr_w+j), x+(ix*TILE_WIDTH), y+(iy*TILE_HEIGHT));
                 }
             }
         } break;
         case (FLIP_VERT): {
-            for (j=0,iy=actor->base->spr_h-1; j<actor->base->spr_h; --iy,++j) {
-                for (k=0,ix=0; k<actor->base->spr_w; ++ix,++k) {
-                    move_sprite(actor->slot+(j*actor->base->spr_w+k), x+(ix*TILE_WIDTH), y+(iy*TILE_HEIGHT));
+            for (i=0,iy=actor->base->spr_h-1; i<actor->base->spr_h; --iy,++i) {
+                for (j=0,ix=0; j<actor->base->spr_w; ++ix,++j) {
+                    move_sprite(actor->slot+(i*actor->base->spr_w+j), x+(ix*TILE_WIDTH), y+(iy*TILE_HEIGHT));
                 }
             }
         } break;
@@ -224,6 +225,7 @@ INTERNAL void actor_update (ACTOR* actor)
 INTERNAL void actor_update_all ()
 {
     /* Go through the list and update all of the active actors. */
+    U8 i;
     for (i=0; i<MAX_NUMBER_OF_ACTORS; ++i) {
         ACTOR* actor = &actor_list[i];
         if (actor->active) {

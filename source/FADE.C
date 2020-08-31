@@ -5,6 +5,7 @@
 INTERNAL void fade_to_white (U8 wait_period)
 {
     HIDE_SPRITES; /* We hide sprites as they do not seem to fade. */
+    U8 i;
     for (i=0; i<FADE_STEP_AMOUNT; ++i) {
         switch (i) {
             case (0): BGP_REG = 0xE4; break;
@@ -14,15 +15,14 @@ INTERNAL void fade_to_white (U8 wait_period)
             case (4): BGP_REG = 0x40; break;
             case (5): BGP_REG = 0x00; break;
         }
-        for (j=0; j<wait_period; ++j) {
-            wait_vbl_done();
-        }
+        WAIT(wait_period);
     }
 }
 
 INTERNAL void fade_from_white (U8 wait_period)
 {
     HIDE_SPRITES; /* We hide sprites as they do not seem to fade. */
+    U8 i;
     for (i=0; i<FADE_STEP_AMOUNT; ++i) {
         switch (i) {
             case (0): BGP_REG = 0x00; break;
@@ -32,15 +32,14 @@ INTERNAL void fade_from_white (U8 wait_period)
             case (4): BGP_REG = 0xA4; break;
             case (5): BGP_REG = 0xE4; break;
         }
-        for (j=0; j<wait_period; ++j) {
-            wait_vbl_done();
-        }
+        WAIT(wait_period);
     }
 }
 
 INTERNAL void fade_to_black (U8 wait_period)
 {
     HIDE_SPRITES; /* We hide sprites as they do not seem to fade. */
+    U8 i;
     for (i=0; i<FADE_STEP_AMOUNT; ++i) {
         switch (i) {
             case (0): BGP_REG = 0xE4; break;
@@ -50,15 +49,14 @@ INTERNAL void fade_to_black (U8 wait_period)
             case (4): BGP_REG = 0xFE; break;
             case (5): BGP_REG = 0xFF; break;
         }
-        for (j=0; j<wait_period; ++j) {
-            wait_vbl_done();
-        }
+        WAIT(wait_period);
     }
 }
 
 INTERNAL void fade_from_black (U8 wait_period)
 {
     HIDE_SPRITES; /* We hide sprites as they do not seem to fade. */
+    U8 i;
     for (i=0; i<FADE_STEP_AMOUNT; ++i) {
         switch (i) {
             case (0): BGP_REG = 0xFF; break;
@@ -68,9 +66,7 @@ INTERNAL void fade_from_black (U8 wait_period)
             case (4): BGP_REG = 0xE5; break;
             case (5): BGP_REG = 0xE4; break;
         }
-        for (j=0; j<wait_period; ++j) {
-            wait_vbl_done();
-        }
+        WAIT(wait_period);
     }
 }
 

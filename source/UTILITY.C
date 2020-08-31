@@ -26,8 +26,6 @@
 #define DIR_D               0x04   /* Direction flag to represet down.        */
 #define DIR_L               0x08   /* Direction flag to represet left.        */
 
-GLOBAL U8                   i,j,k; /* General-purpose counter variables.      */
-
 /*////////////////////////////////////////////////////////////////////////////*/
 
 #define SET_SPR_DATA(name) set_sprite_data(name##_OFFSET, name##_LENGTH,        name)
@@ -37,13 +35,14 @@ GLOBAL U8                   i,j,k; /* General-purpose counter variables.      */
 #define   SET_FLAGS(x, flags) ((x) |=  (flags))
 #define UNSET_FLAGS(x, flags) ((x) &= ~(flags))
 
-#define WAIT(time)        \
-do                        \
-{                         \
-for (i=0; i<time; ++i) {  \
-    wait_vbl_done();      \
-}                         \
-}                         \
+#define WAIT(time)                      \
+do                                      \
+{                                       \
+U8 _wait_;                              \
+for (_wait_=0; _wait_<time; ++_wait_) { \
+    wait_vbl_done();                    \
+}                                       \
+}                                       \
 while (0)
 
 /*////////////////////////////////////////////////////////////////////////////*/
