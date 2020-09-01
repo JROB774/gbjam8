@@ -6,7 +6,6 @@
 
 #include "UTILITY.C"
 #include "DEBUG.C"
-#include "MATH.C"
 #include "COLLIDE.C"
 #include "FADE.C"
 #include "INPUT.C"
