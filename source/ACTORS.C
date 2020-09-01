@@ -2,9 +2,6 @@
 
 /* An actor is any entity within the world (player, monster, item, etc.).     */
 
-typedef const struct _ABASE_  ABASE;
-typedef const struct _ASTATE_ ASTATE;
-
 typedef struct _ACTOR_
 {
     ASTATE* state;       /* Pointer into ASTATE_TABLE containing state info.  */
@@ -66,11 +63,6 @@ typedef struct _ACTOR_
 #define ASTATE_HOPPER_MOVE_0    0x00
 #define ASTATE_HOPPER_MOVE_1    0x01
 
-/* Predeclare all the custom actor actions for the ASTATE_TABLE.              */
-
-INTERNAL void player_update (ACTOR* actor);
-INTERNAL void  gaper_update (ACTOR* actor);
-
 /* The following table contains generic information for each actor type. This */
 /* information is the same across all instances of the particular actor type. */
 
@@ -118,23 +110,23 @@ typedef const struct _ASTATE_
 GLOBAL const ASTATE ASTATE_TABLE[] =
 {
 /* ATYPE_UNKNOWN                                                              */
-/* action          vram_offset  ticks  next_state                             */
-{  NULL,           0x00,        0,     ASTATE_UNKNOWN_IDLE     },
+/* action                 vram_offset  ticks  next_state                      */
+{  NULL,                  0x00,        0,     ASTATE_UNKNOWN_IDLE     },
 /* ATYPE_PLAYER                                                               */
-/* action          vram_offset  ticks  next_state                             */
-{  player_update,  0x01,        0,     ASTATE_PLAYER_IDLE      },
-{  player_update,  0x15,        15,    ASTATE_PLAYER_MOVE_U_1  },
-{  player_update,  0x15,        15,    ASTATE_PLAYER_MOVE_U_0  },
-{  player_update,  0x0D,        15,    ASTATE_PLAYER_MOVE_R_1  },
-{  player_update,  0x11,        15,    ASTATE_PLAYER_MOVE_R_0  },
-{  player_update,  0x05,        15,    ASTATE_PLAYER_MOVE_D_1  },
-{  player_update,  0x09,        15,    ASTATE_PLAYER_MOVE_D_0  },
-{  player_update,  0x0D,        15,    ASTATE_PLAYER_MOVE_L_1  },
-{  player_update,  0x11,        15,    ASTATE_PLAYER_MOVE_L_0  },
+/* action                 vram_offset  ticks  next_state                      */
+{  player_update,         0x01,        0,     ASTATE_PLAYER_IDLE      },
+{  player_update,         0x15,        15,    ASTATE_PLAYER_MOVE_U_1  },
+{  player_update,         0x15,        15,    ASTATE_PLAYER_MOVE_U_0  },
+{  player_update,         0x0D,        15,    ASTATE_PLAYER_MOVE_R_1  },
+{  player_update,         0x11,        15,    ASTATE_PLAYER_MOVE_R_0  },
+{  player_update,         0x05,        15,    ASTATE_PLAYER_MOVE_D_1  },
+{  player_update,         0x09,        15,    ASTATE_PLAYER_MOVE_D_0  },
+{  player_update,         0x0D,        15,    ASTATE_PLAYER_MOVE_L_1  },
+{  player_update,         0x11,        15,    ASTATE_PLAYER_MOVE_L_0  },
 /* ATYPE_GAPER                                                                */
-/* action          vram_offset  ticks  next_state                             */
-{  gaper_update,   0x19,        40,    ASTATE_GAPER_MOVE_1     },
-{  gaper_update,   0x19,        20,    ASTATE_GAPER_MOVE_0     },
+/* action                 vram_offset  ticks  next_state                      */
+{  monster_gaper_update,  0x19,        40,    ASTATE_GAPER_MOVE_1     },
+{  monster_gaper_update,  0x19,        20,    ASTATE_GAPER_MOVE_0     },
 };
 
 /*////////////////////////////////////////////////////////////////////////////*/
@@ -143,20 +135,7 @@ GLOBAL const ASTATE ASTATE_TABLE[] =
 
 GLOBAL ACTOR actor_list[MAX_NUMBER_OF_ACTORS];
 
-INTERNAL void actor_set_state (ACTOR* actor, U8 state_id)
-{
-    U8 i;
-    /* Set the new state and update the actor's sprites accordingly. */
-    if (actor->state_id == state_id) { return; }
-    actor->state = &ASTATE_TABLE[actor->base->offset + state_id];
-    actor->state_timer = 0;
-    actor->state_id = state_id;
-    for (i=0; i<(actor->base->spr_w*actor->base->spr_h); ++i) {
-        set_sprite_tile(actor->slot+i, actor->state->vram_offset+i);
-    }
-}
-
-INTERNAL void actor_create (U8 index, U8 type_id, U8 state_id, U8 x, U8 y)
+INTERNAL VOID actor_create (U8 index, U8 type_id, U8 state_id, U8 x, U8 y)
 {
     ACTOR* actor = &actor_list[index];
 
@@ -172,7 +151,20 @@ INTERNAL void actor_create (U8 index, U8 type_id, U8 state_id, U8 x, U8 y)
     actor_set_state(actor, state_id);
 }
 
-INTERNAL void actor_update_all ()
+INTERNAL VOID actor_set_state (ACTOR* actor, U8 state_id)
+{
+    U8 i;
+    /* Set the new state and update the actor's sprites accordingly. */
+    if (actor->state_id == state_id) { return; }
+    actor->state = &ASTATE_TABLE[actor->base->offset + state_id];
+    actor->state_timer = 0;
+    actor->state_id = state_id;
+    for (i=0; i<(actor->base->spr_w*actor->base->spr_h); ++i) {
+        set_sprite_tile(actor->slot+i, actor->state->vram_offset+i);
+    }
+}
+
+INTERNAL VOID actor_update_all (VOID)
 {
     ACTOR* actor;
     U8 i,ix,iy;

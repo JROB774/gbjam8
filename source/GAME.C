@@ -9,7 +9,7 @@ INTERNAL void GAME ()
     SET_BKG_DATA(TILESET_ROOM   );
     SET_MAP_DATA(TILEMAP_ROOM   );
 
-    display_draw_status();
+    status_init();
 
     /* @Temporary: Just make some debug actors for now. */
     actor_create( 0, ATYPE_PLAYER, ASTATE_PLAYER_IDLE,  48,  48);
@@ -23,13 +23,12 @@ INTERNAL void GAME ()
 
     SHOW_SPRITES;
 
-    while (TRUE)
-    {
-        DEBUG_PROFILE_BEGIN(GAME::LOOP);
+    while (TRUE) {
+        DEBUG_PROFILE_BEGIN(GAMELOOP);
         UPDATE_JOYPAD_STATE;
         actor_update_all();
         wait_vbl_done();
-        DEBUG_PROFILE_END(GAME::LOOP);
+        DEBUG_PROFILE_END(GAMELOOP);
     }
 }
 

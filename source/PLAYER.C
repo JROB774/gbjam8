@@ -1,8 +1,5 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-/* Predeclare this function from DISPLAY.C as we need to use it here. */
-INTERNAL void display_draw_map ();
-
 #define PLAYER_SPEED 1
 
 typedef struct _PLAYER_
@@ -13,7 +10,7 @@ typedef struct _PLAYER_
 
 GLOBAL PLAYER player;
 
-INTERNAL void player_update (ACTOR* actor)
+INTERNAL VOID player_update (ACTOR* actor)
 {
     U8 old_dir = player.dir;
 
@@ -34,7 +31,7 @@ INTERNAL void player_update (ACTOR* actor)
 
     /* Display the map screen and pause the game until SELECT is pressed. */
     if (JOYPAD_PRESSED_SELECT) {
-        display_draw_map();
+        map_draw();
     }
 }
 

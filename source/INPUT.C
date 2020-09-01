@@ -10,6 +10,8 @@
 GLOBAL U8 joypad_prev_state; /* Previous frame's joypad button state.     */
 GLOBAL U8 joypad_curr_state; /* Current frame's joypad button state.      */
 
+GLOBAL U8 input_timer;
+
 #define UPDATE_JOYPAD_STATE            \
 do                                     \
 {                                      \
@@ -87,7 +89,7 @@ while (0)
 #define JOYPAD_WAITTIMEOUT_ANY(   t) JOYPAD_WAITTIMEOUT(J_ANY,    t)
 
 /* Internal implementation of the JOYPAD_WAIT macro. */
-INTERNAL void joypad_wait (U8 buttons)
+INTERNAL VOID joypad_wait (U8 buttons)
 {
     while (TRUE) {
         UPDATE_JOYPAD_STATE;
@@ -101,8 +103,7 @@ INTERNAL void joypad_wait (U8 buttons)
 /* Internal implementation of the JOYPAD_WAITTIME macro. */
 INTERNAL BOOL joypad_waittimeout (U8 buttons, U8 timeout)
 {
-    U8 i;
-    for (i=0; i<timeout; ++i) {
+    for (input_timer=0; input_timer<timeout; ++input_timer) {
         UPDATE_JOYPAD_STATE;
         if (JOYPAD_PRESSED(buttons)) {
             return TRUE;
