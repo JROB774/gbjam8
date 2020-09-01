@@ -1,9 +1,9 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-#define SPLASH_WAIT_PERIOD  0x78 /* (120) */
-#define SPLASH_DARK_PERIOD  0x3C /* ( 60) */
+#define SPLASH_WAIT_PERIOD 0x78 /* (120) */
+#define SPLASH_DARK_PERIOD 0x3C /* ( 60) */
 
-#define SPLASH_FADE_SPEED   0x03 /* (  3) */
+#define SPLASH_FADE_SPEED  0x03 /* (  3) */
 
 #define END_SPLASH_EARLY_WAIT fade_to_black(1); return;
 #define END_SPLASH_EARLY_DARK                   return;

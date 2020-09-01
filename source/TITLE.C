@@ -1,6 +1,6 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-#define TITLE_FADE_SPEED  0x03 /* (3) */
+#define TITLE_FADE_SPEED 0x03 /* (3) */
 
 INTERNAL void TITLE ()
 {

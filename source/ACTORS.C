@@ -35,7 +35,8 @@ typedef struct _ACTOR_
 #define ATYPE_BOMB              0x0C /* @UNIMPLEMENTED */
 #define ATYPE_KEY               0x0D /* @UNIMPLEMENTED */
 #define ATYPE_HEART             0x0E /* @UNIMPLEMENTED */
-#define ATYPE_MONSTRO           0x0F /* @UNIMPLEMENTED */
+#define ATYPE_ITEM              0x0F /* @UNIMPLEMENTED */
+#define ATYPE_MONSTRO           0x10 /* @UNIMPLEMENTED */
 
 /* All of the different states for the different types of actors.             */
 

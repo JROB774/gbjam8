@@ -1,6 +1,6 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-#define GAME_FADE_SPEED  0x03 /* (3) */
+#define GAME_FADE_SPEED 0x03 /* (3) */
 
 INTERNAL void GAME ()
 {
