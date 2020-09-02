@@ -19,8 +19,8 @@ typedef S16 FIXED;
 
 #define UTOF(x) ((x) << FP_SHIFT)             /* UINT  to FIXED.              */
 #define ITOF(x) ((x) << FP_SHIFT)             /* SINT  to FIXED.              */
-#define FTOU(x) ((x) /  FP_SCALE)             /* FIXED to UINT.               */
-#define FTOI(x) ((x) >> FP_SHIFT)             /* FIXED to SINT.               */
+#define FTOU(x) ((x) /  FP_SCALE)             /* FIXED to UINT (truncate).    */
+#define FTOI(x) ((x) >> FP_SHIFT)             /* FIXED to SINT (truncate).    */
 
 #define FROUNDU(x) FTOU(x + FP_HALF)          /* Round FIXED to UINT.         */
 #define FROUNDI(x) FTOI(x + FP_HALF)          /* Round FIXED to SINT.         */
@@ -31,7 +31,7 @@ typedef S16 FIXED;
 /* Extract the integral and fractional parts of a fixed-point value and then  */
 /* convert them into integers; useful for printing out fixed-points, like so: */
 /*                                                                            */
-/*   printf("%d.%d", FINT(fixed), FFRAC(fixed));                              */
+/*   printf("%d.%d", FINT(fixed), FFRAC(fixed,10));                           */
 /*                                                                            */
 /* The argument p to FFRAC is the level of precision to print with. Passing a */
 /* value of 1 will result in one digit, 10 for two, 100 for three, and so on. */
@@ -39,7 +39,7 @@ typedef S16 FIXED;
 #define FFRAC(x,p) ((((x) &  FP_MASK ) * p) / FP_SCALE)
 
 /* Table of fixed-point sin values for implementing sin() and cos() functions.*/
-/* The table goes from the range [0x00 - 0xFF] with 0xFF representing 2Pi.    */
+/* The table goes from the range [0x00 - 0xFF] with 0xFF representing 2pi.    */
 
 GLOBAL const U16 SIN_TABLE[] =
 {
