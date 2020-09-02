@@ -8,6 +8,7 @@
 #include "DECLARE.C"
 #include "TILESETS.C"
 #include "TILEMAPS.C"
+#include "MATH.C"
 #include "INPUT.C"
 #include "FADE.C"
 #include "ACTORS.C"
