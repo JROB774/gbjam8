@@ -18,7 +18,7 @@ INTERNAL VOID fade_from_black        (U8 wait_period                            
 INTERNAL VOID actor_create           (U8 index, U8 type_id, U8 state_id, U8 x, U8 y);
 INTERNAL VOID actor_set_state        (ACTOR* actor, U8 state_id                    );
 INTERNAL VOID actor_update_all       (VOID                                         );
-INTERNAL VOID monster_gaper_update   (ACTOR* actor                                 );
+INTERNAL VOID mon_gaper_update       (ACTOR* actor                                 );
 INTERNAL VOID player_update          (ACTOR* actor                                 );
 INTERNAL VOID status_init            (VOID                                         );
 INTERNAL VOID status_update_hearts   (VOID                                         );

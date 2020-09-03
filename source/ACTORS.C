@@ -78,8 +78,8 @@ GLOBAL const ABASE ABASE_TABLE[] =
 {
 /* offset  spr_w  spr_h                                                       */
 {  0x00,   0x00,  0x00  }, /* ATYPE_UNKNOWN                                   */
-{  0x01,   0x02,  0x02  }, /* ATYPE_PLAYER                                    */
-{  0x0A,   0x02,  0x02  }  /* ATYPE_GAPER                                     */
+{  0x01,   0x02,  0x01  }, /* ATYPE_PLAYER                                    */
+{  0x0A,   0x02,  0x01  }  /* ATYPE_GAPER                                     */
 };
 
 /* The following table contains all the unique actor states. These states are */
@@ -102,6 +102,7 @@ typedef const struct _ASTATE_
 {
     AACTION action;  /* Extra logic to invoke on the actor's update.          */
     U8 vram_offset;  /* Offset into VRAM for this state's frame data.         */
+    U8 flip;         /* Flags for flipping the state's sprite.                */
     U8 ticks;        /* Number of ticks before changing to next_state.        */
     U8 next_state;   /* Next state to transition to after this one.           */
 
@@ -110,23 +111,23 @@ typedef const struct _ASTATE_
 GLOBAL const ASTATE ASTATE_TABLE[] =
 {
 /* ATYPE_UNKNOWN                                                              */
-/* action                 vram_offset  ticks  next_state                      */
-{  NULL,                  0x00,        0,     ASTATE_UNKNOWN_IDLE     },
+/* action             vram_offset  flip        ticks  next_state              */
+{  NULL,              0x00,        FLIP_NONE,  0,     ASTATE_UNKNOWN_IDLE     },
 /* ATYPE_PLAYER                                                               */
-/* action                 vram_offset  ticks  next_state                      */
-{  player_update,         0x01,        0,     ASTATE_PLAYER_IDLE      },
-{  player_update,         0x15,        15,    ASTATE_PLAYER_MOVE_U_1  },
-{  player_update,         0x15,        15,    ASTATE_PLAYER_MOVE_U_0  },
-{  player_update,         0x0D,        15,    ASTATE_PLAYER_MOVE_R_1  },
-{  player_update,         0x11,        15,    ASTATE_PLAYER_MOVE_R_0  },
-{  player_update,         0x05,        15,    ASTATE_PLAYER_MOVE_D_1  },
-{  player_update,         0x09,        15,    ASTATE_PLAYER_MOVE_D_0  },
-{  player_update,         0x0D,        15,    ASTATE_PLAYER_MOVE_L_1  },
-{  player_update,         0x11,        15,    ASTATE_PLAYER_MOVE_L_0  },
+/* action             vram_offset  flip        ticks  next_state              */
+{  player_update,     0x00,        FLIP_NONE,  0,     ASTATE_PLAYER_IDLE      },
+{  player_update,     0x04,        FLIP_NONE,  15,    ASTATE_PLAYER_MOVE_U_1  },
+{  player_update,     0x04,        FLIP_HORZ,  15,    ASTATE_PLAYER_MOVE_U_0  },
+{  player_update,     0x08,        FLIP_NONE,  15,    ASTATE_PLAYER_MOVE_R_1  },
+{  player_update,     0x0C,        FLIP_NONE,  15,    ASTATE_PLAYER_MOVE_R_0  },
+{  player_update,     0x10,        FLIP_NONE,  15,    ASTATE_PLAYER_MOVE_D_1  },
+{  player_update,     0x14,        FLIP_NONE,  15,    ASTATE_PLAYER_MOVE_D_0  },
+{  player_update,     0x08,        FLIP_HORZ,  15,    ASTATE_PLAYER_MOVE_L_1  },
+{  player_update,     0x0C,        FLIP_HORZ,  15,    ASTATE_PLAYER_MOVE_L_0  },
 /* ATYPE_GAPER                                                                */
-/* action                 vram_offset  ticks  next_state                      */
-{  monster_gaper_update,  0x19,        40,    ASTATE_GAPER_MOVE_1     },
-{  monster_gaper_update,  0x19,        20,    ASTATE_GAPER_MOVE_0     },
+/* action             vram_offset  flip        ticks  next_state              */
+{  mon_gaper_update,  0x22,        FLIP_NONE,  30,    ASTATE_GAPER_MOVE_1     },
+{  mon_gaper_update,  0x22,        FLIP_HORZ,  30,    ASTATE_GAPER_MOVE_0     },
 };
 
 /*////////////////////////////////////////////////////////////////////////////*/
@@ -159,8 +160,19 @@ INTERNAL VOID actor_set_state (ACTOR* actor, U8 state_id)
     actor->state = &ASTATE_TABLE[actor->base->offset + state_id];
     actor->state_timer = 0;
     actor->state_id = state_id;
-    for (i=0; i<(actor->base->spr_w*actor->base->spr_h); ++i) {
-        set_sprite_tile(actor->slot+i, actor->state->vram_offset+i);
+    switch (actor->state->flip) {
+        case (FLIP_NONE): {
+            for (i=0; i<(actor->base->spr_w*actor->base->spr_h); ++i) {
+                set_sprite_tile(actor->slot+i, actor->state->vram_offset+(i*2));
+                set_sprite_prop(actor->slot+i, actor->state->flip);
+            }
+        } break;
+        case (FLIP_HORZ): {
+            for (i=0; i<(actor->base->spr_w*actor->base->spr_h); ++i) {
+                set_sprite_tile(actor->slot+((actor->base->spr_w*actor->base->spr_h)-1)-i, actor->state->vram_offset+(i*2));
+                set_sprite_prop(actor->slot+((actor->base->spr_w*actor->base->spr_h)-1)-i, actor->state->flip);
+            }
+        } break;
     }
 }
 

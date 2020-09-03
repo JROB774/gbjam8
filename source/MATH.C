@@ -12,21 +12,21 @@
 
 typedef S16 FIXED;
 
-#define FADD(a,b) ( (a)             + (b) )   /* Add two fixed-points.        */
-#define FSUB(a,b) ( (a)             - (b) )   /* Sub two fixed-points.        */
-#define FMUL(a,b) (((a) * (b)) >> FP_SHIFT)   /* Mul two fixed-points.        */
-#define FDIV(a,b) (((a) * FP_SCALE) / (b) )   /* Div two fixed-points.        */
+#define FADD(a,b) ( (a)             + (b) )     /* Add two fixed-points.      */
+#define FSUB(a,b) ( (a)             - (b) )     /* Sub two fixed-points.      */
+#define FMUL(a,b) (((a) * (b)) >> FP_SHIFT)     /* Mul two fixed-points.      */
+#define FDIV(a,b) (((a) * FP_SCALE) / (b) )     /* Div two fixed-points.      */
 
-#define UTOF(x) ((x) << FP_SHIFT)             /* UINT  to FIXED.              */
-#define ITOF(x) ((x) << FP_SHIFT)             /* SINT  to FIXED.              */
-#define FTOU(x) ((x) /  FP_SCALE)             /* FIXED to UINT (truncate).    */
-#define FTOI(x) ((x) >> FP_SHIFT)             /* FIXED to SINT (truncate).    */
+#define UTOF(x) ((x) << FP_SHIFT)               /* UINT  to FIXED.            */
+#define ITOF(x) ((x) << FP_SHIFT)               /* SINT  to FIXED.            */
+#define FTOU(x) ((x) /  FP_SCALE)               /* FIXED to UINT (truncate).  */
+#define FTOI(x) ((x) >> FP_SHIFT)               /* FIXED to SINT (truncate).  */
 
-#define FROUNDU(x) FTOU(x + FP_HALF)          /* Round FIXED to UINT.         */
-#define FROUNDI(x) FTOI(x + FP_HALF)          /* Round FIXED to SINT.         */
+#define FROUNDU(x) FTOU(x + FP_HALF)            /* Round FIXED to UINT.       */
+#define FROUNDI(x) FTOI(x + FP_HALF)            /* Round FIXED to SINT.       */
 
-#define SIN(x) SIN_TABLE[(((x))     ) & 0xFF] /* sin() operation.             */
-#define COS(x) SIN_TABLE[(((x)) + 64) & 0xFF] /* cos() operation.             */
+#define SIN(x) SIN_TABLE[(((x))       ) & 0xFF] /* sin() operation.           */
+#define COS(x) SIN_TABLE[(((x)) + 0x40) & 0xFF] /* cos() operation.           */
 
 /* Extract the integral and fractional parts of a fixed-point value and then  */
 /* convert them into integers; useful for printing out fixed-points, like so: */
