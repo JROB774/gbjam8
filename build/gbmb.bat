@@ -1,6 +1,6 @@
 @echo off
 setlocal
 
-start /b ..\.gbmb\gbmb.exe
+start /b ..\tools\GBMB\GBMB.EXE
 
 endlocal

@@ -1,6 +1,6 @@
 @echo off
 setlocal
 
-start /b ..\.gbtd\gbtd.exe
+start /b ..\tools\GBTD\GBTD.EXE
 
 endlocal
