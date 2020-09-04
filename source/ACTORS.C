@@ -16,10 +16,10 @@ typedef struct _ACTOR_
     U8    animf;  /* The current frame of the animation being player.         */
     U8    animt;  /* Timer for the current animation frame.                   */
     U8    slot;   /* Starting slot in OAM for the actor's sprite data.        */
-    U8    ext0;   /* Can be used to represent extra/custom data.              */
-    U8    ext1;   /* Can be used to represent extra/custom data.              */
-    U8    ext2;   /* Can be used to represent extra/custom data.              */
-    U8    ext3;   /* Can be used to represent extra/custom data.              */
+    FIXED ext0;   /* Can be used to represent extra/custom data.              */
+    FIXED ext1;   /* Can be used to represent extra/custom data.              */
+    FIXED ext2;   /* Can be used to represent extra/custom data.              */
+    FIXED ext3;   /* Can be used to represent extra/custom data.              */
     BOOL  active; /* Whether the actor is currently active or not. An actor   */
                   /* that is not active can be replaced with a new actor.     */
 } ACTOR;

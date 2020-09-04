@@ -1,6 +1,6 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-#define DEBUG_NO_PROFILE 1
+#define DEBUG_NO_PROFILE 0
 #define DEBUG_MODE       1
 
 #include <gb/gb.h>
@@ -22,17 +22,12 @@
 
 void main ()
 {
-    // FIXED n = ATAN2(ITOF(100),ITOF(20));
-    // printf("%d.%d\n", FPRINT(n,100));
-
-    #if 1
     BKG_PAL0 = 0xFF; /* Set the current palette to black so we can fade in. */
     SPRITES_8x16;    /* We use 8x16 sprite mode to fit more data in OAM.    */
     DISPLAY_ON;      /* Enable the Game Boy's display.                      */
     SPLASH();        /* Play through all the splash screens / credits.      */
     TITLE();         /* Display the title screen and wait for START.        */
     GAME();          /* Initialize and then run the main game loop.         */
-    #endif
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/
