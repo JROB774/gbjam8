@@ -1,7 +1,5 @@
 /.emulator
 
-tools/*.ini
-
 dev/*.c
 dev/*.h
 
@@ -13,3 +11,4 @@ dev/*.h
 *.o
 *.gb
 *.pdn
+*.ini
