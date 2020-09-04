@@ -62,10 +62,16 @@ while (0)
 #include <gb/bgb_emu.h>
 #include <stdio.h>
 
+#ifndef DEBUG_BUFFER_SIZE
+#define DEBUG_BUFFER_SIZE 512
+#endif
+
+GLOBAL char debug_buffer[DEBUG_BUFFER_SIZE];
+
 /* Some debugging utilities for the BGB emulator if we're in DEBUG_MODE. */
-#define DEBUG_PROFILE_BEGIN(msg) BGB_PROFILE_BEGIN(msg        )
-#define DEBUG_PROFILE_END(  msg) BGB_PROFILE_END  (msg        )
-#define DEBUG_LOG_MESSAGE(  ...) BGB_MESSAGE_FMT  (__VA_ARGS__)
+#define DEBUG_PROFILE_BEGIN(msg) BGB_PROFILE_BEGIN(msg                      )
+#define DEBUG_PROFILE_END(  msg) BGB_PROFILE_END  (msg                      )
+#define DEBUG_LOG_MESSAGE(  ...) BGB_MESSAGE_FMT  (debug_buffer, __VA_ARGS__)
 
 #else
 
