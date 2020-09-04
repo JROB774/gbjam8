@@ -2,16 +2,9 @@
 
 #define PLAYER_SPEED 1
 
-typedef struct _PLAYER_
+INTERNAL VOID A_PLAYER (ACTOR* actor)
 {
-    U8 dir;
-
-} PLAYER;
-
-GLOBAL PLAYER player;
-
-INTERNAL VOID player_update (ACTOR* actor)
-{
+    #if 0
     U8 old_dir = player.dir;
 
     /* Move the player around the screen and update the current direction. */
@@ -33,6 +26,7 @@ INTERNAL VOID player_update (ACTOR* actor)
     if (JOYPAD_PRESSED_SELECT) {
         map_draw();
     }
+    #endif
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/

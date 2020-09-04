@@ -1,6 +1,6 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-INTERNAL VOID mon_gaper_update (ACTOR* actor)
+INTERNAL VOID A_GAPER (ACTOR* actor)
 {
     /* @Incomplete: ... */
 }
