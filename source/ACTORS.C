@@ -177,6 +177,10 @@ INTERNAL VOID actor_create (U8 type, U8 x, U8 y)
     actor->animf  = 0;
     actor->animt  = 0;
     actor->slot   = actor_list_ptr;
+    actor->ext0   = 0;
+    actor->ext1   = 0;
+    actor->ext2   = 0;
+    actor->ext3   = 0;
     actor->active = TRUE;
 
     for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
@@ -203,7 +207,9 @@ INTERNAL VOID actor_anim_change (ACTOR* actor, U8 anim, BOOL reset)
 
 INTERNAL BOOL actor_anim_done (ACTOR* actor)
 {
-    return ((!GET_AANIM_LOOP(actor)) && (actor->animf == GET_AANIM_FRAMES(actor)-1) && (actor->animt >= GET_AANIM_CURR_TICKS(actor)));
+    return ((               !GET_AANIM_LOOP      (actor)  ) && /* Not Looping  */
+            (actor->animf == GET_AANIM_FRAMES    (actor)-1) && /* Last Frame   */
+            (actor->animt >= GET_AANIM_CURR_TICKS(actor)  ));  /* End of Frame */
 }
 
 INTERNAL VOID actor_tick_all (VOID)
@@ -243,7 +249,7 @@ INTERNAL VOID actor_tick_all (VOID)
             }
             /* Update the actor's final position. */
             for (j=0; j<GET_AMSPR_SIZE(actor); ++j) {
-                move_sprite(actor->slot+j, FTOI(actor->x)+(j<<3), FTOI(actor->y));
+                move_sprite(actor->slot+j, FTOI(actor->x)+SPRITE_X_OFFSET+(j<<3), FTOI(actor->y)+SPRITE_Y_OFFSET);
             }
         }
     }
