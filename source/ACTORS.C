@@ -135,15 +135,24 @@ GLOBAL const ABASE ABASE_TABLE[/*(ATYPE)*/] =
 {A_GAPER ,  100, ASTAT_MOVE, AANIM_GAPER_M , AFLAG_HOSTILE}, /* ATYPE_GAPER   */
 };
 
-/* The actor manager system that handles creating, destroying, and managing. **/
+/* Macro utilities for accessing meta-sprite and animation actor table data. **/
 
-#define GET_AMSPR_SIZE(  actor   ) AMSPR_TABLE[GET_AANIM_FRAME(actor)]
-#define GET_AMSPR_SPR(   actor, i) AMSPR_TABLE[GET_AANIM_FRAME(actor)+1+(i<<1)]
-#define GET_AMSPR_ATTR(  actor, i) AMSPR_TABLE[GET_AANIM_FRAME(actor)+1+(i<<1)+1]
-#define GET_AANIM_FRAME( actor   ) AANIM_TABLE[actor->animi+2+(actor->animf<<1)]
-#define GET_AANIM_FRAMET(actor   ) AANIM_TABLE[actor->animi+2+(actor->animf<<1)+1]
-#define GET_AANIM_LENGTH(actor   ) AANIM_TABLE[actor->animi]
-#define GET_AANIM_LOOP(  actor   ) AANIM_TABLE[actor->animi+1]
+#define GET_AMSPR_PTR(       actor  ) (AMSPR_TABLE+GET_AANIM_CURR_AMSPR(actor))
+#define GET_AMSPR(           actor  ) (*(GET_AMSPR_PTR(actor)                ))
+#define GET_AMSPR_SIZE(      actor  ) (*(GET_AMSPR_PTR(actor)                ))
+#define GET_AMSPR_SPR(       actor,s) (*(GET_AMSPR_PTR(actor)+0x01+((s)<<1)  ))
+#define GET_AMSPR_ATTR(      actor,s) (*(GET_AMSPR_PTR(actor)+0x02+((s)<<1)  ))
+
+#define GET_AANIM_PTR(       actor  ) (AANIM_TABLE+actor->animi               )
+#define GET_AANIM(           actor  ) (*(GET_AANIM_PTR(actor)                ))
+#define GET_AANIM_FRAMES(    actor  ) (*(GET_AANIM_PTR(actor)                ))
+#define GET_AANIM_LOOP(      actor  ) (*(GET_AANIM_PTR(actor)+0x01           ))
+#define GET_AANIM_AMSPR(     actor,f) (*(GET_AANIM_PTR(actor)+0x02+((f)<<1)  ))
+#define GET_AANIM_TICKS(     actor,f) (*(GET_AANIM_PTR(actor)+0x03+((f)<<1)  ))
+#define GET_AANIM_CURR_AMSPR(actor  ) (GET_AANIM_AMSPR(actor,actor->animf    ))
+#define GET_AANIM_CURR_TICKS(actor  ) (GET_AANIM_TICKS(actor,actor->animf    ))
+
+/* The actor manager system that handles creating, destroying, and managing. **/
 
 #define MAX_NUMBER_OF_ACTORS 0x28 /* (40) The same as max sprite number. */
 
@@ -178,11 +187,6 @@ INTERNAL VOID actor_create (U8 type, U8 x, U8 y)
     actor_list_ptr += 2; /* @Temporary!!! */
 }
 
-INTERNAL BOOL actor_anim_done (ACTOR* actor)
-{
-    return ((!GET_AANIM_LOOP(actor)) && (actor->animf == GET_AANIM_LENGTH(actor)-1) && (actor->animt >= GET_AANIM_FRAMET(actor)));
-}
-
 INTERNAL VOID actor_anim_change (ACTOR* actor, U8 anim, BOOL reset)
 {
     U8 i;
@@ -195,6 +199,11 @@ INTERNAL VOID actor_anim_change (ACTOR* actor, U8 anim, BOOL reset)
         set_sprite_tile(actor->slot+i, GET_AMSPR_SPR(actor,i));
         set_sprite_prop(actor->slot+i, GET_AMSPR_ATTR(actor,i));
     }
+}
+
+INTERNAL BOOL actor_anim_done (ACTOR* actor)
+{
+    return ((!GET_AANIM_LOOP(actor)) && (actor->animf == GET_AANIM_FRAMES(actor)-1) && (actor->animt >= GET_AANIM_CURR_TICKS(actor)));
 }
 
 INTERNAL VOID actor_tick_all (VOID)
@@ -210,10 +219,10 @@ INTERNAL VOID actor_tick_all (VOID)
             if (!(actor->flags & AFLAG_NOANIM)) {
                 if (!actor_anim_done(actor)) {
                     actor->animt++;
-                    if (actor->animt >= GET_AANIM_FRAMET(actor)) {
+                    if (actor->animt >= GET_AANIM_CURR_TICKS(actor)) {
                         actor->animt = 0;
                         actor->animf++;
-                        if (actor->animf >= GET_AANIM_LENGTH(actor)) {
+                        if (actor->animf >= GET_AANIM_FRAMES(actor)) {
                             if (GET_AANIM_LOOP(actor)) {
                                 actor->animf = 0;
                             } else {
