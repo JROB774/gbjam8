@@ -1,7 +1,6 @@
 /.emulator
 
-.gbmb/gbmb.ini
-.gbtd/gbtd.ini
+tools/*.ini
 
 dev/*.c
 dev/*.h
