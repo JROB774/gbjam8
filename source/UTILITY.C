@@ -59,6 +59,8 @@ while (0)
 
 #if DEBUG_MODE /* ----------------------------------------------------------- */
 
+/* Some debugging utilities for the BGB emulator if we're in DEBUG_MODE. */
+
 #include <gb/bgb_emu.h>
 #include <stdio.h>
 
@@ -68,9 +70,13 @@ while (0)
 
 GLOBAL char debug_buffer[DEBUG_BUFFER_SIZE];
 
-/* Some debugging utilities for the BGB emulator if we're in DEBUG_MODE. */
-#define DEBUG_PROFILE_BEGIN(msg) BGB_PROFILE_BEGIN(msg                      )
-#define DEBUG_PROFILE_END(  msg) BGB_PROFILE_END  (msg                      )
+#if !DEBUG_NO_PROFILE
+#define DEBUG_PROFILE_BEGIN(msg) BGB_PROFILE_BEGIN(msg)
+#define DEBUG_PROFILE_END(  msg) BGB_PROFILE_END  (msg)
+#else
+#define DEBUG_PROFILE_BEGIN(msg)
+#define DEBUG_PROFILE_END(  msg)
+#endif
 #define DEBUG_LOG_MESSAGE(  ...) BGB_MESSAGE_FMT  (debug_buffer, __VA_ARGS__)
 
 #else
