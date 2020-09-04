@@ -1,3 +1,33 @@
+#if 0
+/*////////////////////////////////////////////////////////////////////////////*/
+
+/* An actor is any entity within the world (player, monster, item, etc.).     */
+
+typedef struct _ACTOR_
+{
+    FIXED x;
+    FIXED y;
+
+} ACTOR;
+
+/* Unique identifiers for all the different actor types in the game.          */
+
+#define ATYPE_PLAYER        0x00
+#define ATYPE_GAPER         0x01
+
+/* All of the different states for the different types of actors.             */
+
+#define ASTATE_PLAYER_IDLE  0x00
+#define ASTATE_PLAYER_MOVE  0x01
+#define ASTATE_PLAYER_ITEM  0x02
+#define ASTATE_PLAYER_HURT  0x04
+#define ASTATE_PLAYER_DEAD  0x05
+
+#define ASTATE_GAPER_MOVE   0x00
+#define ASTATE_GAPER_DEAD   0x01
+
+/*////////////////////////////////////////////////////////////////////////////*/
+#else
 /*////////////////////////////////////////////////////////////////////////////*/
 
 /* An actor is any entity within the world (player, monster, item, etc.).     */
@@ -135,31 +165,37 @@ GLOBAL const ASTATE ASTATE_TABLE[] =
 #define MAX_NUMBER_OF_ACTORS 0x28 /* (40) The same as max sprite number. */
 
 GLOBAL ACTOR actor_list[MAX_NUMBER_OF_ACTORS];
+GLOBAL UINT8 actor_list_ptr = 0;
 
-INTERNAL VOID actor_create (U8 index, U8 type_id, U8 state_id, U8 x, U8 y)
+INTERNAL VOID actor_create (U8 type, U8 state, U8 x, U8 y)
 {
-    ACTOR* actor = &actor_list[index];
+    ACTOR* actor = &actor_list[actor_list_ptr];
 
-    actor->base        = &ABASE_TABLE[type_id];
-    actor->type_id     = type_id;
+    actor->base        = &ABASE_TABLE[type];
+    actor->type_id     = type;
     actor->state_id    = 0xFF; /* Invalid ID so actor_set_state will set. */
-    actor->slot        = index;
+    actor->slot        = actor_list_ptr;
     actor->x           = x;
     actor->y           = y;
     actor->state_timer = 0;
     actor->active      = TRUE;
 
-    actor_set_state(actor, state_id);
+    actor_list_ptr += (actor->base->spr_w*actor->base->spr_h);
+
+    actor_set_state(actor, state);
 }
 
-INTERNAL VOID actor_set_state (ACTOR* actor, U8 state_id)
+INTERNAL VOID actor_set_state (ACTOR* actor, U8 state)
 {
     U8 i;
-    /* Set the new state and update the actor's sprites accordingly. */
-    if (actor->state_id == state_id) { return; }
-    actor->state = &ASTATE_TABLE[actor->base->offset + state_id];
+    if (actor->state_id == state) { return; }
+    actor->state = &ASTATE_TABLE[actor->base->offset + state];
     actor->state_timer = 0;
-    actor->state_id = state_id;
+    actor->state_id = state;
+
+    /* @NOTE: This flipping code pretty much works for what we need to use it for. */
+    /* But it will not work in a number of cases and should either be scrapped or  */
+    /* reworked into something better if we are planning on using it later on.     */
     switch (actor->state->flip) {
         case (FLIP_NONE): {
             for (i=0; i<(actor->base->spr_w*actor->base->spr_h); ++i) {
@@ -207,3 +243,5 @@ INTERNAL VOID actor_update_all (VOID)
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/
+
+#endif
