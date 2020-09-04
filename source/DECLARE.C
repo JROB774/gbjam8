@@ -7,23 +7,24 @@ typedef struct _ABASE_  ABASE;
 
 /* FUNCTIONS */
 
-INTERNAL VOID joypad_wait            (U8 buttons            );
-INTERNAL BOOL joypad_waittimeout     (U8 buttons, U8 timeout);
-INTERNAL VOID fade_to_white          (U8 wait_period        );
-INTERNAL VOID fade_from_white        (U8 wait_period        );
-INTERNAL VOID fade_to_black          (U8 wait_period        );
-INTERNAL VOID fade_from_black        (U8 wait_period        );
-INTERNAL VOID actor_create           (U8 type, U8 x, U8 y   );
-INTERNAL VOID actor_set_state        (ACTOR* actor, U8 state);
-INTERNAL VOID actor_tick_all         (VOID                  );
-INTERNAL VOID status_init            (VOID                  );
-INTERNAL VOID status_update_hearts   (VOID                  );
-INTERNAL VOID status_update_counters (VOID                  );
-INTERNAL VOID status_update_item     (VOID                  );
-INTERNAL VOID status_update_score    (VOID                  );
-INTERNAL VOID map_draw               (VOID                  );
+INTERNAL VOID joypad_wait            (U8 buttons                       );
+INTERNAL BOOL joypad_waittimeout     (U8 buttons, U8 timeout           );
+INTERNAL VOID fade_to_white          (U8 wait_period                   );
+INTERNAL VOID fade_from_white        (U8 wait_period                   );
+INTERNAL VOID fade_to_black          (U8 wait_period                   );
+INTERNAL VOID fade_from_black        (U8 wait_period                   );
+INTERNAL VOID actor_create           (U8 type, U8 x, U8 y              );
+INTERNAL BOOL actor_anim_done        (ACTOR* actor                     );
+INTERNAL VOID actor_anim_change      (ACTOR* actor, U8 anim, BOOL reset);
+INTERNAL VOID actor_tick_all         (VOID                             );
+INTERNAL VOID status_init            (VOID                             );
+INTERNAL VOID status_update_hearts   (VOID                             );
+INTERNAL VOID status_update_counters (VOID                             );
+INTERNAL VOID status_update_item     (VOID                             );
+INTERNAL VOID status_update_score    (VOID                             );
+INTERNAL VOID map_draw               (VOID                             );
 
-INTERNAL VOID A_PLAYER               (ACTOR* actor          );
-INTERNAL VOID A_GAPER                (ACTOR* actor          );
+INTERNAL VOID A_PLAYER               (ACTOR* actor                     );
+INTERNAL VOID A_GAPER                (ACTOR* actor                     );
 
 /*////////////////////////////////////////////////////////////////////////////*/

@@ -183,6 +183,20 @@ INTERNAL BOOL actor_anim_done (ACTOR* actor)
     return ((!GET_AANIM_LOOP(actor)) && (actor->animf == GET_AANIM_LENGTH(actor)-1) && (actor->animt >= GET_AANIM_FRAMET(actor)));
 }
 
+INTERNAL VOID actor_anim_change (ACTOR* actor, U8 anim, BOOL reset)
+{
+    U8 i;
+    actor->animi = anim;
+    if (reset) {
+        actor->animf = 0;
+        actor->animt = 0;
+    }
+    for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
+        set_sprite_tile(actor->slot+i, GET_AMSPR_SPR(actor,i));
+        set_sprite_prop(actor->slot+i, GET_AMSPR_ATTR(actor,i));
+    }
+}
+
 INTERNAL VOID actor_tick_all (VOID)
 {
     ACTOR* actor;
