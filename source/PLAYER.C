@@ -1,5 +1,6 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
+#define PLAYER_DEAD_FADE_SPEED   10
 #define PLAYER_START_HEARTS       3
 #define PLAYER_IFRAMES           40
 #define PLAYER_SPEED       ITOF(  1)
@@ -27,29 +28,48 @@ INTERNAL VOID player_damage (VOID)
     pdata.iframes = PLAYER_IFRAMES;
     pdata.hearts--;
 
+    status_update_hearts();
+
     if (pdata.hearts == 0) {
         player_kill();
     }
-
-    status_update_hearts();
 }
 
 INTERNAL VOID player_kill (VOID)
 {
+    ACTOR* actor;
+
     actor_anim_change(a_player, AANIM_PLAYER_D, TRUE);
     a_player->state = ASTAT_DEAD;
+
+    /* Kill all other actors when the player dies. */
+    actor = a_monsters;
+    while (actor != (a_monsters+a_monster_count)) {
+        actor_deactivate(actor);
+        actor++;
+    }
+    actor = a_tears;
+    while (actor != (a_tears+a_tear_count)) {
+        actor_deactivate(actor);
+        actor++;
+    }
+
+    fade_to_black(PLAYER_DEAD_FADE_SPEED);
+
+    while (TRUE) {}
 }
 
 INTERNAL VOID A_PLAYER (ACTOR* actor)
 {
+    /* Decrease velocity over time as the force diminishes. */
     if (actor->vx != 0) { actor->vx = FDIV(actor->vx,ITOF(2)); }
     if (actor->vy != 0) { actor->vy = FDIV(actor->vy,ITOF(2)); }
 
-    if (actor->state == ASTAT_DEAD) {
-        // @Incomplete: ...
-    } else {
+    /* Player logic depends on if the actor is dead or alive. */
+    if (actor->state != ASTAT_DEAD) {
         U8 anim = AANIM_PLAYER_I;
 
+        /* Flash the chracter whilst they are invincible. */
         if (pdata.iframes) {
             TOGGLE_FLAGS(actor->flags, AFLAG_HIDDEN);
             pdata.iframes--;
@@ -67,7 +87,7 @@ INTERNAL VOID A_PLAYER (ACTOR* actor)
         actor_anim_change(actor, anim, FALSE);
 
         /* Check collision with hostile enemies. */
-        if ((actor->animt % 2) == 0) {
+        if ((actor->ticks % 2) == 0) {
             if (!pdata.iframes) { /* No need to check if we have iframes. */
                 ACTOR* enemy = a_monsters;
                 while (enemy != (a_monsters+a_monster_count)) {

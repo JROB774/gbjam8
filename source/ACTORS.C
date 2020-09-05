@@ -18,6 +18,7 @@ typedef struct _ACTOR_
     U8    animi;  /* Identifier for the current actor animation.      (AANIM) */
     U8    animf;  /* The current frame of the animation being player.         */
     U8    animt;  /* Timer for the current animation frame.                   */
+    U8    ticks;  /* General-purpose timer for the actor.                     */
     U8    slot;   /* Starting slot in OAM for the actor's sprite data.        */
     U8    ext0;   /* Can be used to represent extra/custom data.              */
     U8    ext1;   /* Can be used to represent extra/custom data.              */
@@ -123,8 +124,8 @@ GLOBAL const U8 AANIM_TABLE[/*(AANIM)*/] =
 0x02,  TRUE ,  AMSPR_PLAYER_MD0, 20, AMSPR_PLAYER_MD1,20, /* AANIM_PLAYER_MD  */
 0x02,  TRUE ,  AMSPR_PLAYER_ML0, 20, AMSPR_PLAYER_ML1,20, /* AANIM_PLAYER_ML  */
 0x01,  FALSE,  AMSPR_PLAYER_H0 , 50,                      /* AANIM_PLAYER_H   */
-0x01,  FALSE,  AMSPR_PLAYER_D0 , 50,                      /* AANIM_PLAYER_D   */
-0x01,  FALSE,  AMSPR_PLAYER_G0 ,120,                      /* AANIM_PLAYER_G   */
+0x01,  TRUE ,  AMSPR_PLAYER_D0 ,255,                      /* AANIM_PLAYER_D   */
+0x01,  FALSE,  AMSPR_PLAYER_G0 , 50,                      /* AANIM_PLAYER_G   */
 0x02,  TRUE ,  AMSPR_GAPER_M0  , 20, AMSPR_GAPER_M1  ,20, /* AANIM_GAPER_M    */
 };
 
@@ -176,7 +177,7 @@ GLOBAL U8 oam_slot_ptr = 0;
 
 GLOBAL ACTOR* a_player   = a_actors+ 0; // Length =  1
 GLOBAL ACTOR* a_monsters = a_actors+ 1; // Length = 10
-GLOBAL ACTOR* a_tears    = a_actors+11; // Length = 10
+GLOBAL ACTOR* a_tears    = a_actors+11; // Length = 14
 
 GLOBAL U8 a_monster_count = 0;
 GLOBAL U8 a_tear_count    = 0;
@@ -189,7 +190,7 @@ INTERNAL VOID actor_create (U8 type, U8 x, U8 y)
     switch (ABASE_TABLE[type].cat) {
         case (ACATE_PLAYER ): actor = a_player;                       break;
         case (ACATE_MONSTER): actor = a_monsters+(a_monster_count++); break;
-        case (ACATE_TEAR   ): actor = a_tears   +(a_tear_count++   ); break;
+        case (ACATE_TEAR   ): actor = a_tears   +(a_tear_count   ++); break;
     }
 
     actor->tick     = ABASE_TABLE[type].tick;
@@ -210,6 +211,7 @@ INTERNAL VOID actor_create (U8 type, U8 x, U8 y)
     actor->animf    = 0;
     actor->animt    = 0;
     actor->slot     = oam_slot_ptr;
+    actor->ticks    = 0;
     actor->ext0     = 0;
     actor->ext1     = 0;
     actor->ext2     = 0;
@@ -233,7 +235,7 @@ INTERNAL VOID actor_anim_change (ACTOR* actor, U8 anim, BOOL reset)
         actor->animt = 0;
     }
     for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
-        set_sprite_tile(actor->slot+i, GET_AMSPR_SPR(actor,i));
+        set_sprite_tile(actor->slot+i, GET_AMSPR_SPR (actor,i));
         set_sprite_prop(actor->slot+i, GET_AMSPR_ATTR(actor,i));
     }
 }
@@ -245,9 +247,18 @@ INTERNAL BOOL actor_anim_done (ACTOR* actor)
             (actor->animt >= GET_AANIM_CURR_TICKS(actor)  ));  /* End of Frame */
 }
 
+INTERNAL VOID actor_deactivate (ACTOR* actor)
+{
+    U8 i;
+    actor->active = FALSE;
+    for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
+        move_sprite(actor->slot+i, 0,0);
+    }
+}
+
 INTERNAL VOID actor_tick_all (VOID)
 {
-    U8 j, sx,sy;
+    U8 i, sx,sy;
     ACTOR* a;
 
     /* Go through the list and update all of the active actors. */
@@ -269,13 +280,16 @@ INTERNAL VOID actor_tick_all (VOID)
                                 a->animf--;
                             }
                         }
-                        for (j=0; j<GET_AMSPR_SIZE(a); ++j) {
-                            set_sprite_tile(a->slot+j, GET_AMSPR_SPR(a,j));
-                            set_sprite_prop(a->slot+j, GET_AMSPR_ATTR(a,j));
+                        for (i=0; i<GET_AMSPR_SIZE(a); ++i) {
+                            set_sprite_tile(a->slot+i, GET_AMSPR_SPR (a,i));
+                            set_sprite_prop(a->slot+i, GET_AMSPR_ATTR(a,i));
                         }
                     }
                 }
             }
+
+            /* Tick the actors internal timer. */
+            a->ticks++;
 
             /* Perform type-specific logic for the actor. */
             a->tick(a);
@@ -298,8 +312,8 @@ INTERNAL VOID actor_tick_all (VOID)
                 sx = 0;
                 sy = 0;
             }
-            for (j=0; j<GET_AMSPR_SIZE(a); ++j) {
-                move_sprite(a->slot+j, sx+(j<<3), sy);
+            for (i=0; i<GET_AMSPR_SIZE(a); ++i) {
+                move_sprite(a->slot+i, sx+(i<<3), sy);
             }
         }
         a++;

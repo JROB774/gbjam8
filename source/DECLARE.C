@@ -20,6 +20,7 @@ INTERNAL VOID fade_from_black        (U8 wait_period                   );
 INTERNAL VOID actor_create           (U8 type, U8 x, U8 y              );
 INTERNAL VOID actor_anim_change      (ACTOR* actor, U8 anim, BOOL reset);
 INTERNAL BOOL actor_anim_done        (ACTOR* actor                     );
+INTERNAL VOID actor_deactivate       (ACTOR* actor                     );
 INTERNAL VOID actor_tick_all         (VOID                             );
 INTERNAL VOID status_init            (VOID                             );
 INTERNAL VOID status_update_hearts   (VOID                             );

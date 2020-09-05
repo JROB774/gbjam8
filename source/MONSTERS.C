@@ -5,7 +5,7 @@
 
 INTERNAL VOID A_GAPER (ACTOR* actor)
 {
-    if ((actor->animt % GAPER_UPDATE) == 0) {
+    if ((actor->ticks % GAPER_UPDATE) == 0) {
         FIXED theta = ATAN2(a_player->y - actor->y, a_player->x - actor->x);
         actor->vx = FMUL(COS(FTOI(theta)),GAPER_SPEED);
         actor->vy = FMUL(SIN(FTOI(theta)),GAPER_SPEED);
