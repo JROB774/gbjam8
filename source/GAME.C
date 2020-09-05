@@ -4,15 +4,10 @@
 
 INTERNAL void GAME ()
 {
-    SET_SPR_DATA(TILESET_SPR_ISAAC   );
-    SET_SPR_DATA(TILESET_SPR_MONSTERS);
-    /*SET_SPR_DATA(TILESET_SPR_TEARS   );*/
-    /*SET_SPR_DATA(TILESET_SPR_PICKUPS );*/
-    /*SET_SPR_DATA(TILESET_SPR_ITEMS   );*/
-    /*SET_SPR_DATA(TILESET_SPR_SPLATS  );*/
-    SET_BKG_DATA(TILESET_DISPLAY     );
-    SET_BKG_DATA(TILESET_ROOM        );
-    SET_MAP_DATA(TILEMAP_ROOM        );
+    SET_SPR_DATA(TILESET_SPRITES);
+    SET_BKG_DATA(TILESET_DISPLAY);
+    SET_BKG_DATA(TILESET_ROOM   );
+    SET_MAP_DATA(TILEMAP_ROOM   );
 
     player_init();
     status_init();
@@ -22,7 +17,7 @@ INTERNAL void GAME ()
 
     actor_create(ATYPE_GAPER,  72, 56);
     actor_create(ATYPE_GAPER,  56, 72);
-    actor_create(ATYPE_GAPER,  72, 72);
+    /*actor_create(ATYPE_GAPER,  72, 72);*/
     actor_create(ATYPE_GAPER,  88, 72);
     actor_create(ATYPE_GAPER,  72, 88);
 

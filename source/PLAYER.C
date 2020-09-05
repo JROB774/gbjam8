@@ -1,16 +1,22 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-#define PLAYER_DEAD_FADE_SPEED   10
-#define PLAYER_START_HEARTS       3
-#define PLAYER_IFRAMES           40
-#define PLAYER_SPEED       ITOF(  1)
-#define PLAYER_KNOCKBACK   ITOF( 10)
+#define PLAYER_DEAD_FADE_SPEED     10
+#define PLAYER_START_HEARTS         3
+#define PLAYER_IFRAMES             40
+#define PLAYER_FIRE_RATE_COOLDOWN  15
+#define PLAYER_TEAR_SPEED     ITOF( 2)
+#define PLAYER_SPEED          ITOF( 1)
+#define PLAYER_KNOCKBACK      ITOF(10)
+#define PLAYER_TEAR_KNOCKBACK ITOF( 2)
+#define PLAYER_TEAR_DAMAGE    ITOF( 3)+FP_HALF
 
 typedef struct _PDATA_
 {
     U8 max_hearts; /* Maximum number of hearts the player can have right now. */
     U8 hearts;     /* Current number of hearts the player has right now.      */
     U8 iframes;    /* Number of frames of invincibility that tick down.       */
+    U8 dir_locked; /* Player's direction is locked whilst shooting.           */
+    U8 cooldown;   /* Timer that dictates when the player can shoot.          */
 
 } PDATA;
 
@@ -21,6 +27,8 @@ INTERNAL VOID player_init (VOID)
     pdata.max_hearts = PLAYER_START_HEARTS;
     pdata.hearts     = PLAYER_START_HEARTS;
     pdata.iframes    = 0;
+    pdata.dir_locked = FALSE;
+    pdata.cooldown   = 0;
 }
 
 INTERNAL VOID player_damage (VOID)
@@ -42,6 +50,7 @@ INTERNAL VOID player_kill (VOID)
     actor_anim_change(a_player, AANIM_PLAYER_D, TRUE);
     a_player->state = ASTAT_DEAD;
 
+    /* @NOTE: Not sure why but looping through the actor list in one go deactivates player as well? */
     /* Kill all other actors when the player dies. */
     actor = a_monsters;
     while (actor != (a_monsters+a_monster_count)) {
@@ -84,7 +93,9 @@ INTERNAL VOID A_PLAYER (ACTOR* actor)
         if (JOYPAD_DOWN_PAD_U) { actor->y -= PLAYER_SPEED; anim = AANIM_PLAYER_MU; }
         if (JOYPAD_DOWN_PAD_D) { actor->y += PLAYER_SPEED; anim = AANIM_PLAYER_MD; }
 
-        actor_anim_change(actor, anim, FALSE);
+        if (!pdata.dir_locked) {
+            actor_anim_change(actor, anim, FALSE);
+        }
 
         /* Check collision with hostile enemies. */
         if ((actor->ticks % 2) == 0) {
@@ -104,6 +115,61 @@ INTERNAL VOID A_PLAYER (ACTOR* actor)
                     enemy++;
                 }
             }
+        }
+
+        /* Handle firing tears. */
+        if (pdata.cooldown) { pdata.cooldown--; }
+        if (JOYPAD_DOWN_A) {
+            /* If the player is idle change to the down animation as it just looks better. */
+            if (actor->animi == AANIM_PLAYER_I) {
+                actor_anim_change(actor, AANIM_PLAYER_MD, FALSE);
+            }
+            pdata.dir_locked = TRUE;
+            if (!pdata.cooldown) { /* If we've cooled down from the last shot. */
+                ACTOR* tear = actor_create(ATYPE_PTEAR, FTOI(actor->x), FTOI(actor->y));
+                pdata.cooldown = PLAYER_FIRE_RATE_COOLDOWN;
+                if (tear) { /* Could be NULL! */
+                    tear->ext0 = actor->animi; /* Store direction in ext0. */
+                }
+            }
+        } else {
+            pdata.dir_locked = FALSE;
+        }
+    }
+}
+
+INTERNAL VOID A_PTEAR (ACTOR* actor)
+{
+    /* We flicker tears as there will be a lot of them on screen. */
+    // if ((actor->ticks % 2) == 0) {
+    //     TOGGLE_FLAGS(actor->flags, AFLAG_HIDDEN);
+    // }
+
+    /* If the tear hits the edge of the wall then kill it. */
+    if (actor->x < ITOF(24) || (actor->x + ITOF(8)) > ITOF(136)) { actor_deactivate(actor); } /* @NOTE: Hardcoded width and height! */
+    if (actor->y < ITOF(32) || (actor->y + ITOF(8)) > ITOF(128)) { actor_deactivate(actor); } /* @NOTE: Hardcoded width and height! */
+
+    /* Move the tear based on its direction which is stored in ext0. */
+    switch (actor->ext0) {
+        case (AANIM_PLAYER_I ):
+        case (AANIM_PLAYER_MD): { actor->y += PLAYER_TEAR_SPEED; } break;
+        case (AANIM_PLAYER_MU): { actor->y -= PLAYER_TEAR_SPEED; } break;
+        case (AANIM_PLAYER_ML): { actor->x -= PLAYER_TEAR_SPEED; } break;
+        case (AANIM_PLAYER_MR): { actor->x += PLAYER_TEAR_SPEED; } break;
+    }
+
+    /* Check collision with hostile enemies. */
+    if ((actor->ticks % 2) == 0) {
+        ACTOR* enemy = a_monsters;
+        while (enemy != (a_monsters+a_monster_count)) {
+            if (enemy->active) {
+                if (CHECK_COLLISION(actor, enemy)) {
+                    actor_deactivate(actor); /* KIll the tear. */
+                    enemy->hp -= PLAYER_TEAR_DAMAGE;
+                    break; /* There's no need to continue looping. */
+                }
+            }
+            enemy++;
         }
     }
 }

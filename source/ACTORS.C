@@ -10,7 +10,7 @@ typedef struct _ACTOR_
     FIXED x,y;    /* Current (X,Y) position as fixed-point values.            */
     FIXED vx,vy;  /* Current (X,Y) velocity as fixed-point values.            */
     RECTF bounds; /* Bounding/collision box for the actor.                    */
-    U16   hp;     /* Health points for the actor (not used by all actors).    */
+    FIXED hp;     /* Health points for the actor (not used by all actors).    */
     U8    cat;    /* Category of the actor type.                              */
     U8    flags;  /* Flags that define aspects of an entity.          (AFLAG) */
     U8    type;   /* Identifier for the type of actor.                (ATYPE) */
@@ -40,17 +40,17 @@ typedef struct _ACTOR_
 #define AFLAG_NOANIM      0x01 /* The actor is not animated.                  */
 #define AFLAG_UNBOUND     0x02 /* The actor is not bound to the room.         */
 #define AFLAG_HIDDEN      0x04 /* The actor will not be drawn.                */
-
-// #define AFLAG_SOLID       0x04 /* The actor collides with tiles.              */
-// #define AFLAG_HOSTILE     0x08 /* The actor can be hurt by the player.        */
-// #define AFLAG_FLYING      0x10 /* The actor is flying.                        */
-// #define AFLAG_NODAMAGE    0x20 /* The actor cannot take any damage.           */
-// #define AFLAG_BOSS        0x40 /* The actor is a boss (show health bar).      */
+// #define AFLAG_SOLID       0x04 /* The actor collides with tiles.           */
+// #define AFLAG_HOSTILE     0x08 /* The actor can be hurt by the player.     */
+// #define AFLAG_FLYING      0x10 /* The actor is flying.                     */
+// #define AFLAG_NODAMAGE    0x20 /* The actor cannot take any damage.        */
+// #define AFLAG_BOSS        0x40 /* The actor is a boss (show health bar).   */
 
 /* Unique identifiers for all the different actor types in the game. **********/
 
 #define ATYPE_PLAYER      0x00
 #define ATYPE_GAPER       0x01
+#define ATYPE_PTEAR       0x02
 
 /* All of the different actor states (not all actors implement all states). ***/
 
@@ -83,6 +83,11 @@ typedef struct _ACTOR_
 #define AMSPR_PLAYER_G0   0x37
 #define AMSPR_GAPER_M0    0x3C
 #define AMSPR_GAPER_M1    0x41
+#define AMSPR_PTEAR_I0    0x46
+#define AMSPR_PTEAR_D0    0x49
+#define AMSPR_PTEAR_D1    0x4C
+#define AMSPR_PTEAR_D2    0x4F
+#define AMSPR_PTEAR_D3    0x52
 
 GLOBAL const U8 AMSPR_TABLE[/*(AMSPR)*/] =
 {
@@ -101,6 +106,11 @@ GLOBAL const U8 AMSPR_TABLE[/*(AMSPR)*/] =
 0x02,  0x1E,AATTR_NONE, 0x20,AATTR_NONE, /* AMSPR_PLAYER_G0                   */
 0x02,  0x22,AATTR_NONE, 0x24,AATTR_NONE, /* AMSPR_GAPER_M0                    */
 0x02,  0x24,AATTR_FLPX, 0x22,AATTR_FLPX, /* AMSPR_GAPER_M1                    */
+0x01,  0x26,AATTR_NONE,                  /* AMSPR_PTEAR_I0                    */
+0x01,  0x28,AATTR_NONE,                  /* AMSPR_PTEAR_D0                    */
+0x01,  0x2A,AATTR_NONE,                  /* AMSPR_PTEAR_D1                    */
+0x01,  0x2C,AATTR_NONE,                  /* AMSPR_PTEAR_D2                    */
+0x01,  0x2E,AATTR_NONE,                  /* AMSPR_PTEAR_D3                    */
 };
 
 /* All of the different animations for the different actor types. *************/
@@ -111,22 +121,26 @@ GLOBAL const U8 AMSPR_TABLE[/*(AMSPR)*/] =
 #define AANIM_PLAYER_MD   0x10
 #define AANIM_PLAYER_ML   0x16
 #define AANIM_PLAYER_H    0x1C
-#define AANIM_PLAYER_D    0x20
-#define AANIM_PLAYER_G    0x14
+#define AANIM_PLAYER_D    0x20 /* ??? */
+#define AANIM_PLAYER_G    0x14 /* ??? */
 #define AANIM_GAPER_M     0x28
+#define AANIM_PTEAR_I     0x2E
+#define AANIM_PTEAR_D     0x32
 
 GLOBAL const U8 AANIM_TABLE[/*(AANIM)*/] =
 {
-/* number_of_frames, loop, frame_metasprite, frame_ticks, ...                 */
-0x01,  TRUE ,  AMSPR_PLAYER_I0 ,255,                      /* AANIM_PLAYER_I   */
-0x02,  TRUE ,  AMSPR_PLAYER_MU0, 20, AMSPR_PLAYER_MU1,20, /* AANIM_PLAYER_MU  */
-0x02,  TRUE ,  AMSPR_PLAYER_MR0, 20, AMSPR_PLAYER_MR1,20, /* AANIM_PLAYER_MR  */
-0x02,  TRUE ,  AMSPR_PLAYER_MD0, 20, AMSPR_PLAYER_MD1,20, /* AANIM_PLAYER_MD  */
-0x02,  TRUE ,  AMSPR_PLAYER_ML0, 20, AMSPR_PLAYER_ML1,20, /* AANIM_PLAYER_ML  */
-0x01,  FALSE,  AMSPR_PLAYER_H0 , 50,                      /* AANIM_PLAYER_H   */
-0x01,  TRUE ,  AMSPR_PLAYER_D0 ,255,                      /* AANIM_PLAYER_D   */
-0x01,  FALSE,  AMSPR_PLAYER_G0 , 50,                      /* AANIM_PLAYER_G   */
-0x02,  TRUE ,  AMSPR_GAPER_M0  , 20, AMSPR_GAPER_M1  ,20, /* AANIM_GAPER_M    */
+/* number_of_frames, loop, frame_metasprite, frame_ticks, ...                                                       */
+0x01,  TRUE ,  AMSPR_PLAYER_I0 ,255,                                                            /* AANIM_PLAYER_I   */
+0x02,  TRUE ,  AMSPR_PLAYER_MU0, 20, AMSPR_PLAYER_MU1,20,                                       /* AANIM_PLAYER_MU  */
+0x02,  TRUE ,  AMSPR_PLAYER_MR0, 20, AMSPR_PLAYER_MR1,20,                                       /* AANIM_PLAYER_MR  */
+0x02,  TRUE ,  AMSPR_PLAYER_MD0, 20, AMSPR_PLAYER_MD1,20,                                       /* AANIM_PLAYER_MD  */
+0x02,  TRUE ,  AMSPR_PLAYER_ML0, 20, AMSPR_PLAYER_ML1,20,                                       /* AANIM_PLAYER_ML  */
+0x01,  FALSE,  AMSPR_PLAYER_H0 , 50,                                                            /* AANIM_PLAYER_H   */
+0x01,  TRUE ,  AMSPR_PLAYER_D0 ,255,                                                            /* AANIM_PLAYER_D   */
+0x01,  FALSE,  AMSPR_PLAYER_G0 , 50,                                                            /* AANIM_PLAYER_G   */
+0x02,  TRUE ,  AMSPR_GAPER_M0  , 20, AMSPR_GAPER_M1  ,20,                                       /* AANIM_GAPER_M    */
+0x01,  TRUE ,  AMSPR_PTEAR_I0  ,255,                                                            /* AANIM_PTEAR_I    */
+0x04,  FALSE,  AMSPR_PTEAR_D0  , 10, AMSPR_PTEAR_D1  ,10, AMSPR_PTEAR_D2,10, AMSPR_PTEAR_D3,10, /* AANIM_PTEAR_D    */
 };
 
 /* A list containing base information about each particular actor type. *******/
@@ -145,9 +159,10 @@ typedef struct _ABASE_
 
 GLOBAL const ABASE ABASE_TABLE[/*(ATYPE)*/] =
 {
-/* tick_function, bounds, category, start_hp, start_state, start_anim, flags                                                        */
-{ A_PLAYER, { ITOF( 5),ITOF( 9),ITOF( 6),ITOF( 6) }, ACATE_PLAYER ,    0, ASTAT_IDLE, AANIM_PLAYER_I, AFLAG_NONE }, /* ATYPE_PLAYER */
-{ A_GAPER , { ITOF( 5),ITOF( 9),ITOF( 6),ITOF( 6) }, ACATE_MONSTER,  100, ASTAT_MOVE, AANIM_GAPER_M , AFLAG_NONE }, /* ATYPE_GAPER  */
+/* tick_function, bounds, category, start_hp, start_state, start_anim, flags                                                           */
+{ A_PLAYER, { ITOF( 3),ITOF( 9),ITOF(10),ITOF( 7) }, ACATE_PLAYER ,   ITOF( 0), ASTAT_IDLE, AANIM_PLAYER_I, AFLAG_NONE    }, /* ATYPE_PLAYER */
+{ A_GAPER , { ITOF( 3),ITOF( 9),ITOF(10),ITOF( 7) }, ACATE_MONSTER,   ITOF(10), ASTAT_MOVE, AANIM_GAPER_M , AFLAG_NONE    }, /* ATYPE_GAPER  */
+{ A_PTEAR , { ITOF( 2),ITOF( 6),ITOF( 4),ITOF( 9) }, ACATE_TEAR   ,   ITOF( 0), ASTAT_IDLE, AANIM_PTEAR_I , AFLAG_UNBOUND }, /* ATYPE_PTEAR  */
 };
 
 /* Macro utilities for accessing meta-sprite and animation actor table data. **/
@@ -169,28 +184,48 @@ GLOBAL const ABASE ABASE_TABLE[/*(ATYPE)*/] =
 
 /* The actor manager system that handles creating, destroying, and managing. **/
 
-#define TOTAL_NUMBER_OF_ACTORS 25
+#define TOTAL_NUMBER_OF_ACTORS   40
+#define TOTAL_NUMBER_OF_PLAYERS   1
+#define TOTAL_NUMBER_OF_MONSTERS  9
+#define TOTAL_NUMBER_OF_TEARS    30
 
 GLOBAL ACTOR a_actors[TOTAL_NUMBER_OF_ACTORS];
 
 GLOBAL U8 oam_slot_ptr = 0;
 
-GLOBAL ACTOR* a_player   = a_actors+ 0; // Length =  1
-GLOBAL ACTOR* a_monsters = a_actors+ 1; // Length = 10
-GLOBAL ACTOR* a_tears    = a_actors+11; // Length = 14
+GLOBAL ACTOR* a_player   = a_actors;
+GLOBAL ACTOR* a_monsters = a_actors+TOTAL_NUMBER_OF_PLAYERS;
+GLOBAL ACTOR* a_tears    = a_actors+TOTAL_NUMBER_OF_PLAYERS+TOTAL_NUMBER_OF_MONSTERS;
 
 GLOBAL U8 a_monster_count = 0;
 GLOBAL U8 a_tear_count    = 0;
 
-INTERNAL VOID actor_create (U8 type, U8 x, U8 y)
+INTERNAL ACTOR* actor_create (U8 type, U8 x, U8 y)
 {
     U8 i;
 
     ACTOR* actor = NULL;
     switch (ABASE_TABLE[type].cat) {
-        case (ACATE_PLAYER ): actor = a_player;                       break;
-        case (ACATE_MONSTER): actor = a_monsters+(a_monster_count++); break;
-        case (ACATE_TEAR   ): actor = a_tears   +(a_tear_count   ++); break;
+        case (ACATE_PLAYER ): {
+            actor = a_player;
+        } break;
+        case (ACATE_MONSTER): {
+            if (a_monster_count >= TOTAL_NUMBER_OF_MONSTERS) {
+                return NULL;
+            } else {
+                actor = a_monsters+a_monster_count;
+                a_monster_count++;
+            }
+            break;
+        } break;
+        case (ACATE_TEAR): {
+            if (a_tear_count >= TOTAL_NUMBER_OF_TEARS) {
+                return NULL;
+            } else {
+                actor = a_tears+a_tear_count;
+                a_tear_count++;
+            }
+        } break;
     }
 
     actor->tick     = ABASE_TABLE[type].tick;
@@ -223,7 +258,9 @@ INTERNAL VOID actor_create (U8 type, U8 x, U8 y)
         set_sprite_prop(actor->slot+i, GET_AMSPR_ATTR(actor,i));
     }
 
-    oam_slot_ptr += 2; /* @Temporary!!! */
+    oam_slot_ptr += GET_AMSPR_SIZE(actor);
+
+    return actor;
 }
 
 INTERNAL VOID actor_anim_change (ACTOR* actor, U8 anim, BOOL reset)
@@ -300,8 +337,8 @@ INTERNAL VOID actor_tick_all (VOID)
 
             /* Clamp bound actors within the room. */
             if (!(a->flags & AFLAG_UNBOUND)) {
-                if (a->x < ITOF(24)) { a->x = ITOF(24); } else if ((a->x + ITOF(16)) > ITOF(136)) { a->x = ITOF(136-16); }
-                if (a->y < ITOF(32)) { a->y = ITOF(32); } else if ((a->y + ITOF(16)) > ITOF(128)) { a->y = ITOF(128-16); }
+                if (a->x < ITOF(24)) { a->x = ITOF(24); } else if ((a->x + ITOF(16)) > ITOF(136)) { a->x = ITOF(136-16); } /* @NOTE: Hardcoded width and height! */
+                if (a->y < ITOF(32)) { a->y = ITOF(32); } else if ((a->y + ITOF(16)) > ITOF(128)) { a->y = ITOF(128-16); } /* @NOTE: Hardcoded width and height! */
             }
 
             /* Move the actor's meta-sprite. */
@@ -312,8 +349,10 @@ INTERNAL VOID actor_tick_all (VOID)
                 sx = 0;
                 sy = 0;
             }
-            for (i=0; i<GET_AMSPR_SIZE(a); ++i) {
-                move_sprite(a->slot+i, sx+(i<<3), sy);
+            if (a->active) { /* We could have been deactivated this update! */
+                for (i=0; i<GET_AMSPR_SIZE(a); ++i) {
+                    move_sprite(a->slot+i, sx+(i<<3), sy);
+                }
             }
         }
         a++;
