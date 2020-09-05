@@ -4,6 +4,7 @@
 #define DEBUG_MODE       1
 
 #include <gb/gb.h>
+#include <rand.h>
 
 #include "UTILITY.C"
 #include "DECLARE.C"

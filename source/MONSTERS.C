@@ -12,8 +12,9 @@ INTERNAL VOID monster_hit (ACTOR* actor, U8 damage)
     }
 }
 
-#define GAPER_UPDATE 10      /* How often to re-target the player. */
-#define GAPER_SPEED  FP_HALF /* The movement speed of the monster. */
+#define GAPER_TARGET_RATE 10
+#define GAPER_SPEED       (FP_HALF+FP_QUARTER)
+#define GAPER_TARGET_AREA 24
 
 INTERNAL VOID A_GAPER (ACTOR* actor)
 {
@@ -21,8 +22,10 @@ INTERNAL VOID A_GAPER (ACTOR* actor)
         case (ASTAT_MOVE): {
             /* Make the Gaper target and move towards the player character. */
             /* We don't do this every frame as it's an expensive operation. */
-            if ((actor->ticks % GAPER_UPDATE) == 0) {
-                FIXED theta = ATAN2(a_player->y - actor->y, a_player->x - actor->x);
+            if ((actor->ticks % GAPER_TARGET_RATE) == 0) {
+                FIXED tx = a_player->x + ITOF((rand() % GAPER_TARGET_AREA));
+                FIXED ty = a_player->y + ITOF((rand() % GAPER_TARGET_AREA));
+                FIXED theta = ATAN2(ty - actor->y, tx - actor->x);
                 actor->vx = FMUL(COS(FTOI(theta)),GAPER_SPEED);
                 actor->vy = FMUL(SIN(FTOI(theta)),GAPER_SPEED);
             }

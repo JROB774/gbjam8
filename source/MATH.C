@@ -4,11 +4,12 @@
 /* We are using this represenation as we do not need high-precision with our  */
 /* real numbers and would still like to represent large integral values.      */
 
-#define FP_SHIFT (4            )
-#define FP_SCALE (1 << FP_SHIFT)
-#define FP_MASK  (FP_SCALE -  1)
-#define FP_ONE   (FP_SCALE     )
-#define FP_HALF  (FP_SCALE >> 1)
+#define FP_SHIFT   (4            )
+#define FP_SCALE   (1 << FP_SHIFT)
+#define FP_MASK    (FP_SCALE -  1)
+#define FP_ONE     (FP_SCALE     )
+#define FP_HALF    (FP_SCALE >> 1)
+#define FP_QUARTER (FP_SCALE >> 2)
 
 #define M_FP_2PI  ITOF(0xFF            )
 #define M_FP_PI   ITOF(0x7F            )
