@@ -23,6 +23,8 @@
 void main ()
 {
     BKG_PAL0 = 0xFF; /* Set the current palette to black so we can fade in. */
+    SPR_PAL0 = 0xE4; /* Set the first sprite palette to be default.         */
+    SPR_PAL1 = 0x1B; /* Set the second sprite palette to be inverted.       */
     SPRITES_8x16;    /* We use 8x16 sprite mode to fit more data in OAM.    */
     DISPLAY_ON;      /* Enable the Game Boy's display.                      */
     SPLASH();        /* Play through all the splash screens / credits.      */

@@ -88,6 +88,14 @@ typedef struct _ACTOR_
 #define AMSPR_PTEAR_D1    0x4C
 #define AMSPR_PTEAR_D2    0x4F
 #define AMSPR_PTEAR_D3    0x52
+#define AMSPR_SPLAT_L0    0x55
+#define AMSPR_SPLAT_L1    0x5A
+#define AMSPR_SPLAT_L2    0x5F
+#define AMSPR_SPLAT_L3    0x64
+#define AMSPR_SPLAT_L4    0x69
+#define AMSPR_SPLAT_L5    0x6E
+#define AMSPR_SPLAT_L6    0x73
+#define AMSPR_SPLAT_L7    0x78
 
 GLOBAL const U8 AMSPR_TABLE[/*(AMSPR)*/] =
 {
@@ -111,6 +119,14 @@ GLOBAL const U8 AMSPR_TABLE[/*(AMSPR)*/] =
 0x01,  0x2A,AATTR_NONE,                  /* AMSPR_PTEAR_D1                    */
 0x01,  0x2C,AATTR_NONE,                  /* AMSPR_PTEAR_D2                    */
 0x01,  0x2E,AATTR_NONE,                  /* AMSPR_PTEAR_D3                    */
+0x02,  0x3A,AATTR_NONE, 0x3C,AATTR_NONE, /* AMSPR_SPLAT_L0                    */
+0x02,  0x3E,AATTR_NONE, 0x40,AATTR_NONE, /* AMSPR_SPLAT_L1                    */
+0x02,  0x42,AATTR_NONE, 0x44,AATTR_NONE, /* AMSPR_SPLAT_L2                    */
+0x02,  0x46,AATTR_NONE, 0x48,AATTR_NONE, /* AMSPR_SPLAT_L3                    */
+0x02,  0x4A,AATTR_NONE, 0x4C,AATTR_NONE, /* AMSPR_SPLAT_L4                    */
+0x02,  0x4E,AATTR_NONE, 0x50,AATTR_NONE, /* AMSPR_SPLAT_L5                    */
+0x02,  0x52,AATTR_NONE, 0x54,AATTR_NONE, /* AMSPR_SPLAT_L6                    */
+0x02,  0x56,AATTR_NONE, 0x58,AATTR_NONE, /* AMSPR_SPLAT_L7                    */
 };
 
 /* All of the different animations for the different actor types. *************/
@@ -126,21 +142,23 @@ GLOBAL const U8 AMSPR_TABLE[/*(AMSPR)*/] =
 #define AANIM_GAPER_M     0x28
 #define AANIM_PTEAR_I     0x2E
 #define AANIM_PTEAR_D     0x32
+#define AANIM_SPLAT_L     0x3C
 
 GLOBAL const U8 AANIM_TABLE[/*(AANIM)*/] =
 {
-/* number_of_frames, loop, frame_metasprite, frame_ticks, ...                                                       */
-0x01,  TRUE ,  AMSPR_PLAYER_I0 ,255,                                                            /* AANIM_PLAYER_I   */
-0x02,  TRUE ,  AMSPR_PLAYER_MU0, 20, AMSPR_PLAYER_MU1,20,                                       /* AANIM_PLAYER_MU  */
-0x02,  TRUE ,  AMSPR_PLAYER_MR0, 20, AMSPR_PLAYER_MR1,20,                                       /* AANIM_PLAYER_MR  */
-0x02,  TRUE ,  AMSPR_PLAYER_MD0, 20, AMSPR_PLAYER_MD1,20,                                       /* AANIM_PLAYER_MD  */
-0x02,  TRUE ,  AMSPR_PLAYER_ML0, 20, AMSPR_PLAYER_ML1,20,                                       /* AANIM_PLAYER_ML  */
-0x01,  FALSE,  AMSPR_PLAYER_H0 , 50,                                                            /* AANIM_PLAYER_H   */
-0x01,  TRUE ,  AMSPR_PLAYER_D0 ,255,                                                            /* AANIM_PLAYER_D   */
-0x01,  FALSE,  AMSPR_PLAYER_G0 , 50,                                                            /* AANIM_PLAYER_G   */
-0x02,  TRUE ,  AMSPR_GAPER_M0  , 20, AMSPR_GAPER_M1  ,20,                                       /* AANIM_GAPER_M    */
-0x01,  TRUE ,  AMSPR_PTEAR_I0  ,255,                                                            /* AANIM_PTEAR_I    */
-0x04,  FALSE,  AMSPR_PTEAR_D0  , 10, AMSPR_PTEAR_D1  ,10, AMSPR_PTEAR_D2,10, AMSPR_PTEAR_D3,10, /* AANIM_PTEAR_D    */
+/* number_of_frames, loop, frame_metasprite, frame_ticks, ...                                                                                                                                  */
+0x01,  TRUE ,  AMSPR_PLAYER_I0 ,255,                                                                                                                                        /* AANIM_PLAYER_I  */
+0x02,  TRUE ,  AMSPR_PLAYER_MU0, 20, AMSPR_PLAYER_MU1,20,                                                                                                                   /* AANIM_PLAYER_MU */
+0x02,  TRUE ,  AMSPR_PLAYER_MR0, 20, AMSPR_PLAYER_MR1,20,                                                                                                                   /* AANIM_PLAYER_MR */
+0x02,  TRUE ,  AMSPR_PLAYER_MD0, 20, AMSPR_PLAYER_MD1,20,                                                                                                                   /* AANIM_PLAYER_MD */
+0x02,  TRUE ,  AMSPR_PLAYER_ML0, 20, AMSPR_PLAYER_ML1,20,                                                                                                                   /* AANIM_PLAYER_ML */
+0x01,  FALSE,  AMSPR_PLAYER_H0 , 50,                                                                                                                                        /* AANIM_PLAYER_H  */
+0x01,  TRUE ,  AMSPR_PLAYER_D0 ,255,                                                                                                                                        /* AANIM_PLAYER_D  */
+0x01,  FALSE,  AMSPR_PLAYER_G0 , 50,                                                                                                                                        /* AANIM_PLAYER_G  */
+0x02,  TRUE ,  AMSPR_GAPER_M0  , 20, AMSPR_GAPER_M1  ,20,                                                                                                                   /* AANIM_GAPER_M   */
+0x01,  TRUE ,  AMSPR_PTEAR_I0  ,255,                                                                                                                                        /* AANIM_PTEAR_I   */
+0x04,  FALSE,  AMSPR_PTEAR_D0  , 10, AMSPR_PTEAR_D1  ,10, AMSPR_PTEAR_D2,10, AMSPR_PTEAR_D3,10,                                                                             /* AANIM_PTEAR_D   */
+0x08,  FALSE,  AMSPR_SPLAT_L0  ,  3, AMSPR_SPLAT_L1  , 3, AMSPR_SPLAT_L2, 3, AMSPR_SPLAT_L3, 3, AMSPR_SPLAT_L4, 3, AMSPR_SPLAT_L5, 3, AMSPR_SPLAT_L6, 3, AMSPR_SPLAT_L7, 3, /* AANIM_SPLAT_L   */
 };
 
 /* A list containing base information about each particular actor type. *******/
@@ -159,7 +177,7 @@ typedef struct _ABASE_
 
 GLOBAL const ABASE ABASE_TABLE[/*(ATYPE)*/] =
 {
-/* tick_function, bounds, category, start_hp, start_state, start_anim, flags                                                           */
+/* tick_function, bounds, category, start_hp, start_state, start_anim, flags                                                                 */
 { A_PLAYER, { ITOF( 3),ITOF( 9),ITOF(10),ITOF( 7) }, ACATE_PLAYER ,   ITOF( 0), ASTAT_IDLE, AANIM_PLAYER_I, AFLAG_NONE    }, /* ATYPE_PLAYER */
 { A_GAPER , { ITOF( 3),ITOF( 9),ITOF(10),ITOF( 7) }, ACATE_MONSTER,   ITOF(10), ASTAT_MOVE, AANIM_GAPER_M , AFLAG_NONE    }, /* ATYPE_GAPER  */
 { A_PTEAR , { ITOF( 2),ITOF( 6),ITOF( 4),ITOF( 9) }, ACATE_TEAR   ,   ITOF( 0), ASTAT_IDLE, AANIM_PTEAR_I , AFLAG_UNBOUND }, /* ATYPE_PTEAR  */
@@ -282,6 +300,17 @@ INTERNAL BOOL actor_anim_done (ACTOR* actor)
     return ((               !GET_AANIM_LOOP      (actor)  ) && /* Not Looping  */
             (actor->animf == GET_AANIM_FRAMES    (actor)-1) && /* Last Frame   */
             (actor->animt >= GET_AANIM_CURR_TICKS(actor)  ));  /* End of Frame */
+}
+
+INTERNAL VOID actor_invert_palette (ACTOR* actor, BOOL invert)
+{
+    U8 i;
+    for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
+        U8 prop = get_sprite_prop(actor->slot+i);
+        if (invert) { SET_FLAGS(prop, AATTR_PAL1); }
+        else { UNSET_FLAGS(prop, AATTR_PAL1); }
+        set_sprite_prop(actor->slot+i, prop);
+    }
 }
 
 INTERNAL VOID actor_deactivate (ACTOR* actor)

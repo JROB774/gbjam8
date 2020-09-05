@@ -102,7 +102,7 @@ INTERNAL VOID A_PLAYER (ACTOR* actor)
             if (!pdata.iframes) { /* No need to check if we have iframes. */
                 ACTOR* enemy = a_monsters;
                 while (enemy != (a_monsters+a_monster_count)) {
-                    if (enemy->active) {
+                    if (enemy->active && enemy->state != ASTAT_DEAD) {
                         if (CHECK_COLLISION(actor, enemy)) {
                             /* Perform knockback on the player relative to the damaging enemy. */
                             FIXED theta = ATAN2(actor->y - enemy->y, actor->x - enemy->x);
@@ -162,10 +162,10 @@ INTERNAL VOID A_PTEAR (ACTOR* actor)
     if ((actor->ticks % 2) == 0) {
         ACTOR* enemy = a_monsters;
         while (enemy != (a_monsters+a_monster_count)) {
-            if (enemy->active) {
+            if (enemy->active && enemy->state != ASTAT_DEAD) {
                 if (CHECK_COLLISION(actor, enemy)) {
-                    actor_deactivate(actor); /* KIll the tear. */
-                    enemy->hp -= PLAYER_TEAR_DAMAGE;
+                    actor_deactivate(actor); /* Kill the tear. */
+                    monster_hit(enemy, PLAYER_TEAR_DAMAGE);
                     break; /* There's no need to continue looping. */
                 }
             }
