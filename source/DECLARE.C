@@ -33,6 +33,7 @@ INTERNAL VOID   monster_hit            (ACTOR* actor, U8 damage          );
 INTERNAL VOID   player_init            (VOID                             );
 INTERNAL VOID   player_damage          (VOID                             );
 INTERNAL VOID   player_kill            (VOID                             );
+INTERNAL VOID   ptear_kill             (ACTOR* actor                     );
 
 INTERNAL VOID   A_PLAYER               (ACTOR* actor                     );
 INTERNAL VOID   A_GAPER                (ACTOR* actor                     );

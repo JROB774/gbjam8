@@ -2,7 +2,7 @@
 
 #define PLAYER_DEAD_FADE_SPEED     10
 #define PLAYER_START_HEARTS         3
-#define PLAYER_IFRAMES             40
+#define PLAYER_IFRAMES             50
 #define PLAYER_FIRE_RATE_COOLDOWN  15
 #define PLAYER_TEAR_SPEED     ITOF( 2)
 #define PLAYER_SPEED          ITOF( 1)
@@ -138,39 +138,57 @@ INTERNAL VOID A_PLAYER (ACTOR* actor)
     }
 }
 
+INTERNAL VOID ptear_kill (ACTOR* actor)
+{
+    actor_anim_change(actor, AANIM_PTEAR_D, TRUE);
+    actor->state = ASTAT_DEAD;
+}
+
 INTERNAL VOID A_PTEAR (ACTOR* actor)
 {
-    /* We flicker tears as there will be a lot of them on screen. */
-    // if ((actor->ticks % 2) == 0) {
-    //     TOGGLE_FLAGS(actor->flags, AFLAG_HIDDEN);
-    // }
+    switch (actor->state) {
+        case (ASTAT_IDLE): {
+            /* We flicker tears as there will be a lot of them on screen. */
+            if ((actor->ticks % 2) == 0) {
+                TOGGLE_FLAGS(actor->flags, AFLAG_HIDDEN);
+            }
 
-    /* If the tear hits the edge of the wall then kill it. */
-    if (actor->x < ITOF(24) || (actor->x + ITOF(8)) > ITOF(136)) { actor_deactivate(actor); } /* @NOTE: Hardcoded width and height! */
-    if (actor->y < ITOF(32) || (actor->y + ITOF(8)) > ITOF(128)) { actor_deactivate(actor); } /* @NOTE: Hardcoded width and height! */
+            /* If the tear hits the edge of the wall then kill it. */
+            /* @NOTE: Hardcoded width and height! */
+            if ((actor->x < ITOF(24) || (actor->x + ITOF(8)) > ITOF(136)) ||
+                (actor->y < ITOF(32) || (actor->y + ITOF(8)) > ITOF(128))) {
+                ptear_kill(actor);
+            }
 
-    /* Move the tear based on its direction which is stored in ext0. */
-    switch (actor->ext0) {
-        case (AANIM_PLAYER_I ):
-        case (AANIM_PLAYER_MD): { actor->y += PLAYER_TEAR_SPEED; } break;
-        case (AANIM_PLAYER_MU): { actor->y -= PLAYER_TEAR_SPEED; } break;
-        case (AANIM_PLAYER_ML): { actor->x -= PLAYER_TEAR_SPEED; } break;
-        case (AANIM_PLAYER_MR): { actor->x += PLAYER_TEAR_SPEED; } break;
-    }
+            /* Move the tear based on its direction which is stored in ext0. */
+            switch (actor->ext0) {
+                case (AANIM_PLAYER_I ):
+                case (AANIM_PLAYER_MD): { actor->y += PLAYER_TEAR_SPEED; } break;
+                case (AANIM_PLAYER_MU): { actor->y -= PLAYER_TEAR_SPEED; } break;
+                case (AANIM_PLAYER_ML): { actor->x -= PLAYER_TEAR_SPEED; } break;
+                case (AANIM_PLAYER_MR): { actor->x += PLAYER_TEAR_SPEED; } break;
+            }
 
-    /* Check collision with hostile enemies. */
-    if ((actor->ticks % 2) == 0) {
-        ACTOR* enemy = a_monsters;
-        while (enemy != (a_monsters+a_monster_count)) {
-            if (enemy->active && enemy->state != ASTAT_DEAD) {
-                if (CHECK_COLLISION(actor, enemy)) {
-                    actor_deactivate(actor); /* Kill the tear. */
-                    monster_hit(enemy, PLAYER_TEAR_DAMAGE);
-                    break; /* There's no need to continue looping. */
+            /* Check collision with hostile enemies. */
+            if ((actor->ticks % 2) == 0) {
+                ACTOR* enemy = a_monsters;
+                while (enemy != (a_monsters+a_monster_count)) {
+                    if (enemy->active && enemy->state != ASTAT_DEAD) {
+                        if (CHECK_COLLISION(actor, enemy)) {
+                            monster_hit(enemy, PLAYER_TEAR_DAMAGE);
+                            ptear_kill(actor);
+                            break; /* There's no need to continue looping. */
+                        }
+                    }
+                    enemy++;
                 }
             }
-            enemy++;
-        }
+        } break;
+        case (ASTAT_DEAD): {
+            if (actor_anim_done(actor)) {
+                actor_deactivate(actor);
+            }
+        } break;
     }
 }
 

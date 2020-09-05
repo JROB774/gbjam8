@@ -157,7 +157,7 @@ GLOBAL const U8 AANIM_TABLE[/*(AANIM)*/] =
 0x01,  FALSE,  AMSPR_PLAYER_G0 , 50,                                                                                                                                        /* AANIM_PLAYER_G  */
 0x02,  TRUE ,  AMSPR_GAPER_M0  , 20, AMSPR_GAPER_M1  ,20,                                                                                                                   /* AANIM_GAPER_M   */
 0x01,  TRUE ,  AMSPR_PTEAR_I0  ,255,                                                                                                                                        /* AANIM_PTEAR_I   */
-0x04,  FALSE,  AMSPR_PTEAR_D0  , 10, AMSPR_PTEAR_D1  ,10, AMSPR_PTEAR_D2,10, AMSPR_PTEAR_D3,10,                                                                             /* AANIM_PTEAR_D   */
+0x04,  FALSE,  AMSPR_PTEAR_D0  ,  3, AMSPR_PTEAR_D1  , 3, AMSPR_PTEAR_D2, 3, AMSPR_PTEAR_D3, 3,                                                                             /* AANIM_PTEAR_D   */
 0x08,  FALSE,  AMSPR_SPLAT_L0  ,  3, AMSPR_SPLAT_L1  , 3, AMSPR_SPLAT_L2, 3, AMSPR_SPLAT_L3, 3, AMSPR_SPLAT_L4, 3, AMSPR_SPLAT_L5, 3, AMSPR_SPLAT_L6, 3, AMSPR_SPLAT_L7, 3, /* AANIM_SPLAT_L   */
 };
 
