@@ -17,6 +17,10 @@
 
 typedef S16 FIXED;
 
+typedef struct _RECTU_ { U8    x, y, w, h; } RECTU;
+typedef struct _RECTI_ { S8    x, y, w, h; } RECTI;
+typedef struct _RECTF_ { FIXED x, y, w, h; } RECTF;
+
 #define FADD(a,b) ( (a)             + (b) )       /* Add two fixed-points.    */
 #define FSUB(a,b) ( (a)             - (b) )       /* Sub two fixed-points.    */
 #define FMUL(a,b) (((a) * (b)) >> FP_SHIFT)       /* Mul two fixed-points.    */

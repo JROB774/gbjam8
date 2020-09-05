@@ -14,6 +14,7 @@ INTERNAL void GAME ()
     SET_BKG_DATA(TILESET_ROOM        );
     SET_MAP_DATA(TILEMAP_ROOM        );
 
+    player_init();
     status_init();
 
     /* @Temporary: Just make some debug actors for now. */

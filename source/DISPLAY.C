@@ -27,7 +27,7 @@
 #define DISPLAY_MAP_WIDTH  0x08 /* ( 8) */
 #define DISPLAY_MAP_HEIGHT 0x08 /* ( 8) */
 
-GLOBAL U8 status_heart_tiles[]     = { TILE_HEART_FULL,TILE_HEART_FULL,TILE_HEART_FULL,      TILE_EMPTY,TILE_EMPTY,TILE_EMPTY             };
+GLOBAL U8 status_heart_tiles[]     = { TILE_EMPTY,TILE_EMPTY,TILE_EMPTY,                     TILE_EMPTY,TILE_EMPTY,TILE_EMPTY             };
 GLOBAL U8 status_counter_tiles[]   = { TILE_COUNTER_COIN,TILE_COUNTER_BOMB,TILE_COUNTER_KEY, TILE_NUM_0,TILE_NUM_0,TILE_NUM_0             };
 GLOBAL U8 status_item_tiles[]      = { TILE_ITEM_TL,TILE_ITEM_TR,TILE_ITEM_BAR_NONE,         TILE_ITEM_BL,TILE_ITEM_BR,TILE_ITEM_BAR_NONE };
 GLOBAL U8 status_highscore_tiles[] = { TILE_NUM_0,TILE_NUM_0,TILE_NUM_0,TILE_NUM_0,TILE_NUM_0,TILE_NUM_0                                  };
@@ -55,6 +55,14 @@ INTERNAL VOID status_init (VOID)
 
 INTERNAL VOID status_update_hearts (VOID)
 {
+    U8 i;
+    for (i=0; i<6; ++i) {
+        if (i < pdata.max_hearts) {
+            status_heart_tiles[i] = (i < pdata.hearts) ? TILE_HEART_FULL : TILE_HEART_NONE;
+        } else {
+            status_heart_tiles[i] = TILE_EMPTY;
+        }
+    }
     set_bkg_tiles(1,0, 3,2, status_heart_tiles);
 }
 

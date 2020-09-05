@@ -1,6 +1,6 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-#define DEBUG_NO_PROFILE 1
+#define DEBUG_NO_PROFILE 0
 #define DEBUG_MODE       1
 
 #include <gb/gb.h>

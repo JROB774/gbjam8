@@ -7,9 +7,11 @@ typedef VOID(*ATICK)(ACTOR* actor);
 typedef struct _ACTOR_
 {
     ATICK tick;   /* Custom behaviour for an actor that runs every tick.      */
-    FIXED  x, y;  /* Current (X,Y) position as fixed-point values.            */
+    FIXED x,y;    /* Current (X,Y) position as fixed-point values.            */
     FIXED vx,vy;  /* Current (X,Y) velocity as fixed-point values.            */
+    RECTF bounds; /* Bounding/collision box for the actor.                    */
     U16   hp;     /* Health points for the actor (not used by all actors).    */
+    U8    cat;    /* Category of the actor type.                              */
     U8    flags;  /* Flags that define aspects of an entity.          (AFLAG) */
     U8    type;   /* Identifier for the type of actor.                (ATYPE) */
     U8    state;  /* Identifier for the current actor state.          (ASTAT) */
@@ -25,16 +27,24 @@ typedef struct _ACTOR_
                   /* that is not active can be replaced with a new actor.     */
 } ACTOR;
 
+/* Different categories of actors that control how they are sorted. ***********/
+
+#define ACATE_PLAYER      0x01
+#define ACATE_MONSTER     0x02
+#define ACATE_TEAR        0x03
+
 /* Flags that control generic aspects of an entity type or instance. **********/
 
 #define AFLAG_NONE        0x00 /* No flags set.                               */
-#define AFLAG_UNBOUND     0x01 /* The actor is not bound to the room.         */
-#define AFLAG_SOLID       0x02 /* The actor collides with tiles and sprites.  */
-#define AFLAG_NOANIM      0x04 /* The actor is not animated.                  */
-#define AFLAG_HOSTILE     0x08 /* The actor can be hurt by the player.        */
-#define AFLAG_FLYING      0x10 /* The actor is flying.                        */
-#define AFLAG_NODAMAGE    0x20 /* The actor cannot take any damage.           */
-#define AFLAG_BOSS        0x40 /* The actor is a boss (show health bar).      */
+#define AFLAG_NOANIM      0x01 /* The actor is not animated.                  */
+#define AFLAG_UNBOUND     0x02 /* The actor is not bound to the room.         */
+#define AFLAG_HIDDEN      0x04 /* The actor will not be drawn.                */
+
+// #define AFLAG_SOLID       0x04 /* The actor collides with tiles.              */
+// #define AFLAG_HOSTILE     0x08 /* The actor can be hurt by the player.        */
+// #define AFLAG_FLYING      0x10 /* The actor is flying.                        */
+// #define AFLAG_NODAMAGE    0x20 /* The actor cannot take any damage.           */
+// #define AFLAG_BOSS        0x40 /* The actor is a boss (show health bar).      */
 
 /* Unique identifiers for all the different actor types in the game. **********/
 
@@ -122,20 +132,21 @@ GLOBAL const U8 AANIM_TABLE[/*(AANIM)*/] =
 
 typedef struct _ABASE_
 {
-    ATICK tick;  /* The tick function for the particular actor type.          */
-    U16   hp;    /* The starting health points for the actor type.            */
-    U8    state; /* The starting state for the actor type.                    */
-    U8    anim;  /* The starting animation for the actor type.                */
-    U8    flags; /* The general flags for the actor type.                     */
+    ATICK tick;   /* The tick function for the particular actor type.         */
+    RECTF bounds; /* The bounding box for the particular actor type.          */
+    U8    cat;    /* The category for the particular actor type.              */
+    U16   hp;     /* The starting health points for the actor type.           */
+    U8    state;  /* The starting state for the actor type.                   */
+    U8    anim;   /* The starting animation for the actor type.               */
+    U8    flags;  /* The general flags for the actor type.                    */
 
 } ABASE;
 
 GLOBAL const ABASE ABASE_TABLE[/*(ATYPE)*/] =
 {
-/* tick_function, start_hp, start_state, start_anim, flags                    */
-{A_PLAYER,    0, ASTAT_IDLE, AANIM_PLAYER_I, AFLAG_SOLID   }, /* ATYPE_PLAYER */
-{A_GAPER ,  100, ASTAT_MOVE, AANIM_GAPER_M , AFLAG_HOSTILE|   /* ATYPE_GAPER  */
-                                             AFLAG_SOLID   },
+/* tick_function, bounds, category, start_hp, start_state, start_anim, flags                                                        */
+{ A_PLAYER, { ITOF( 5),ITOF( 9),ITOF( 6),ITOF( 6) }, ACATE_PLAYER ,    0, ASTAT_IDLE, AANIM_PLAYER_I, AFLAG_NONE }, /* ATYPE_PLAYER */
+{ A_GAPER , { ITOF( 5),ITOF( 9),ITOF( 6),ITOF( 6) }, ACATE_MONSTER,  100, ASTAT_MOVE, AANIM_GAPER_M , AFLAG_NONE }, /* ATYPE_GAPER  */
 };
 
 /* Macro utilities for accessing meta-sprite and animation actor table data. **/
@@ -157,43 +168,60 @@ GLOBAL const ABASE ABASE_TABLE[/*(ATYPE)*/] =
 
 /* The actor manager system that handles creating, destroying, and managing. **/
 
-#define MAX_NUMBER_OF_ACTORS 0x28 /* (40) The same as max sprite number. */
+#define TOTAL_NUMBER_OF_ACTORS 25
 
-GLOBAL ACTOR actor_list[MAX_NUMBER_OF_ACTORS];
-GLOBAL U8    actor_list_ptr = 0;
+GLOBAL ACTOR a_actors[TOTAL_NUMBER_OF_ACTORS];
+
+GLOBAL U8 oam_slot_ptr = 0;
+
+GLOBAL ACTOR* a_player   = a_actors+ 0; // Length =  1
+GLOBAL ACTOR* a_monsters = a_actors+ 1; // Length = 10
+GLOBAL ACTOR* a_tears    = a_actors+11; // Length = 10
+
+GLOBAL U8 a_monster_count = 0;
+GLOBAL U8 a_tear_count    = 0;
 
 INTERNAL VOID actor_create (U8 type, U8 x, U8 y)
 {
-    ACTOR* actor;
     U8 i;
 
-    actor = &actor_list[actor_list_ptr];
+    ACTOR* actor = NULL;
+    switch (ABASE_TABLE[type].cat) {
+        case (ACATE_PLAYER ): actor = a_player;                       break;
+        case (ACATE_MONSTER): actor = a_monsters+(a_monster_count++); break;
+        case (ACATE_TEAR   ): actor = a_tears   +(a_tear_count++   ); break;
+    }
 
-    actor->tick   = ABASE_TABLE[type].tick;
-    actor->x      = ITOF(x);
-    actor->y      = ITOF(y);
-    actor->vx     = 0;
-    actor->vy     = 0;
-    actor->hp     = ABASE_TABLE[type].hp;
-    actor->flags  = ABASE_TABLE[type].flags;
-    actor->type   = type;
-    actor->state  = ABASE_TABLE[type].state;
-    actor->animi  = ABASE_TABLE[type].anim;
-    actor->animf  = 0;
-    actor->animt  = 0;
-    actor->slot   = actor_list_ptr;
-    actor->ext0   = 0;
-    actor->ext1   = 0;
-    actor->ext2   = 0;
-    actor->ext3   = 0;
-    actor->active = TRUE;
+    actor->tick     = ABASE_TABLE[type].tick;
+    actor->x        = ITOF(x);
+    actor->y        = ITOF(y);
+    actor->vx       = 0;
+    actor->vy       = 0;
+    actor->bounds.x = ABASE_TABLE[type].bounds.x;
+    actor->bounds.y = ABASE_TABLE[type].bounds.y;
+    actor->bounds.w = ABASE_TABLE[type].bounds.w;
+    actor->bounds.h = ABASE_TABLE[type].bounds.h;
+    actor->hp       = ABASE_TABLE[type].hp;
+    actor->cat      = ABASE_TABLE[type].cat;
+    actor->flags    = ABASE_TABLE[type].flags;
+    actor->type     = type;
+    actor->state    = ABASE_TABLE[type].state;
+    actor->animi    = ABASE_TABLE[type].anim;
+    actor->animf    = 0;
+    actor->animt    = 0;
+    actor->slot     = oam_slot_ptr;
+    actor->ext0     = 0;
+    actor->ext1     = 0;
+    actor->ext2     = 0;
+    actor->ext3     = 0;
+    actor->active   = TRUE;
 
     for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
         set_sprite_tile(actor->slot+i, GET_AMSPR_SPR(actor,i));
         set_sprite_prop(actor->slot+i, GET_AMSPR_ATTR(actor,i));
     }
 
-    actor_list_ptr += 2; /* @Temporary!!! */
+    oam_slot_ptr += 2; /* @Temporary!!! */
 }
 
 INTERNAL VOID actor_anim_change (ACTOR* actor, U8 anim, BOOL reset)
@@ -219,15 +247,12 @@ INTERNAL BOOL actor_anim_done (ACTOR* actor)
 
 INTERNAL VOID actor_tick_all (VOID)
 {
-    FIXED x,y;
-    U8 i,j;
-
+    U8 j, sx,sy;
     ACTOR* a;
-    ACTOR* b;
 
     /* Go through the list and update all of the active actors. */
-    for (i=0; i<MAX_NUMBER_OF_ACTORS; ++i) {
-        a = &actor_list[i];
+    a = a_actors;
+    while (a != a_actors+TOTAL_NUMBER_OF_ACTORS) {
         if (a->active) {
             /* Update the actor's current animation, if they are animated. */
             if (!(a->flags & AFLAG_NOANIM)) {
@@ -251,40 +276,33 @@ INTERNAL VOID actor_tick_all (VOID)
                     }
                 }
             }
-            /* Perform specific logic for the actor. */
-            if (a->tick) {
-                a->tick(a);
-            }
-            /* Handle collision detection if the actor is solid. */
-            if (a->flags & AFLAG_SOLID) {
-                #if 0
-                if ((a->animt % 10) == 0) {
-                    for (j=0; j<MAX_NUMBER_OF_ACTORS; ++j) {
-                        if (i != j) { /* Don't check collision with self. */
-                            b = &actor_list[j];
-                            if (b->active) {
-                                if (b->flags & AFLAG_SOLID) {
-                                    RECT r0,r1;
-                                    r0.x = FTOI(a->x+a->vx)+4, r0.y = FTOI(a->y+a->vy)+2, r0.w = 8, r0.h = 12;
-                                    r1.x = FTOI(b->x      )+4, r1.y = FTOI(b->y      )+2, r1.w = 8, r1.h = 12;
-                                    if (CHECK_COLLISION(r0,r1)) {
-                                        a->vx = FSUB(FMUL(COS(0x7F),a->vx), FMUL(SIN(0x7F),a->vy));
-                                        a->vy = FADD(FMUL(SIN(0x7F),a->vx), FMUL(COS(0x7F),a->vy));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                #endif
-            }
-            /* Update the actor's final position. */
+
+            /* Perform type-specific logic for the actor. */
+            a->tick(a);
+
+            /* Apply velocity. */
             a->x += a->vx;
             a->y += a->vy;
+
+            /* Clamp bound actors within the room. */
+            if (!(a->flags & AFLAG_UNBOUND)) {
+                if (a->x < ITOF(24)) { a->x = ITOF(24); } else if ((a->x + ITOF(16)) > ITOF(136)) { a->x = ITOF(136-16); }
+                if (a->y < ITOF(32)) { a->y = ITOF(32); } else if ((a->y + ITOF(16)) > ITOF(128)) { a->y = ITOF(128-16); }
+            }
+
+            /* Move the actor's meta-sprite. */
+            if (!(a->flags & AFLAG_HIDDEN)) {
+                sx = FTOI(a->x)+SPRITE_X_OFFSET;
+                sy = FTOI(a->y)+SPRITE_Y_OFFSET;
+            } else {
+                sx = 0;
+                sy = 0;
+            }
             for (j=0; j<GET_AMSPR_SIZE(a); ++j) {
-                move_sprite(a->slot+j, FTOI(a->x)+SPRITE_X_OFFSET+(j<<3), FTOI(a->y)+SPRITE_Y_OFFSET);
+                move_sprite(a->slot+j, sx+(j<<3), sy);
             }
         }
+        a++;
     }
 }
 

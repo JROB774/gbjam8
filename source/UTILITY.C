@@ -34,14 +34,13 @@
 #define SPR_PAL0            OBP0_REG
 #define SPR_PAL1            OBP1_REG
 
-typedef struct _RECT_ { U8 x, y, w, h; } RECT;
-
 #define SET_SPR_DATA(name) set_sprite_data(name##_OFFSET, name##_LENGTH,        name)
 #define SET_BKG_DATA(name) set_bkg_data   (name##_OFFSET, name##_LENGTH,        name)
 #define SET_MAP_DATA(name) set_bkg_tiles  (name##_X,name##_Y,name##_W,name##_H, name)
 
-#define   SET_FLAGS(x, flags) ((x) |=  (flags))
-#define UNSET_FLAGS(x, flags) ((x) &= ~(flags))
+#define    SET_FLAGS(x, flags) ((x) |=  (flags))
+#define  UNSET_FLAGS(x, flags) ((x) &= ~(flags))
+#define TOGGLE_FLAGS(x, flags) ((x) ^=  (flags))
 
 #define WAIT(time)                      \
 do                                      \
@@ -53,9 +52,9 @@ for (_wait_=0; _wait_<time; ++_wait_) { \
 }                                       \
 while (0)
 
-#define CHECK_COLLISION(a, b)            \
-(!(((a.x+a.w)<b.x) || (a.x>(b.x+b.w)) || \
-   ((a.y+a.h)<b.y) || (a.y>(b.y+b.h))))
+#define CHECK_COLLISION(a,b)                                                                                       \
+((((a->x+a->bounds.x+a->bounds.w)>=(b->x+b->bounds.x)) && ((b->x+b->bounds.x+b->bounds.w)>=(a->x+a->bounds.x))) && \
+ (((a->y+a->bounds.y+a->bounds.h)>=(b->y+b->bounds.y)) && ((b->y+b->bounds.y+b->bounds.h)>=(a->y+a->bounds.y))))
 
 #if DEBUG_MODE /* ----------------------------------------------------------- */
 

@@ -2,6 +2,10 @@
 
 /* STRUCTURES */
 
+typedef struct _RECTU_ RECTU;
+typedef struct _RECTI_ RECTI;
+typedef struct _RECTF_ RECTF;
+typedef struct _PDATA_ PDATA;
 typedef struct _ACTOR_ ACTOR;
 typedef struct _ABASE_ ABASE;
 
@@ -23,6 +27,9 @@ INTERNAL VOID status_update_counters (VOID                             );
 INTERNAL VOID status_update_item     (VOID                             );
 INTERNAL VOID status_update_score    (VOID                             );
 INTERNAL VOID map_draw               (VOID                             );
+INTERNAL VOID player_init            (VOID                             );
+INTERNAL VOID player_damage          (VOID                             );
+INTERNAL VOID player_kill            (VOID                             );
 
 INTERNAL VOID A_PLAYER               (ACTOR* actor                     );
 INTERNAL VOID A_GAPER                (ACTOR* actor                     );
