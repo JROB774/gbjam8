@@ -30,9 +30,9 @@ typedef struct _ACTOR_
 
 /* Different categories of actors that control how they are sorted. ***********/
 
-#define ACATE_PLAYER      0x01
+#define ACATE_PLAYER      0x00
+#define ACATE_TEAR        0x01
 #define ACATE_MONSTER     0x02
-#define ACATE_TEAR        0x03
 
 /* Flags that control generic aspects of an entity type or instance. **********/
 
@@ -202,50 +202,72 @@ GLOBAL const ABASE ABASE_TABLE[/*(ATYPE)*/] =
 
 /* The actor manager system that handles creating, destroying, and managing. **/
 
-#define TOTAL_NUMBER_OF_ACTORS   40
-#define TOTAL_NUMBER_OF_PLAYERS   1
-#define TOTAL_NUMBER_OF_MONSTERS  9
-#define TOTAL_NUMBER_OF_TEARS    30
+#define TOTAL_NUMBER_OF_SPRITES   40
+#define TOTAL_NUMBER_OF_ACTORS    40
+#define TOTAL_NUMBER_OF_PLAYERS    1
+#define TOTAL_NUMBER_OF_MONSTERS  24
+#define TOTAL_NUMBER_OF_TEARS     15
 
-GLOBAL ACTOR a_actors[TOTAL_NUMBER_OF_ACTORS];
-
-GLOBAL U8 oam_slot_ptr = 0;
+GLOBAL ACTOR a_actors[TOTAL_NUMBER_OF_ACTORS ];
+GLOBAL BOOL a_sprites[TOTAL_NUMBER_OF_SPRITES] = {0};
 
 GLOBAL ACTOR* a_player   = a_actors;
 GLOBAL ACTOR* a_monsters = a_actors+TOTAL_NUMBER_OF_PLAYERS;
 GLOBAL ACTOR* a_tears    = a_actors+TOTAL_NUMBER_OF_PLAYERS+TOTAL_NUMBER_OF_MONSTERS;
 
-GLOBAL U8 a_monster_count = 0;
-GLOBAL U8 a_tear_count    = 0;
+INTERNAL ACTOR* actor_request_actor (U8 cat)
+{
+    /* Look for an available actor slot and return a pointer to it. */
+    U8 i;
+    switch (cat) {
+        case (ACATE_PLAYER): {
+            return a_player;
+        } break;
+        case (ACATE_TEAR): {
+            for (i=0; i<TOTAL_NUMBER_OF_TEARS; ++i) {
+                if (!(a_tears+i)->active) { return (a_tears+i); }
+            }
+        } break;
+        case (ACATE_MONSTER): {
+            for (i=0; i<TOTAL_NUMBER_OF_MONSTERS; ++i) {
+                if (!(a_monsters+i)->active) { return (a_monsters+i); }
+            }
+        } break;
+    }
+    return NULL;
+}
+
+INTERNAL U8 actor_request_oam (U8 size)
+{
+    /* Look for a consecutive section of OAM for the sprite slots. */
+    U8 i,j,count = 0;
+    for (i=0; i<TOTAL_NUMBER_OF_SPRITES; ++i) {
+        if (!a_sprites[i]) {
+            count++;
+            if (count == size) {
+                /* Mark the requested memory as taken. */
+                for (j=(i-(count-1)); j<=i; j++) {
+                    a_sprites[j] = TRUE;
+                }
+                return (i-(count-1));
+            }
+        } else {
+            count = 0;
+        }
+    }
+    return 0xFF;
+}
 
 INTERNAL ACTOR* actor_create (U8 type, U8 x, U8 y)
 {
     U8 i;
 
-    ACTOR* actor = NULL;
-    switch (ABASE_TABLE[type].cat) {
-        case (ACATE_PLAYER ): {
-            actor = a_player;
-        } break;
-        case (ACATE_MONSTER): {
-            if (a_monster_count >= TOTAL_NUMBER_OF_MONSTERS) {
-                return NULL;
-            } else {
-                actor = a_monsters+a_monster_count;
-                a_monster_count++;
-            }
-            break;
-        } break;
-        case (ACATE_TEAR): {
-            if (a_tear_count >= TOTAL_NUMBER_OF_TEARS) {
-                return NULL;
-            } else {
-                actor = a_tears+a_tear_count;
-                a_tear_count++;
-            }
-        } break;
-    }
+    /* Request an actor slot for our actor. If there is no space then actor_request_actor will */
+    /* return NULL and we will not be able to create the new actor. So we just fail our call.  */
+    ACTOR* actor = actor_request_actor(ABASE_TABLE[type].cat);
+    if (!actor) { return NULL; }
 
+    /* Setup the starting values for the actor. */
     actor->tick     = ABASE_TABLE[type].tick;
     actor->x        = ITOF(x);
     actor->y        = ITOF(y);
@@ -263,7 +285,7 @@ INTERNAL ACTOR* actor_create (U8 type, U8 x, U8 y)
     actor->animi    = ABASE_TABLE[type].anim;
     actor->animf    = 0;
     actor->animt    = 0;
-    actor->slot     = oam_slot_ptr;
+    actor->slot     = actor_request_oam(GET_AMSPR_SIZE(actor)); /* Request some memory in OAM for the actor's sprites. */
     actor->ticks    = 0;
     actor->ext0     = 0;
     actor->ext1     = 0;
@@ -271,12 +293,15 @@ INTERNAL ACTOR* actor_create (U8 type, U8 x, U8 y)
     actor->ext3     = 0;
     actor->active   = TRUE;
 
+    /* If our OAM slot is 0xFF then it means the call to actor_request_oam failed and there was   */
+    /* insufficient space to store the sprites, so we instead just fail our call to actor_create. */
+    if (actor->slot == 0xFF) { actor->active = FALSE; return NULL; }
+
+    /* Set the sprite tiles and properties for the actor. */
     for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
         set_sprite_tile(actor->slot+i, GET_AMSPR_SPR(actor,i));
         set_sprite_prop(actor->slot+i, GET_AMSPR_ATTR(actor,i));
     }
-
-    oam_slot_ptr += GET_AMSPR_SIZE(actor);
 
     return actor;
 }
@@ -319,6 +344,7 @@ INTERNAL VOID actor_deactivate (ACTOR* actor)
     actor->active = FALSE;
     for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
         move_sprite(actor->slot+i, 0,0);
+        a_sprites[actor->slot+i] = FALSE;
     }
 }
 

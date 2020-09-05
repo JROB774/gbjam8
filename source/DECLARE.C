@@ -17,6 +17,8 @@ INTERNAL VOID   fade_to_white          (U8 wait_period                   );
 INTERNAL VOID   fade_from_white        (U8 wait_period                   );
 INTERNAL VOID   fade_to_black          (U8 wait_period                   );
 INTERNAL VOID   fade_from_black        (U8 wait_period                   );
+INTERNAL ACTOR* actor_request_actor    (U8 cat                           );
+INTERNAL U8     actor_request_oam      (U8 size                          );
 INTERNAL ACTOR* actor_create           (U8 type, U8 x, U8 y              );
 INTERNAL VOID   actor_anim_change      (ACTOR* actor, U8 anim, BOOL reset);
 INTERNAL BOOL   actor_anim_done        (ACTOR* actor                     );

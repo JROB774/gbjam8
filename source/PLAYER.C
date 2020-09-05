@@ -53,12 +53,12 @@ INTERNAL VOID player_kill (VOID)
     /* @NOTE: Not sure why but looping through the actor list in one go deactivates player as well? */
     /* Kill all other actors when the player dies. */
     actor = a_monsters;
-    while (actor != (a_monsters+a_monster_count)) {
+    while (actor != (a_monsters+TOTAL_NUMBER_OF_MONSTERS)) {
         actor_deactivate(actor);
         actor++;
     }
     actor = a_tears;
-    while (actor != (a_tears+a_tear_count)) {
+    while (actor != (a_tears+TOTAL_NUMBER_OF_TEARS)) {
         actor_deactivate(actor);
         actor++;
     }
@@ -101,7 +101,7 @@ INTERNAL VOID A_PLAYER (ACTOR* actor)
         if ((actor->ticks % 2) == 0) {
             if (!pdata.iframes) { /* No need to check if we have iframes. */
                 ACTOR* enemy = a_monsters;
-                while (enemy != (a_monsters+a_monster_count)) {
+                while (enemy != (a_monsters+TOTAL_NUMBER_OF_MONSTERS)) {
                     if (enemy->active && enemy->state != ASTAT_DEAD) {
                         if (CHECK_COLLISION(actor, enemy)) {
                             /* Perform knockback on the player relative to the damaging enemy. */
@@ -140,6 +140,7 @@ INTERNAL VOID A_PLAYER (ACTOR* actor)
 
 INTERNAL VOID ptear_kill (ACTOR* actor)
 {
+    UNSET_FLAGS(actor->flags, AFLAG_HIDDEN); /* Make sure the tear is visible as we flicker them. */
     actor_anim_change(actor, AANIM_PTEAR_D, TRUE);
     actor->state = ASTAT_DEAD;
 }
@@ -149,9 +150,9 @@ INTERNAL VOID A_PTEAR (ACTOR* actor)
     switch (actor->state) {
         case (ASTAT_IDLE): {
             /* We flicker tears as there will be a lot of them on screen. */
-            if ((actor->ticks % 2) == 0) {
+            /*if ((actor->ticks % 2) == 0) {
                 TOGGLE_FLAGS(actor->flags, AFLAG_HIDDEN);
-            }
+            }*/
 
             /* If the tear hits the edge of the wall then kill it. */
             /* @NOTE: Hardcoded width and height! */
@@ -172,7 +173,7 @@ INTERNAL VOID A_PTEAR (ACTOR* actor)
             /* Check collision with hostile enemies. */
             if ((actor->ticks % 2) == 0) {
                 ACTOR* enemy = a_monsters;
-                while (enemy != (a_monsters+a_monster_count)) {
+                while (enemy != (a_monsters+TOTAL_NUMBER_OF_MONSTERS)) {
                     if (enemy->active && enemy->state != ASTAT_DEAD) {
                         if (CHECK_COLLISION(actor, enemy)) {
                             monster_hit(enemy, PLAYER_TEAR_DAMAGE);
