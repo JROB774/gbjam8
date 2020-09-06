@@ -63,6 +63,8 @@ INTERNAL VOID player_kill (VOID)
 
     actor_anim_change(a_player, AANIM_PLAYER_D, TRUE);
     a_player->state = ASTAT_DEAD;
+    UNSET_FLAGS(a_player->flags, AFLAG_HIDDEN);
+    actor_update_sprite_pos(a_player);
 
     /* Remove all other actors when the player dies. */
     actor = a_actors;
