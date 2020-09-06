@@ -27,8 +27,14 @@ of these tools are available as open source from their respective links.
 
 All dependencies are included with the project so the only step needed is to run the
 `build/build.bat` file in order to create the output binary. The resulting GB ROM will
-require an emulator in order to be executed. I recommend *[BGB](https://bgb.bircd.org/)*
+require an emulator in order to be executed. I recommend **[BGB](https://bgb.bircd.org/)**
 as it has a larger number of useful features and is extremely accurate to the hardware
 of the **Game Boy**. Note that this build process works on **Windows** only and has not
 been setup for either **Linux** or **MacOS**. However, porting the project over to these
 platforms should be relatively simple to do.
+
+## License
+
+Project code available under the **[MIT License](https://github.com/JRob774/gbjam8/blob/master/LICENSE)**.
+The **Binding of Isaac** IP and all of its characters are owned by its respective copyright holders
+and I claim no ownership, this is simply a fan project made both for fun and educational purposes.
