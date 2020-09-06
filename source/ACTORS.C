@@ -303,6 +303,9 @@ INTERNAL ACTOR* actor_create (U8 type, U8 x, U8 y)
         set_sprite_prop(actor->slot+i, GET_AMSPR_ATTR(actor,i));
     }
 
+    /* Move the actor's sprite to its actual location. */
+    actor_update_sprite_pos(actor);
+
     return actor;
 }
 
