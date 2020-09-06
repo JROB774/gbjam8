@@ -2,7 +2,7 @@
 
 A demake for the *classic roguelike* **The Binding of Isaac** originally developed by
 **Edmund McMillen** and **Florian Himsl**. This homebrew redesign of the game was built
-from the ground up to run on the orignal **Game Boy** hardware itself *(meaning it will
+from the ground up to run on the original **Game Boy** hardware itself *(meaning it will
 require an emulator to play on the PC)*.
 
 The project was made for 2020's **[#GBJAM8](https://itch.io/jam/gbjam-8)** and is more
@@ -28,7 +28,7 @@ of these tools are available as open source from their respective links.
 All dependencies are included with the project so the only step needed is to run the
 `build/build.bat` file in order to create the output binary. The resulting GB ROM will
 require an emulator in order to be executed. I recommend **[BGB](https://bgb.bircd.org/)**
-as it has a larger number of useful features and is extremely accurate to the hardware
+as it has a large number of useful features and is extremely accurate to the hardware
 of the **Game Boy**. Note that this build process works on **Windows** only and has not
 been setup for either **Linux** or **MacOS**. However, porting the project over to these
 platforms should be relatively simple to do.
