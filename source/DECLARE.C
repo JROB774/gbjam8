@@ -41,6 +41,7 @@ INTERNAL VOID   ptear_kill               (ACTOR* actor                     );
 INTERNAL VOID   room_update_doors        (VOID                             );
 INTERNAL VOID   room_transition          (U8 dir                           );
 INTERNAL VOID   room_tick                (VOID                             );
+INTERNAL BOOL   room_current_clear       (VOID                             );
 INTERNAL U8     generate_check_end_rooms (VOID                             );
 INTERNAL BOOL   generate_check_diagonals (U8 x, U8 y, U8 dir               );
 INTERNAL VOID   generate_check_doors     (U8 x, U8 y                       );

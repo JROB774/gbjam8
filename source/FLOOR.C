@@ -412,4 +412,9 @@ INTERNAL VOID room_tick (VOID)
     }
 }
 
+INTERNAL BOOL room_current_clear (VOID)
+{
+    return floor[pdata.yroom][pdata.xroom].clear;
+}
+
 /*////////////////////////////////////////////////////////////////////////////*/
