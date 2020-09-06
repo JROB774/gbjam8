@@ -59,16 +59,12 @@ INTERNAL VOID player_kill (VOID)
     actor_anim_change(a_player, AANIM_PLAYER_D, TRUE);
     a_player->state = ASTAT_DEAD;
 
-    /* @NOTE: Not sure why but looping through the actor list in one go deactivates player as well? */
     /* Kill all other actors when the player dies. */
-    actor = a_monsters;
-    while (actor != (a_monsters+TOTAL_NUMBER_OF_MONSTERS)) {
-        actor_deactivate(actor);
-        actor++;
-    }
-    actor = a_tears;
-    while (actor != (a_tears+TOTAL_NUMBER_OF_TEARS)) {
-        actor_deactivate(actor);
+    actor = a_actors;
+    while (actor != (a_actors+TOTAL_NUMBER_OF_ACTORS)) {
+        if (actor->cat != ACATE_PLAYER) {
+            actor_deactivate(actor);
+        }
         actor++;
     }
 
