@@ -127,6 +127,7 @@ INTERNAL VOID map_draw (VOID)
     for (iy=0; iy<MAX_FLOOR_HEIGHT; ++iy) {
         for (ix=0; ix<MAX_FLOOR_WIDTH; ++ix) {
             switch (floor[iy][ix].type) {
+                case (ROOM_TYPE_START):
                 case (ROOM_TYPE_NORMAL): {
                     map_tiles[(iy+1)*DISPLAY_MAP_HEIGHT+(ix+1)] = TILE_MAP_ROOM_NORMAL;
                 } break;
