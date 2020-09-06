@@ -54,4 +54,8 @@ INTERNAL VOID   A_PLAYER                 (ACTOR* actor                     );
 INTERNAL VOID   A_GAPER                  (ACTOR* actor                     );
 INTERNAL VOID   A_PTEAR                  (ACTOR* actor                     );
 
+/* VARIABLES */
+
+GLOBAL BOOL reset_flag;
+
 /*////////////////////////////////////////////////////////////////////////////*/

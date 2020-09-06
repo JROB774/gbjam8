@@ -34,6 +34,7 @@ INTERNAL VOID player_init (VOID)
     pdata.iframes    = 0;
     pdata.dir_locked = FALSE;
     pdata.cooldown   = 0;
+    pdata.score      = 0;
     pdata.xroom      = 0;
     pdata.yroom      = 0;
 }
@@ -74,7 +75,30 @@ INTERNAL VOID player_kill (VOID)
 
     fade_to_black(PLAYER_DEAD_FADE_SPEED);
 
-    while (TRUE) {}
+    WAIT(20);
+
+    /* Fade the player to black. */
+    for (fade_timer=0; fade_timer<FADE_STEP_AMOUNT; ++fade_timer) {
+        switch (fade_timer) {
+            case (0): SPR_PAL0 = 0xE4; break;
+            case (1): SPR_PAL0 = 0xE5; break;
+            case (2): SPR_PAL0 = 0xE9; break;
+            case (3): SPR_PAL0 = 0xF9; break;
+            case (4): SPR_PAL0 = 0xFE; break;
+            case (5): SPR_PAL0 = 0xFF; break;
+        }
+        WAIT(PLAYER_DEAD_FADE_SPEED);
+    }
+
+    actor_deactivate(a_player);
+
+    WAIT(20);
+
+    /* Reset the sprite data. */
+    SPR_PAL0 = 0xE4;
+    HIDE_SPRITES;
+
+    reset_flag = TRUE;
 }
 
 INTERNAL VOID A_PLAYER (ACTOR* actor)
