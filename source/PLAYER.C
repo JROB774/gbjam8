@@ -127,8 +127,14 @@ INTERNAL VOID A_PLAYER (ACTOR* actor)
         }
 
         /* Player performs the room bounds collision check themselves before firing tears so the tears don;t spawn in walls. */
-        if (actor->x < ITOF(24)) { actor->x = ITOF(24); } else if ((actor->x + ITOF(16)) > ITOF(136)) { actor->x = ITOF(136-16); } /* @NOTE: Hardcoded width and height! */
-        if (actor->y < ITOF(32)) { actor->y = ITOF(32); } else if ((actor->y + ITOF(16)) > ITOF(128)) { actor->y = ITOF(128-16); } /* @NOTE: Hardcoded width and height! */
+        /*if (actor->x < ITOF(24)) { actor->x = ITOF(24); } else if ((actor->x + ITOF(16)) > ITOF(136)) { actor->x = ITOF(136-16); }*/ /* @NOTE: Hardcoded width and height! */
+        /*if (actor->y < ITOF(32)) { actor->y = ITOF(32); } else if ((actor->y + ITOF(16)) > ITOF(128)) { actor->y = ITOF(128-16); }*/ /* @NOTE: Hardcoded width and height! */
+
+        /* @Temporary: Testing transitions! */
+        if (actor->x < ITOF(24))               { room_transition(DIR_L); }
+        if ((actor->x + ITOF(16)) > ITOF(136)) { room_transition(DIR_R); }
+        if (actor->y < ITOF(32))               { room_transition(DIR_U); }
+        if ((actor->y + ITOF(16)) > ITOF(128)) { room_transition(DIR_D); }
 
         /* Handle firing tears. */
         if (pdata.cooldown) { pdata.cooldown--; }

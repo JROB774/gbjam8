@@ -269,14 +269,14 @@ INTERNAL VOID generate_floor (VOID)
 
 /* ROOM MANAGEMENT */
 
-#define ROOM_PLAYER_POS_U_X  9
-#define ROOM_PLAYER_POS_U_Y  2
-#define ROOM_PLAYER_POS_R_X 17
-#define ROOM_PLAYER_POS_R_Y  9
-#define ROOM_PLAYER_POS_D_X  9
-#define ROOM_PLAYER_POS_D_Y 16
-#define ROOM_PLAYER_POS_L_X  1
-#define ROOM_PLAYER_POS_L_Y  9
+#define ROOM_PLAYER_POS_U_X  72
+#define ROOM_PLAYER_POS_U_Y  32
+#define ROOM_PLAYER_POS_R_X 120
+#define ROOM_PLAYER_POS_R_Y  72
+#define ROOM_PLAYER_POS_D_X  72
+#define ROOM_PLAYER_POS_D_Y 112
+#define ROOM_PLAYER_POS_L_X  24
+#define ROOM_PLAYER_POS_L_Y  72
 
 #define ROOM_DOOR_POS_U_X  9
 #define ROOM_DOOR_POS_U_Y  2
@@ -291,6 +291,9 @@ INTERNAL VOID generate_floor (VOID)
 #define ROOM_DOOR_R_VRAM_OFFSET 0x6A
 #define ROOM_DOOR_D_VRAM_OFFSET 0x6E
 #define ROOM_DOOR_L_VRAM_OFFSET 0x72
+
+#define ROOM_TRANSITION_FADE_SPEED 3
+#define ROOM_TRANSITION_WAIT_SPEED 3
 
 GLOBAL const U8 ROOM_DOOR_U_NONE[] = { 0xFF,0xFF,0xFF,0xFF,0x1F,0xE0,0x40,0x80,0x3F,0x80,0x3F,0x80,0x7F,0x80,0x3F,0xC0,0xFF,0xFF,0xFF,0xFF,0xF8,0x07,0x02,0x01,0xFC,0x01,0xFC,0x01,0xFE,0x01,0xFC,0x03,0x00,0xFF,0x7F,0x80,0x80,0x7F,0x00,0xFF,0x80,0xFF,0xFF,0xFF,0x10,0xFF,0x10,0xFF,0x00,0xFF,0xFD,0x03,0x03,0xFD,0x01,0xFF,0x03,0xFF,0xFF,0xFF,0x10,0xFF,0x10,0xFF };
 GLOBAL const U8 ROOM_DOOR_R_NONE[] = { 0x22,0xFD,0x22,0xFD,0x22,0xFD,0xE2,0xFD,0x22,0xFD,0x22,0xFD,0x22,0xFD,0x34,0xFB,0x03,0xFF,0x4B,0x87,0xF3,0x07,0xF7,0x03,0xF7,0x03,0xF7,0x03,0xF7,0x03,0xF7,0x03,0x3E,0xFF,0x34,0xFB,0x22,0xFD,0xE2,0xFD,0x22,0xFD,0x22,0xFD,0x22,0xFD,0x22,0xFD,0xF7,0x03,0xF7,0x03,0xF7,0x03,0xF7,0x03,0xF7,0x03,0xF3,0x07,0x4B,0x87,0x03,0xFF };
@@ -320,10 +323,14 @@ INTERNAL VOID room_update_doors (VOID)
     door_l = ROOM_DOOR_L_NONE;
 
     /* Determine the door graphics. */
-    if (room->doors & ROOM_DOOR_U) { if (room->clear) { door_u = ROOM_DOOR_U_OPEN; } else { door_u = ROOM_DOOR_U_SHUT; } }
-    if (room->doors & ROOM_DOOR_R) { if (room->clear) { door_r = ROOM_DOOR_R_OPEN; } else { door_r = ROOM_DOOR_R_SHUT; } }
-    if (room->doors & ROOM_DOOR_D) { if (room->clear) { door_d = ROOM_DOOR_D_OPEN; } else { door_d = ROOM_DOOR_D_SHUT; } }
-    if (room->doors & ROOM_DOOR_L) { if (room->clear) { door_l = ROOM_DOOR_L_OPEN; } else { door_l = ROOM_DOOR_L_SHUT; } }
+    if (room->doors & ROOM_DOOR_U) { door_u = ROOM_DOOR_U_OPEN; }
+    if (room->doors & ROOM_DOOR_R) { door_r = ROOM_DOOR_R_OPEN; }
+    if (room->doors & ROOM_DOOR_D) { door_d = ROOM_DOOR_D_OPEN; }
+    if (room->doors & ROOM_DOOR_L) { door_l = ROOM_DOOR_L_OPEN; }
+    /*if (room->doors & ROOM_DOOR_U) { if (room->clear) { door_u = ROOM_DOOR_U_OPEN; } else { door_u = ROOM_DOOR_U_SHUT; } }*/
+    /*if (room->doors & ROOM_DOOR_R) { if (room->clear) { door_r = ROOM_DOOR_R_OPEN; } else { door_r = ROOM_DOOR_R_SHUT; } }*/
+    /*if (room->doors & ROOM_DOOR_D) { if (room->clear) { door_d = ROOM_DOOR_D_OPEN; } else { door_d = ROOM_DOOR_D_SHUT; } }*/
+    /*if (room->doors & ROOM_DOOR_L) { if (room->clear) { door_l = ROOM_DOOR_L_OPEN; } else { door_l = ROOM_DOOR_L_SHUT; } }*/
 
     /* Update the doors in VRAM. */
     set_bkg_data(ROOM_DOOR_U_VRAM_OFFSET,4, door_u);
@@ -332,9 +339,35 @@ INTERNAL VOID room_update_doors (VOID)
     set_bkg_data(ROOM_DOOR_L_VRAM_OFFSET,4, door_l);
 }
 
-INTERNAL VOID room_transition (U8 x, U8 y)
+INTERNAL VOID room_transition (U8 dir)
 {
-    /* @Incomplete: ... */
+    ACTOR* actor;
+
+    HIDE_SPRITES;
+    fade_to_black(ROOM_TRANSITION_FADE_SPEED);
+
+    actor = a_actors;
+    while (actor != (a_actors+TOTAL_NUMBER_OF_ACTORS)) {
+        if (actor->cat != ACATE_PLAYER) {
+            actor_deactivate(actor);
+        }
+        actor++;
+    }
+
+    switch (dir) {
+        case (DIR_U): { pdata.yroom--; a_player->x = ITOF(ROOM_PLAYER_POS_D_X), a_player->y = ITOF(ROOM_PLAYER_POS_D_Y); } break;
+        case (DIR_R): { pdata.xroom++; a_player->x = ITOF(ROOM_PLAYER_POS_L_X), a_player->y = ITOF(ROOM_PLAYER_POS_L_Y); } break;
+        case (DIR_D): { pdata.yroom++; a_player->x = ITOF(ROOM_PLAYER_POS_U_X), a_player->y = ITOF(ROOM_PLAYER_POS_U_Y); } break;
+        case (DIR_L): { pdata.xroom--; a_player->x = ITOF(ROOM_PLAYER_POS_R_X), a_player->y = ITOF(ROOM_PLAYER_POS_R_Y); } break;
+    }
+    actor_update_sprite_pos(a_player);
+
+    room_update_doors();
+
+    WAIT(ROOM_TRANSITION_WAIT_SPEED);
+
+    fade_from_black(ROOM_TRANSITION_FADE_SPEED);
+    SHOW_SPRITES;
 }
 
 INTERNAL VOID room_tick (VOID)
