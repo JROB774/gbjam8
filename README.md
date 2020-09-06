@@ -15,10 +15,20 @@ You can find a download for the game's ROM file over on
 
 ## Development
 
-The project was developed using **C** and the **[GBDK](https://github.com/Zal0/gbdk-2020)**
+The project was developed using C and the **[GBDK](https://github.com/Zal0/gbdk-2020)**
 library to compile into a Game Boy ROM. All other code was written from scratch for this
 project. Tools such as **[GBTD (Game Boy Tile Designer)](https://www.devrs.com/gb/hmgd/gbtd.html)**,
 **[GBMB (Game Boy Map Designer)](https://www.devrs.com/gb/hmgd/gbmb.html)**, and
 **[GameBoyPngConverter](https://github.com/gingemonster/GameBoyPngConverter/)** were
 used to create and generate tile graphics, maps, and splash screens for the project. All
 of these tools are available as open source from their respective links.
+
+## Build
+
+All dependencies are included with the project so the only step needed is to run the
+`build/build.bat` file in order to create the output binary. The resulting GB ROM will
+require an emulator in order to be executed. I recommend *[BGB](https://bgb.bircd.org/)*
+as it has a larger number of useful features and is extremely accurate to the hardware
+of the **Game Boy**. Note that this build process works on **Windows** only and has not
+been setup for either **Linux** or **MacOS**. However, porting the project over to these
+platforms should be relatively simple to do.
