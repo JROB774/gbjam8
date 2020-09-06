@@ -269,6 +269,8 @@ INTERNAL VOID generate_floor (VOID)
 
 /* ROOM MANAGEMENT */
 
+#define END_GAME_FADE_SPEED 10
+
 #define ROOM_PLAYER_POS_U_X  72
 #define ROOM_PLAYER_POS_U_Y  32
 #define ROOM_PLAYER_POS_R_X 120
@@ -363,7 +365,11 @@ INTERNAL VOID room_transition (U8 dir)
 
     /* @Temporary */
     if (!floor[pdata.yroom][pdata.xroom].clear) {
-        actor_create(ATYPE_GAPER, 72,72);
+        /*actor_create(ATYPE_GAPER,  72, 56);*/
+        actor_create(ATYPE_GAPER,  56, 72);
+        actor_create(ATYPE_GAPER,  72, 72);
+        actor_create(ATYPE_GAPER,  88, 72);
+        /*actor_create(ATYPE_GAPER,  72, 88);*/
     }
 
     /* This will mark the room clear if it's has no monsters in. */
@@ -378,15 +384,35 @@ INTERNAL VOID room_transition (U8 dir)
 
     WAIT(ROOM_TRANSITION_WAIT_SPEED);
 
-    fade_from_black(ROOM_TRANSITION_FADE_SPEED);
+    /* If it's a boss room then that's the end of the game! */
+    if (floor[pdata.yroom][pdata.xroom].type == ROOM_TYPE_BOSS) {
+        SET_BKG_DATA(TILESET_ENDGAME);
+        SET_MAP_DATA(TILEMAP_ENDGAME);
 
-    SHOW_SPRITES;
+        actor = a_actors;
+        while (actor != (a_actors+TOTAL_NUMBER_OF_ACTORS)) {
+            actor_deactivate(actor);
+            actor++;
+        }
 
-    /* If the room has enemies then wait a bit longer and show the doors shutting. */
-    room_all_monsters_dead = floor[pdata.yroom][pdata.xroom].clear;
-    if (!room_all_monsters_dead) {
-        WAIT(ROOM_TRANSITION_DOOR_SPEED);
-        room_update_doors();
+        WAIT(60);
+
+        fade_from_black(END_GAME_FADE_SPEED);
+        JOYPAD_WAIT_ANY;
+        fade_to_black(END_GAME_FADE_SPEED);
+
+        reset_flag = TRUE;
+    } else {
+        fade_from_black(ROOM_TRANSITION_FADE_SPEED);
+
+        SHOW_SPRITES;
+
+        /* If the room has enemies then wait a bit longer and show the doors shutting. */
+        room_all_monsters_dead = floor[pdata.yroom][pdata.xroom].clear;
+        if (!room_all_monsters_dead) {
+            WAIT(ROOM_TRANSITION_DOOR_SPEED);
+            room_update_doors();
+        }
     }
 }
 

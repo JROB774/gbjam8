@@ -23,14 +23,6 @@ INTERNAL void GAME ()
         actor_create(ATYPE_PLAYER, 0, 0);
         generate_floor();
 
-        /* @Temporary: Just make some debug actors for now. ***********************/
-        /*actor_create(ATYPE_GAPER,  72, 56);*/
-        /*actor_create(ATYPE_GAPER,  56, 72);*/
-        /*actor_create(ATYPE_GAPER,  72, 72);*/
-        /*actor_create(ATYPE_GAPER,  88, 72);*/
-        /*actor_create(ATYPE_GAPER,  72, 88);*/
-        /**************************************************************************/
-
         fade_from_black(GAME_FADE_SPEED);
 
         SHOW_SPRITES;

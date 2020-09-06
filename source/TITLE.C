@@ -1,6 +1,7 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
-#define TITLE_FADE_SPEED 0x03 /* (3) */
+#define TITLE_FADE_SPEED     3
+#define TITLE_WAIT_DURATION 20
 
 INTERNAL void TITLE ()
 {
@@ -11,6 +12,7 @@ INTERNAL void TITLE ()
     fade_from_black(TITLE_FADE_SPEED);
     JOYPAD_WAIT_START;
     fade_to_black(TITLE_FADE_SPEED);
+    WAIT(TITLE_WAIT_DURATION);
     #endif
 }
 
