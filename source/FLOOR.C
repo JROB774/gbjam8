@@ -357,13 +357,36 @@ INTERNAL VOID room_transition (U8 dir)
     }
     actor_update_sprite_pos(a_player);
 
-    /* @Temporary */
+    /* Generate a random layout for the room. */
     if (!floor[pdata.yroom][pdata.xroom].clear) {
-        /*actor_create(ATYPE_GAPER,  72, 56);*/
-        actor_create(ATYPE_GAPER,  56, 72);
-        actor_create(ATYPE_GAPER,  72, 72);
-        actor_create(ATYPE_GAPER,  88, 72);
-        /*actor_create(ATYPE_GAPER,  72, 88);*/
+        switch (((U8)rand()) % 6) {
+            case (0): {
+                // Nothing...
+            } break;
+            case (1): {
+                actor_create(ATYPE_GAPER, 72, 72);
+            } break;
+            case (2): {
+                actor_create(ATYPE_GAPER, 56, 72);
+                actor_create(ATYPE_GAPER, 72, 72);
+                actor_create(ATYPE_GAPER, 88, 72);
+            } break;
+            case (3): {
+                actor_create(ATYPE_GAPER, 72, 56);
+                actor_create(ATYPE_GAPER, 56, 72);
+                actor_create(ATYPE_GAPER, 88, 72);
+                actor_create(ATYPE_GAPER, 72, 88);
+            } break;
+            case (4): {
+                actor_create(ATYPE_GAPER, 72, 56);
+                actor_create(ATYPE_GAPER, 72, 72);
+                actor_create(ATYPE_GAPER, 88, 72);
+                actor_create(ATYPE_GAPER, 72, 88);
+            } break;
+            case (5): {
+                // @Incomplete: ...
+            } break;
+        }
     }
 
     /* This will mark the room clear if it's has no monsters in. */
