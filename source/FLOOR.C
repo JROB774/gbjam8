@@ -211,11 +211,11 @@ INTERNAL VOID generate_floor (VOID)
     /* @Improve: Make it so the boss spawns far away! */
     /* Assign special room types to random end rooms. */
     special_room_boss = FALSE;
-    for (iy=0; iy<MAX_FLOOR_HEIGHT; ++iy) {
-        for (ix=0; ix<MAX_FLOOR_WIDTH; ++ix) {
-            if (generate_is_end_room(ix,iy)) {
+    for (iy=MAX_FLOOR_HEIGHT; iy>0; --iy) {
+        for (ix=MAX_FLOOR_WIDTH; ix>0; --ix) {
+            if (generate_is_end_room(ix-1,iy-1)) {
                 if (!special_room_boss) {
-                    floor[iy][ix].type = ROOM_TYPE_BOSS;
+                    floor[iy-1][ix-1].type = ROOM_TYPE_BOSS;
                     special_room_boss = TRUE;
                 }
             }
