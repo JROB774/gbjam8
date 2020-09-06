@@ -126,7 +126,7 @@ INTERNAL VOID A_PLAYER (ACTOR* actor)
             }
             pdata.dir_locked = TRUE;
             if (!pdata.cooldown) { /* If we've cooled down from the last shot. */
-                ACTOR* tear = actor_create(ATYPE_PTEAR, FTOI(actor->x), FTOI(actor->y));
+                ACTOR* tear = actor_create(ATYPE_PTEAR, FTOI(actor->x) + 4, FTOI(actor->y)); /* @NOTE: Hardcoded values! */
                 pdata.cooldown = PLAYER_FIRE_RATE_COOLDOWN;
                 if (tear) { /* Could be NULL! */
                     tear->ext0 = actor->animi; /* Store direction in ext0. */

@@ -4,10 +4,14 @@
 
 INTERNAL void GAME ()
 {
-    SET_SPR_DATA(TILESET_SPRITES);
-    SET_BKG_DATA(TILESET_DISPLAY);
-    SET_BKG_DATA(TILESET_ROOM   );
-    SET_MAP_DATA(TILEMAP_ROOM   );
+    SET_SPR_DATA(TILESET_SPRITES );
+    SET_BKG_DATA(TILESET_EMPTY   );
+    SET_BKG_DATA(TILESET_NUMBERS );
+    SET_BKG_DATA(TILESET_ALPHABET);
+    SET_BKG_DATA(TILESET_DISPLAY );
+    SET_BKG_DATA(TILESET_ROOM    );
+    SET_MAP_DATA(TILEMAP_EMPTY   );
+    SET_MAP_DATA(TILEMAP_ROOM    );
 
     player_init();
     status_init();
@@ -24,6 +28,9 @@ INTERNAL void GAME ()
     fade_from_black(GAME_FADE_SPEED);
 
     SHOW_SPRITES;
+
+    /* Use the system time to determine the random seed. */
+    initrand(sys_time);
 
     while (TRUE) {
         DEBUG_PROFILE_BEGIN(GAMELOOP);
