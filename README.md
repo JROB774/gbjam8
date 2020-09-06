@@ -23,7 +23,7 @@ project. Tools such as **[GBTD (Game Boy Tile Designer)](https://www.devrs.com/g
 used to create and generate tile graphics, maps, and splash screens for the project. All
 of these tools are available as open source from their respective links.
 
-## Build
+## Building
 
 All dependencies are included with the project so the only step needed is to run the
 `build/build.bat` file in order to create the output binary. The resulting GB ROM will
