@@ -243,6 +243,11 @@ INTERNAL VOID generate_floor (VOID)
     /* Update the player's room tile graphics to match the doors. */
     room_update_doors();
 
+    /* Set the player's room positiion to the center. */
+    a_player->x = ITOF(8+(((SCREEN_WIDTH-16)-16)/2));
+    a_player->y = ITOF(16+(((SCREEN_HEIGHT-16)-16)/2));
+    actor_update_sprite_pos(a_player);
+
     /* Debug print out the floor. */
     #if 0
     for (iy=0; iy<MAX_FLOOR_HEIGHT; ++iy) {
@@ -263,6 +268,15 @@ INTERNAL VOID generate_floor (VOID)
 /*////////////////////////////////////////////////////////////////////////////*/
 
 /* ROOM MANAGEMENT */
+
+#define ROOM_PLAYER_POS_U_X  9
+#define ROOM_PLAYER_POS_U_Y  2
+#define ROOM_PLAYER_POS_R_X 17
+#define ROOM_PLAYER_POS_R_Y  9
+#define ROOM_PLAYER_POS_D_X  9
+#define ROOM_PLAYER_POS_D_Y 16
+#define ROOM_PLAYER_POS_L_X  1
+#define ROOM_PLAYER_POS_L_Y  9
 
 #define ROOM_DOOR_POS_U_X  9
 #define ROOM_DOOR_POS_U_Y  2

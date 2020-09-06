@@ -19,10 +19,10 @@ INTERNAL void GAME ()
     /* Use the system time to determine the random seed. */
     initrand(sys_time);
 
+    actor_create(ATYPE_PLAYER, 0, 0);
     generate_floor();
 
     /* @Temporary: Just make some debug actors for now. ***********************/
-    actor_create(ATYPE_PLAYER, 24, 72);
     /*actor_create(ATYPE_GAPER,  72, 56);*/
     /*actor_create(ATYPE_GAPER,  56, 72);*/
     /*actor_create(ATYPE_GAPER,  72, 72);*/
