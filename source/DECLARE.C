@@ -2,8 +2,6 @@
 
 /* STRUCTURES */
 
-typedef struct _RECTU_ RECTU;
-typedef struct _RECTI_ RECTI;
 typedef struct _RECTF_ RECTF;
 typedef struct _PDATA_ PDATA;
 typedef struct _ACTOR_ ACTOR;
@@ -14,8 +12,6 @@ typedef struct _MROOM_ MROOM;
 
 INTERNAL VOID   joypad_wait              (U8 buttons                       );
 INTERNAL BOOL   joypad_waittimeout       (U8 buttons, U8 timeout           );
-INTERNAL VOID   fade_to_white            (U8 wait_period                   );
-INTERNAL VOID   fade_from_white          (U8 wait_period                   );
 INTERNAL VOID   fade_to_black            (U8 wait_period                   );
 INTERNAL VOID   fade_from_black          (U8 wait_period                   );
 INTERNAL ACTOR* actor_request_actor      (U8 cat                           );
@@ -29,8 +25,6 @@ INTERNAL VOID   actor_update_sprite_pos  (ACTOR* actor                     );
 INTERNAL VOID   actor_tick_all           (VOID                             );
 INTERNAL VOID   status_init              (VOID                             );
 INTERNAL VOID   status_update_hearts     (VOID                             );
-INTERNAL VOID   status_update_counters   (VOID                             );
-INTERNAL VOID   status_update_item       (VOID                             );
 INTERNAL VOID   status_update_score      (VOID                             );
 INTERNAL VOID   map_draw                 (VOID                             );
 INTERNAL VOID   monster_hit              (ACTOR* actor, U8 damage          );
@@ -42,7 +36,10 @@ INTERNAL VOID   room_update_doors        (VOID                             );
 INTERNAL VOID   room_transition          (U8 dir                           );
 INTERNAL VOID   room_tick                (VOID                             );
 INTERNAL BOOL   room_current_clear       (VOID                             );
-INTERNAL U8     generate_check_end_rooms (VOID                             );
+INTERNAL BOOL   room_has_door_u          (VOID                             );
+INTERNAL BOOL   room_has_door_r          (VOID                             );
+INTERNAL BOOL   room_has_door_l          (VOID                             );
+INTERNAL BOOL   room_has_door_d          (VOID                             );
 INTERNAL BOOL   generate_check_diagonals (U8 x, U8 y, U8 dir               );
 INTERNAL VOID   generate_check_doors     (U8 x, U8 y                       );
 INTERNAL VOID   generate_room_doors      (U8 x, U8 y                       );

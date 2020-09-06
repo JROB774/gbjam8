@@ -11,8 +11,7 @@
 #define ROOM_TYPE_NONE   0x00
 #define ROOM_TYPE_START  0x01
 #define ROOM_TYPE_NORMAL 0x02
-#define ROOM_TYPE_ITEM   0x03
-#define ROOM_TYPE_BOSS   0x04
+#define ROOM_TYPE_BOSS   0x03
 
 #define ROOM_DOOR_U      0x01
 #define ROOM_DOOR_R      0x02
@@ -22,7 +21,6 @@
 typedef struct _MROOM_
 {
     U8   type;   /* Identifier stating what type of room it is.      */
-    U8   layout; /* Identifier for what layout the room is using.    */
     U8   doors;  /* Flags representing what doors the room has.      */
     BOOL clear;  /* States whether the room has been cleared or not. */
 
@@ -44,19 +42,6 @@ INTERNAL BOOL generate_is_end_room (U8 x, U8 y)
         }
     }
     return FALSE;
-}
-
-INTERNAL U8 generate_check_end_rooms (VOID)
-{
-    U8 ix,iy,count = 0;
-    for (iy=0; iy<MAX_FLOOR_HEIGHT; ++iy) {
-        for (ix=0; ix<MAX_FLOOR_WIDTH; ++ix) {
-            if (generate_is_end_room(ix,iy)) {
-                count++;
-            }
-        }
-    }
-    return count;
 }
 
 INTERNAL BOOL generate_check_diagonals (U8 x, U8 y, U8 dir)
@@ -156,7 +141,6 @@ INTERNAL VOID generate_floor (VOID)
         for (iy=0; iy<MAX_FLOOR_HEIGHT; ++iy) {
             for (ix=0; ix<MAX_FLOOR_WIDTH; ++ix) {
                 floor[iy][ix].type   = ROOM_TYPE_NONE;
-                floor[iy][ix].layout = 0x00;
                 floor[iy][ix].doors  = 0x00;
                 floor[iy][ix].clear  = FALSE;
             }
@@ -210,7 +194,15 @@ INTERNAL VOID generate_floor (VOID)
         /* If we are within the floor limits... */
         if ((gen_count >= MIN_FLOOR_ROOMS) && (gen_count <= MAX_FLOOR_ROOMS)) {
             /* ...and we have enough end rooms for all special room types... */
-            if (generate_check_end_rooms()) {
+            U8 count = 0;
+            for (iy=0; iy<MAX_FLOOR_HEIGHT; ++iy) {
+                for (ix=0; ix<MAX_FLOOR_WIDTH; ++ix) {
+                    if (generate_is_end_room(ix,iy)) {
+                        count++;
+                    }
+                }
+            }
+            if (count >= 2) {
                 break; /* ...then we are done! */
             }
         }
@@ -380,7 +372,6 @@ INTERNAL VOID room_transition (U8 dir)
             case (4): {
                 actor_create(ATYPE_GAPER, 72, 56);
                 actor_create(ATYPE_GAPER, 72, 72);
-                actor_create(ATYPE_GAPER, 88, 72);
                 actor_create(ATYPE_GAPER, 72, 88);
             } break;
             case (5): {
@@ -458,6 +449,23 @@ INTERNAL VOID room_tick (VOID)
 INTERNAL BOOL room_current_clear (VOID)
 {
     return floor[pdata.yroom][pdata.xroom].clear;
+}
+
+INTERNAL BOOL room_has_door_u (VOID)
+{
+    return (floor[pdata.yroom][pdata.xroom].doors & ROOM_DOOR_U);
+}
+INTERNAL BOOL room_has_door_r (VOID)
+{
+    return (floor[pdata.yroom][pdata.xroom].doors & ROOM_DOOR_R);
+}
+INTERNAL BOOL room_has_door_l (VOID)
+{
+    return (floor[pdata.yroom][pdata.xroom].doors & ROOM_DOOR_L);
+}
+INTERNAL BOOL room_has_door_d (VOID)
+{
+    return (floor[pdata.yroom][pdata.xroom].doors & ROOM_DOOR_D);
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/

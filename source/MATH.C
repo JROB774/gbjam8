@@ -18,8 +18,6 @@
 
 typedef S16 FIXED;
 
-typedef struct _RECTU_ { U8    x, y, w, h; } RECTU;
-typedef struct _RECTI_ { S8    x, y, w, h; } RECTI;
 typedef struct _RECTF_ { FIXED x, y, w, h; } RECTF;
 
 #define FADD(a,b) ( (a)             + (b) )       /* Add two fixed-points.    */
@@ -39,7 +37,6 @@ typedef struct _RECTF_ { FIXED x, y, w, h; } RECTF;
 #define COS(x) ((FIXED)(SIN_TABLE[(((x)) + 0x40) & 0xFF])) /* Cosine.         */
 
 INTERNAL FIXED ATAN2 (FIXED y, FIXED x);                   /* Arc tangent.    */
-INTERNAL FIXED SQRT  (FIXED n         );                   /* Square root.    */
 
 /* Extract the integral and fractional parts of a fixed-point value and then  */
 /* convert them into integers; useful for printing out fixed-points, like so: */
@@ -115,17 +112,6 @@ INTERNAL FIXED ATAN2 (FIXED y, FIXED x)
     }
 
     return ((y < 0) ? (-angle) : (angle));
-}
-
-INTERNAL FIXED SQRT (FIXED n)
-{
-    FIXED s;
-    U8 i;
-    s = (n + 0xFF) >> 1;
-    for (i=0; i<8; ++i) {
-        s = (s + FDIV(n,s)) >> 1;
-    }
-    return s;
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/

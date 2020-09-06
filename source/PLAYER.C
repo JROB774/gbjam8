@@ -101,6 +101,14 @@ INTERNAL VOID player_kill (VOID)
     reset_flag = TRUE;
 }
 
+#define CHECK_DOOR_COLLISION_VERT(a,b)                                                \
+((((a->x+a->bounds.x+a->bounds.w)>=(b.x)) && ((b.x+b.w)>=(a->x+a->bounds.x))) &&      \
+ (((a->y+ITOF(16))>=(b.y)) && ((b.y+b.h)>=(a->y))))
+
+#define CHECK_DOOR_COLLISION_HORZ(a,b)                                                \
+((((a->x+ITOF(16))>=(b.x)) && ((b.x+b.w)>=(a->x))) &&                                 \
+ (((a->y+a->bounds.y+a->bounds.h)>=(b.y)) && ((b.y+b.h)>=(a->y+a->bounds.y))))
+
 INTERNAL VOID A_PLAYER (ACTOR* actor)
 {
     /* Decrease velocity over time as the force diminishes. */
@@ -151,19 +159,53 @@ INTERNAL VOID A_PLAYER (ACTOR* actor)
             }
         }
 
-        /* Player performs the room bounds collision check themselves before firing tears so the tears don;t spawn in walls. */
-        /*if (actor->x < ITOF(24)) { actor->x = ITOF(24); } else if ((actor->x + ITOF(16)) > ITOF(136)) { actor->x = ITOF(136-16); }*/ /* @NOTE: Hardcoded width and height! */
-        /*if (actor->y < ITOF(32)) { actor->y = ITOF(32); } else if ((actor->y + ITOF(16)) > ITOF(128)) { actor->y = ITOF(128-16); }*/ /* @NOTE: Hardcoded width and height! */
-
-        /* @Temporary: Testing transitions! */
-        if (room_current_clear()) {
-            if (actor->x < ITOF(24))               { room_transition(DIR_L); }
-            if ((actor->x + ITOF(16)) > ITOF(136)) { room_transition(DIR_R); }
-            if (actor->y < ITOF(32))               { room_transition(DIR_U); }
-            if ((actor->y + ITOF(16)) > ITOF(128)) { room_transition(DIR_D); }
-        } else {
-            if (actor->x < ITOF(24)) { actor->x = ITOF(24); } else if ((actor->x + ITOF(16)) > ITOF(136)) { actor->x = ITOF(136-16); }
-            if (actor->y < ITOF(32)) { actor->y = ITOF(32); } else if ((actor->y + ITOF(16)) > ITOF(128)) { actor->y = ITOF(128-16); }
+        /* Player performs the room bounds collision check themselves before firing tears so the tears don't spawn in walls. */
+        /* And also so that we can if the player collides with a door in a cleared room then they will transition to the next. */
+        /* @NOTE: Hardcoded width and height! */
+        RECTF door;
+        if (actor->x < ITOF(24)) {
+            door.x = ITOF(  8);
+            door.y = ITOF( 72);
+            door.w = ITOF( 16);
+            door.h = ITOF( 16);
+            if (room_current_clear() && room_has_door_l() && CHECK_DOOR_COLLISION_HORZ(actor, door)) {
+                room_transition(DIR_L);
+            } else {
+                actor->x = ITOF(24);
+            }
+        }
+        if ((actor->x + ITOF(16)) > ITOF(136)) {
+            door.x = ITOF(136);
+            door.y = ITOF( 72);
+            door.w = ITOF( 16);
+            door.h = ITOF( 16);
+            if (room_current_clear() && room_has_door_r() && CHECK_DOOR_COLLISION_HORZ(actor, door)) {
+                room_transition(DIR_R);
+            } else {
+                actor->x = ITOF(136-16);
+            }
+        }
+        if (actor->y < ITOF(32)) {
+            door.x = ITOF( 72);
+            door.y = ITOF( 16);
+            door.w = ITOF( 16);
+            door.h = ITOF( 16);
+            if (room_current_clear() && room_has_door_u() && CHECK_DOOR_COLLISION_VERT(actor, door)) {
+                room_transition(DIR_U);
+            } else {
+                actor->y = ITOF(32);
+            }
+        }
+        if ((actor->y + ITOF(16)) > ITOF(128)) {
+            door.x = ITOF( 72);
+            door.y = ITOF(128);
+            door.w = ITOF( 16);
+            door.h = ITOF( 16);
+            if (room_current_clear() && room_has_door_d() && CHECK_DOOR_COLLISION_VERT(actor, door)) {
+                room_transition(DIR_D);
+            } else {
+                actor->y = ITOF(128-16);
+            }
         }
 
         /* Handle firing tears. */

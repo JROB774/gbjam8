@@ -21,9 +21,6 @@ typedef struct _ACTOR_
     U8    ticks;  /* General-purpose timer for the actor.                     */
     U8    slot;   /* Starting slot in OAM for the actor's sprite data.        */
     U8    ext0;   /* Can be used to represent extra/custom data.              */
-    U8    ext1;   /* Can be used to represent extra/custom data.              */
-    U8    ext2;   /* Can be used to represent extra/custom data.              */
-    U8    ext3;   /* Can be used to represent extra/custom data.              */
     BOOL  active; /* Whether the actor is currently active or not. An actor   */
                   /* that is not active can be replaced with a new actor.     */
 } ACTOR;
@@ -288,9 +285,6 @@ INTERNAL ACTOR* actor_create (U8 type, U8 x, U8 y)
     actor->slot     = actor_request_oam(GET_AMSPR_SIZE(actor)); /* Request some memory in OAM for the actor's sprites. */
     actor->ticks    = 0;
     actor->ext0     = 0;
-    actor->ext1     = 0;
-    actor->ext2     = 0;
-    actor->ext3     = 0;
     actor->active   = TRUE;
 
     /* If our OAM slot is 0xFF then it means the call to actor_request_oam failed and there was   */

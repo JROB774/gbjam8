@@ -4,6 +4,7 @@
 
 GLOBAL U8 fade_timer;
 
+/*
 INTERNAL VOID fade_to_white (U8 wait_period)
 {
     for (fade_timer=0; fade_timer<FADE_STEP_AMOUNT; ++fade_timer) {
@@ -33,6 +34,7 @@ INTERNAL VOID fade_from_white (U8 wait_period)
         WAIT(wait_period);
     }
 }
+*/
 
 INTERNAL VOID fade_to_black (U8 wait_period)
 {

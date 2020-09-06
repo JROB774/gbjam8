@@ -16,7 +16,6 @@
 #include "ACTORS.C"
 #include "PLAYER.C"
 #include "MONSTERS.C"
-#include "ROOMS.C"
 #include "FLOOR.C"
 #include "DISPLAY.C"
 #include "GAME.C"
