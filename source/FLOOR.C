@@ -1,7 +1,7 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
 #define MAX_FLOOR_WIDTH  0x06
-#define MAX_FLOOR_HEIGHT 0x07
+#define MAX_FLOOR_HEIGHT 0x06
 
 #define MIN_FLOOR_ROOMS  0x06 /* ( 6) */
 #define MAX_FLOOR_ROOMS  0x0B /* (11) */

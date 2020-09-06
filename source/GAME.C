@@ -32,6 +32,8 @@ INTERNAL void GAME ()
     /* Use the system time to determine the random seed. */
     initrand(sys_time);
 
+    generate_floor();
+
     while (TRUE) {
         DEBUG_PROFILE_BEGIN(GAMELOOP);
         UPDATE_JOYPAD_STATE;
