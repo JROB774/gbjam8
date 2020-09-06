@@ -147,8 +147,6 @@ INTERNAL VOID generate_floor (VOID)
 {
     U8 ix,iy, sx,sy;
     BOOL generating;
-
-    BOOL special_room_item;
     BOOL special_room_boss;
 
     /* We will keep generating floors until we get one that fulfills all our rules. */
@@ -220,15 +218,11 @@ INTERNAL VOID generate_floor (VOID)
 
     /* @Improve: Make it so the boss spawns far away! */
     /* Assign special room types to random end rooms. */
-    special_room_item = FALSE;
     special_room_boss = FALSE;
     for (iy=0; iy<MAX_FLOOR_HEIGHT; ++iy) {
         for (ix=0; ix<MAX_FLOOR_WIDTH; ++ix) {
             if (generate_is_end_room(ix,iy)) {
-                if (!special_room_item) {
-                    floor[iy][ix].type = ROOM_TYPE_ITEM;
-                    special_room_item = TRUE;
-                } else if (!special_room_boss) {
+                if (!special_room_boss) {
                     floor[iy][ix].type = ROOM_TYPE_BOSS;
                     special_room_boss = TRUE;
                 }
