@@ -1,5 +1,7 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
+#define PLAYER_MAX_SCORE       999999
+#define PLAYER_HIT_SCORE           50
 #define PLAYER_DEAD_FADE_SPEED     10
 #define PLAYER_START_HEARTS         3
 #define PLAYER_IFRAMES             50
@@ -12,11 +14,12 @@
 
 typedef struct _PDATA_
 {
-    U8 max_hearts; /* Maximum number of hearts the player can have right now. */
-    U8 hearts;     /* Current number of hearts the player has right now.      */
-    U8 iframes;    /* Number of frames of invincibility that tick down.       */
-    U8 dir_locked; /* Player's direction is locked whilst shooting.           */
-    U8 cooldown;   /* Timer that dictates when the player can shoot.          */
+    U8  max_hearts; /* Maximum number of hearts the player can have right now. */
+    U8  hearts;     /* Current number of hearts the player has right now.      */
+    U8  iframes;    /* Number of frames of invincibility that tick down.       */
+    U8  dir_locked; /* Player's direction is locked whilst shooting.           */
+    U8  cooldown;   /* Timer that dictates when the player can shoot.          */
+    S32 score;      /* Score obtained for the current play session.            */
 
 } PDATA;
 
@@ -36,7 +39,13 @@ INTERNAL VOID player_damage (VOID)
     pdata.iframes = PLAYER_IFRAMES;
     pdata.hearts--;
 
+    pdata.score -= PLAYER_HIT_SCORE;
+    if (pdata.score < 0) {
+        pdata.score = 0;
+    }
+
     status_update_hearts();
+    status_update_score();
 
     if (pdata.hearts == 0) {
         player_kill();

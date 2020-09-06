@@ -1,6 +1,7 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
 #define MONSTER_HIT_FLASH_DURATION 2
+#define MONSTER_KILL_SCORE       100
 
 INTERNAL VOID monster_hit (ACTOR* actor, U8 damage)
 {
@@ -9,6 +10,12 @@ INTERNAL VOID monster_hit (ACTOR* actor, U8 damage)
     if (actor->hp > 0) {
         actor->ext0 = MONSTER_HIT_FLASH_DURATION; /* Stores how long the hit flash should last. */
         actor_invert_palette(actor, TRUE);
+    } else {
+        pdata.score += MONSTER_KILL_SCORE;
+        if (pdata.score > PLAYER_MAX_SCORE) {
+            pdata.score = PLAYER_MAX_SCORE;
+        }
+        status_update_score();
     }
 }
 

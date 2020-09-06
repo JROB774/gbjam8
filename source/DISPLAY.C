@@ -50,6 +50,8 @@ INTERNAL VOID status_init (VOID)
 INTERNAL VOID status_update_hearts (VOID)
 {
     U8 i;
+
+    /* Convert the hearts into tiles. */
     for (i=0; i<6; ++i) {
         if (i < pdata.max_hearts) {
             status_heart_tiles[i] = (i < pdata.hearts) ? TILE_HEART_FULL : TILE_HEART_NONE;
@@ -72,6 +74,27 @@ INTERNAL VOID status_update_item (VOID)
 
 INTERNAL VOID status_update_score (VOID)
 {
+    U32 score;
+    U8 i,num;
+
+    /* Fill the scores with zeroes. */
+    for (i=0; i<6; ++i) {
+        status_highscore_tiles[i] = TILE_NUM_0;
+        status_score_tiles[i] = TILE_NUM_0;
+    }
+
+    /* Convert the score into tiles. */
+    score = pdata.score;
+    num = 5;
+    while (score)
+    {
+        U8 digit = score % 10 + 1;
+        status_highscore_tiles[num] = digit;
+        status_score_tiles[num] = digit;
+        num--;
+        score /= 10;
+    }
+
     set_bkg_tiles(13,0, 6,1, status_highscore_tiles);
     set_bkg_tiles(13,1, 6,1, status_score_tiles);
 }
