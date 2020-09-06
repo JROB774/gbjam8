@@ -17,7 +17,7 @@ You can find a download for the game's ROM file over on
 
 The project was developed using **C** and the **[GBDK](https://github.com/Zal0/gbdk-2020)**
 library to compile into a Game Boy ROM. All other code was written from scratch for this
-project. Furthermore, the tools **[GBTD (Game Boy Tile Designer)](https://www.devrs.com/gb/hmgd/gbtd.html)**,
+project. Tools such as **[GBTD (Game Boy Tile Designer)](https://www.devrs.com/gb/hmgd/gbtd.html)**,
 **[GBMB (Game Boy Map Designer)](https://www.devrs.com/gb/hmgd/gbmb.html)**, and
 **[GameBoyPngConverter](https://github.com/gingemonster/GameBoyPngConverter/)** were
 used to create and generate tile graphics, maps, and splash screens for the project. All
