@@ -309,20 +309,23 @@ INTERNAL ACTOR* actor_create (U8 type, U8 x, U8 y)
 INTERNAL VOID actor_anim_change (ACTOR* actor, U8 anim, BOOL reset)
 {
     U8 i;
-    actor->animi = anim;
-    if (reset) {
-        actor->animf = 0;
-        actor->animt = 0;
-    }
-    for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
-        set_sprite_tile(actor->slot+i, GET_AMSPR_SPR (actor,i));
-        set_sprite_prop(actor->slot+i, GET_AMSPR_ATTR(actor,i));
+    if (actor->active) {
+        actor->animi = anim;
+        if (reset) {
+            actor->animf = 0;
+            actor->animt = 0;
+        }
+        for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
+            set_sprite_tile(actor->slot+i, GET_AMSPR_SPR (actor,i));
+            set_sprite_prop(actor->slot+i, GET_AMSPR_ATTR(actor,i));
+        }
     }
 }
 
 INTERNAL BOOL actor_anim_done (ACTOR* actor)
 {
-    return ((               !GET_AANIM_LOOP      (actor)  ) && /* Not Looping  */
+    return ((actor->active                                ) && /* Active       */
+            (               !GET_AANIM_LOOP      (actor)  ) && /* Not Looping  */
             (actor->animf == GET_AANIM_FRAMES    (actor)-1) && /* Last Frame   */
             (actor->animt >= GET_AANIM_CURR_TICKS(actor)  ));  /* End of Frame */
 }
@@ -330,11 +333,13 @@ INTERNAL BOOL actor_anim_done (ACTOR* actor)
 INTERNAL VOID actor_invert_palette (ACTOR* actor, BOOL invert)
 {
     U8 i;
-    for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
-        U8 prop = get_sprite_prop(actor->slot+i);
-        if (invert) { SET_FLAGS(prop, AATTR_PAL1); }
-        else { UNSET_FLAGS(prop, AATTR_PAL1); }
-        set_sprite_prop(actor->slot+i, prop);
+    if (actor->active) {
+        for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
+            U8 prop = get_sprite_prop(actor->slot+i);
+            if (invert) { SET_FLAGS(prop, AATTR_PAL1); }
+            else { UNSET_FLAGS(prop, AATTR_PAL1); }
+            set_sprite_prop(actor->slot+i, prop);
+        }
     }
 }
 
@@ -348,10 +353,27 @@ INTERNAL VOID actor_deactivate (ACTOR* actor)
     }
 }
 
-INTERNAL VOID actor_tick_all (VOID)
+INTERNAL VOID actor_update_sprite_pos (ACTOR* actor)
 {
     U8 i, sx,sy;
+    if (actor->active) {
+        if (!(actor->flags & AFLAG_HIDDEN)) {
+            sx = FTOI(actor->x)+SPRITE_X_OFFSET;
+            sy = FTOI(actor->y)+SPRITE_Y_OFFSET;
+        } else {
+            sx = 0;
+            sy = 0;
+        }
+        for (i=0; i<GET_AMSPR_SIZE(actor); ++i) {
+            move_sprite(actor->slot+i, sx+(i<<3), sy);
+        }
+    }
+}
+
+INTERNAL VOID actor_tick_all (VOID)
+{
     ACTOR* a;
+    U8 i;
 
     /* Go through the list and update all of the active actors. */
     a = a_actors;
@@ -397,18 +419,7 @@ INTERNAL VOID actor_tick_all (VOID)
             }
 
             /* Move the actor's meta-sprite. */
-            if (!(a->flags & AFLAG_HIDDEN)) {
-                sx = FTOI(a->x)+SPRITE_X_OFFSET;
-                sy = FTOI(a->y)+SPRITE_Y_OFFSET;
-            } else {
-                sx = 0;
-                sy = 0;
-            }
-            if (a->active) { /* We could have been deactivated this update! */
-                for (i=0; i<GET_AMSPR_SIZE(a); ++i) {
-                    move_sprite(a->slot+i, sx+(i<<3), sy);
-                }
-            }
+            actor_update_sprite_pos(a);
         }
         a++;
     }
