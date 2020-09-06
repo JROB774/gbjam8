@@ -24,9 +24,9 @@ INTERNAL void GAME ()
     /* @Temporary: Just make some debug actors for now. ***********************/
     actor_create(ATYPE_PLAYER, 24, 72);
     /*actor_create(ATYPE_GAPER,  72, 56);*/
-    actor_create(ATYPE_GAPER,  56, 72);
-    actor_create(ATYPE_GAPER,  72, 72);
-    actor_create(ATYPE_GAPER,  88, 72);
+    /*actor_create(ATYPE_GAPER,  56, 72);*/
+    /*actor_create(ATYPE_GAPER,  72, 72);*/
+    /*actor_create(ATYPE_GAPER,  88, 72);*/
     /*actor_create(ATYPE_GAPER,  72, 88);*/
     /**************************************************************************/
 
@@ -38,6 +38,7 @@ INTERNAL void GAME ()
         DEBUG_PROFILE_BEGIN(GAMELOOP);
         UPDATE_JOYPAD_STATE;
         actor_tick_all();
+        room_tick();
         wait_vbl_done();
         DEBUG_PROFILE_END(GAMELOOP);
     }

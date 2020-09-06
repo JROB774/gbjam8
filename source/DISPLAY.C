@@ -101,7 +101,7 @@ INTERNAL VOID status_update_score (VOID)
 
 INTERNAL VOID map_draw (VOID)
 {
-    U8 ix,iy;
+    U8 ix,iy, offset;
 
     /* So that sprites do not draw on top of the map tiles. */
     HIDE_SPRITES;
@@ -126,17 +126,18 @@ INTERNAL VOID map_draw (VOID)
     /* Fill the map with the appropriate tiles. */
     for (iy=0; iy<MAX_FLOOR_HEIGHT; ++iy) {
         for (ix=0; ix<MAX_FLOOR_WIDTH; ++ix) {
+            /* The offset determines what shading to use on the room tile. */
+            offset = 0;
+            if (ix == pdata.xroom && iy == pdata.yroom) {
+                offset = 8;
+            } else if (floor[iy][ix].clear) {
+                offset = 4;
+            }
             switch (floor[iy][ix].type) {
-                case (ROOM_TYPE_START):
-                case (ROOM_TYPE_NORMAL): {
-                    map_tiles[(iy+1)*DISPLAY_MAP_HEIGHT+(ix+1)] = TILE_MAP_ROOM_NORMAL;
-                } break;
-                case (ROOM_TYPE_ITEM): {
-                    map_tiles[(iy+1)*DISPLAY_MAP_HEIGHT+(ix+1)] = TILE_MAP_ROOM_ITEM;
-                } break;
-                case (ROOM_TYPE_BOSS): {
-                    map_tiles[(iy+1)*DISPLAY_MAP_HEIGHT+(ix+1)] = TILE_MAP_ROOM_BOSS;
-                } break;
+                case (ROOM_TYPE_START ):
+                case (ROOM_TYPE_NORMAL): { map_tiles[(iy+1)*DISPLAY_MAP_HEIGHT+(ix+1)] = TILE_MAP_ROOM_NORMAL+offset; } break;
+                case (ROOM_TYPE_ITEM  ): { map_tiles[(iy+1)*DISPLAY_MAP_HEIGHT+(ix+1)] = TILE_MAP_ROOM_ITEM  +offset; } break;
+                case (ROOM_TYPE_BOSS  ): { map_tiles[(iy+1)*DISPLAY_MAP_HEIGHT+(ix+1)] = TILE_MAP_ROOM_BOSS  +offset; } break;
             }
         }
     }

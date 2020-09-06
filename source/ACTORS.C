@@ -178,7 +178,7 @@ typedef struct _ABASE_
 GLOBAL const ABASE ABASE_TABLE[/*(ATYPE)*/] =
 {
 /* tick_function, bounds, category, start_hp, start_state, start_anim, flags                                                                 */
-{ A_PLAYER, { ITOF( 3),ITOF( 9),ITOF(10),ITOF( 7) }, ACATE_PLAYER ,   ITOF( 0), ASTAT_IDLE, AANIM_PLAYER_I, AFLAG_NONE    }, /* ATYPE_PLAYER */
+{ A_PLAYER, { ITOF( 3),ITOF( 9),ITOF(10),ITOF( 7) }, ACATE_PLAYER ,   ITOF( 0), ASTAT_IDLE, AANIM_PLAYER_I, AFLAG_UNBOUND }, /* ATYPE_PLAYER */
 { A_GAPER , { ITOF( 3),ITOF( 9),ITOF(10),ITOF( 7) }, ACATE_MONSTER,   ITOF(10), ASTAT_MOVE, AANIM_GAPER_M , AFLAG_NONE    }, /* ATYPE_GAPER  */
 { A_PTEAR , { ITOF( 2),ITOF( 6),ITOF( 4),ITOF(10) }, ACATE_TEAR   ,   ITOF( 0), ASTAT_IDLE, AANIM_PTEAR_I , AFLAG_UNBOUND }, /* ATYPE_PTEAR  */
 };

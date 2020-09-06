@@ -14,12 +14,14 @@
 
 typedef struct _PDATA_
 {
-    U8  max_hearts; /* Maximum number of hearts the player can have right now. */
-    U8  hearts;     /* Current number of hearts the player has right now.      */
-    U8  iframes;    /* Number of frames of invincibility that tick down.       */
-    U8  dir_locked; /* Player's direction is locked whilst shooting.           */
-    U8  cooldown;   /* Timer that dictates when the player can shoot.          */
-    S32 score;      /* Score obtained for the current play session.            */
+    U8  max_hearts; /* Maximum number of hearts the player can have right now.*/
+    U8  hearts;     /* Current number of hearts the player has right now.     */
+    U8  iframes;    /* Number of frames of invincibility that tick down.      */
+    U8  dir_locked; /* Player's direction is locked whilst shooting.          */
+    U8  cooldown;   /* Timer that dictates when the player can shoot.         */
+    S32 score;      /* Score obtained for the current play session.           */
+    U8  xroom;      /* Current horizontal room coordinate on the floor.       */
+    U8  yroom;      /* Current vertical room coordinate on the floor.         */
 
 } PDATA;
 
@@ -32,6 +34,8 @@ INTERNAL VOID player_init (VOID)
     pdata.iframes    = 0;
     pdata.dir_locked = FALSE;
     pdata.cooldown   = 0;
+    pdata.xroom      = 0;
+    pdata.yroom      = 0;
 }
 
 INTERNAL VOID player_damage (VOID)
