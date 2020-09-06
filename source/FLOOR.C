@@ -5,8 +5,8 @@
 #define MAX_FLOOR_WIDTH  0x06
 #define MAX_FLOOR_HEIGHT 0x06
 
-#define MIN_FLOOR_ROOMS  0x06 /* ( 6) */
-#define MAX_FLOOR_ROOMS  0x0B /* (11) */
+#define MIN_FLOOR_ROOMS  0x0A /* (10) */
+#define MAX_FLOOR_ROOMS  0x14 /* (20) */
 
 #define ROOM_TYPE_NONE   0x00
 #define ROOM_TYPE_START  0x01
@@ -351,31 +351,39 @@ INTERNAL VOID room_transition (U8 dir)
 
     /* Generate a random layout for the room. */
     if (!floor[pdata.yroom][pdata.xroom].clear) {
-        switch (((U8)rand()) % 6) {
+        switch (((U8)rand()) % 11) {
             case (0): {
                 // Nothing...
             } break;
-            case (1): {
-                actor_create(ATYPE_GAPER, 72, 72);
-            } break;
+            case (1):
             case (2): {
-                actor_create(ATYPE_GAPER, 56, 72);
                 actor_create(ATYPE_GAPER, 72, 72);
-                actor_create(ATYPE_GAPER, 88, 72);
             } break;
-            case (3): {
-                actor_create(ATYPE_GAPER, 72, 56);
-                actor_create(ATYPE_GAPER, 56, 72);
-                actor_create(ATYPE_GAPER, 88, 72);
-                actor_create(ATYPE_GAPER, 72, 88);
-            } break;
+            case (3):
             case (4): {
+                actor_create(ATYPE_GAPER, 56, 72);
+                actor_create(ATYPE_GAPER, 72, 72);
+                actor_create(ATYPE_GAPER, 88, 72);
+            } break;
+            case (5):
+            case (6): {
+                actor_create(ATYPE_GAPER, 72, 56);
+                actor_create(ATYPE_GAPER, 56, 72);
+                actor_create(ATYPE_GAPER, 88, 72);
+                actor_create(ATYPE_GAPER, 72, 88);
+            } break;
+            case (7):
+            case (8): {
                 actor_create(ATYPE_GAPER, 72, 56);
                 actor_create(ATYPE_GAPER, 72, 72);
                 actor_create(ATYPE_GAPER, 72, 88);
             } break;
-            case (5): {
-                // @Incomplete: ...
+            case (9):
+            case (10): {
+                actor_create(ATYPE_GAPER, 40, 40);
+                actor_create(ATYPE_GAPER,104, 40);
+                actor_create(ATYPE_GAPER, 40,104);
+                actor_create(ATYPE_GAPER,104,104);
             } break;
         }
     }
