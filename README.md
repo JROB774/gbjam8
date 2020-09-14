@@ -3,8 +3,8 @@
 ### ***THIS PROJECT HAS NOW BEEN ARCHIVED!***
 
 *The project has been archived to preserve its state at the end of 2020's
-[#GBJAM8](https://itch.io/jam/gbjam-8) contest. Development is being continued
-in a [NEW REPOSITORY](https://github.com/jrob774/gbisaac) in the hopes of
+**[#GBJAM8](https://itch.io/jam/gbjam-8)** contest. Development is being continued
+in a **[NEW REPOSITORY](https://github.com/jrob774/gbisaac)** in the hopes of
 turning this prototype/demo into a fully-featured and more realised game.*
 
 ***Below is the original README for this repository.***
