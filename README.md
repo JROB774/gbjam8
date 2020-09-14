@@ -1,10 +1,11 @@
 # GBJAM8 (The Binding of Isaac: Game Boy Edition)
 
-### ***THIS PROJECT HAS NOW BEEN ARCHIVED***
+### ***THIS PROJECT HAS NOW BEEN ARCHIVED!***
 
-*The project has been archived to preserve its state at the end of 2020's GBJAM8 contest.
-Development has been continued in a [new repository](https://github.com/jrob774/gbisaac)
-in the hopes of turning this original prototype into a fully-featured game.*
+*The project has been archived to preserve its state at the end of 2020's
+[#GBJAM8](https://itch.io/jam/gbjam-8) contest. Development has been continued
+in a [new repository](https://github.com/jrob774/gbisaac) in the hopes of
+turning this prototype/demo into a fully-featured and more realised game.*
 
 ***Below is the original README for this repository.***
 
