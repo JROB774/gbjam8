@@ -1,5 +1,15 @@
 # GBJAM8 (The Binding of Isaac: Game Boy Edition)
 
+***THIS PROJECT HAS NOW BEEN ARCHIVED***
+
+*The project has been archived to preserve its state at the end of 2020's GBJAM8 contest.
+Development has been continued in a [new repository](https://github.com/jrob774/gbisaac)
+in the hopes of turning this original prototype into a fully-featured game.*
+
+***Below is the original README for this repository.***
+
+===
+
 A demake for the classic roguelike **The Binding of Isaac** originally developed by
 **Edmund McMillen** and **Florian Himsl**. This homebrew redesign of the game was built
 from the ground up to run on the original Game Boy hardware itself *(meaning it will
@@ -11,7 +21,7 @@ hardware so, many features may be missing or lacking polish. Hopefully, in the f
 this project could be fleshed out more into a well-rounded and enjoyable experience.
 
 You can find a download for the game's ROM file over on
-**[itch.io](https://jrob774.itch.io/the-binding-of-isaac-game-boy-edition)**.
+**[itch.io](https://jrob774.itch.io/the-binding-of-isaac-gbjam8-edition)**.
 
 ## Development
 
